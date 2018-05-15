@@ -1,0 +1,16 @@
+<map id="/home/travis/build/AliceO2Group/AliceO2/macro/run_sim_emcal.C" name="/home/travis/build/AliceO2Group/AliceO2/macro/run_sim_emcal.C">
+<area shape="rect" id="node11" href="$d9/d6d/Cave_8h.html" title="DetectorsPassive/Cave.h" alt="" coords="802,184,973,211"/>
+<area shape="rect" id="node16" href="$db/d4b/MagneticField_8h.html" title="Definition of the MagF class. " alt="" coords="2221,109,2368,136"/>
+<area shape="rect" id="node40" href="$d8/d3d/EMCAL_2simulation_2include_2EMCALSimulation_2Detector_8h.html" title="EMCALSimulation/Detector.h" alt="" coords="1060,109,1255,136"/>
+<area shape="rect" id="node18" href="$d3/d91/MagFieldParam_8h.html" title="Definition of the MagFieldParam: container for ALICE mag. field parameters. " alt="" coords="2719,184,2875,211"/>
+<area shape="rect" id="node20" href="$dd/dfb/MagneticWrapperChebyshev_8h.html" title="Field/MagneticWrapperChebyshev.h" alt="" coords="2361,184,2593,211"/>
+<area shape="rect" id="node26" href="$da/df4/MagFieldFast_8h.html" title="Definition of the fast magnetic field parametrization MagFieldFast. " alt="" coords="2035,184,2179,211"/>
+<area shape="rect" id="node23" href="$d8/d64/Chebyshev3D_8h.html" title="MathUtils/Chebyshev3D.h" alt="" coords="2389,267,2565,293"/>
+<area shape="rect" id="node25" href="$d4/d08/Chebyshev3DCalc_8h.html" title="MathUtils/Chebyshev3DCalc.h" alt="" coords="2440,349,2643,376"/>
+<area shape="rect" id="node28" href="$dd/d76/Cartesian3D_8h.html" title="MathUtils/Cartesian3D.h" alt="" coords="545,349,711,376"/>
+<area shape="rect" id="node36" href="$d2/dd0/Cartesian2D_8h.html" title="MathUtils/Cartesian2D.h" alt="" coords="215,432,381,459"/>
+<area shape="rect" id="node41" href="$d1/d3a/Base_2include_2DetectorsBase_2Detector_8h.html" title="DetectorsBase/Detector.h" alt="" coords="1257,184,1431,211"/>
+<area shape="rect" id="node48" href="$d5/d8b/EMCAL_2base_2include_2EMCALBase_2Hit_8h.html" title="EMCALBase/Hit.h" alt="" coords="581,184,711,211"/>
+<area shape="rect" id="node44" href="$d0/d9a/MaterialManager_8h.html" title="DetectorsBase/MaterialManager.h" alt="" coords="1550,267,1769,293"/>
+<area shape="rect" id="node49" href="$d4/d25/BaseHits_8h.html" title="SimulationDataFormat\l/BaseHits.h" alt="" coords="504,259,656,301"/>
+</map>

@@ -1,0 +1,43 @@
+<map id="/home/travis/build/AliceO2Group/AliceO2/Framework/TestWorkflows/src/o2_sim_its_ALP3.cxx" name="/home/travis/build/AliceO2Group/AliceO2/Framework/TestWorkflows/src/o2_sim_its_ALP3.cxx">
+<area shape="rect" id="node2" href="$d5/db8/DataRefUtils_8h.html" title="Framework/DataRefUtils.h" alt="" coords="319,507,498,533"/>
+<area shape="rect" id="node27" href="$d8/d17/ServiceRegistry_8h.html" title="Framework/ServiceRegistry.h" alt="" coords="939,424,1134,451"/>
+<area shape="rect" id="node33" href="$df/da1/WorkflowSpec_8h.html" title="Framework/WorkflowSpec.h" alt="" coords="2404,125,2591,152"/>
+<area shape="rect" id="node35" href="$d0/d14/AlgorithmSpec_8h.html" title="Framework/AlgorithmSpec.h" alt="" coords="1342,275,1528,301"/>
+<area shape="rect" id="node55" href="$d3/d26/MetricsService_8h.html" title="Framework/MetricsService.h" alt="" coords="3386,507,3575,533"/>
+<area shape="rect" id="node62" href="$d9/d6d/Cave_8h.html" title="DetectorsPassive/Cave.h" alt="" coords="3552,424,3723,451"/>
+<area shape="rect" id="node65" href="$db/d4b/MagneticField_8h.html" title="Definition of the MagF class. " alt="" coords="5602,349,5748,376"/>
+<area shape="rect" id="node79" href="$d6/d8d/ITSMFT_2ITS_2simulation_2include_2ITSSimulation_2Detector_8h.html" title="ITSSimulation/Detector.h" alt="" coords="4032,349,4200,376"/>
+<area shape="rect" id="node3" href="$d5/dfb/DataRef_8h.html" title="Framework/DataRef.h" alt="" coords="42,597,192,624"/>
+<area shape="rect" id="node4" href="$dc/dcd/DataHeader_8h.html" title="Headers/DataHeader.h" alt="" coords="1957,597,2112,624"/>
+<area shape="rect" id="node10" href="$d8/d3c/TMessageSerializer_8h.html" title="Framework/TMessageSerializer.h" alt="" coords="320,597,536,624"/>
+<area shape="rect" id="node19" href="$d1/d53/SerializationMethods_8h.html" title="Type wrappers for enfording a specific serialization method. " alt="" coords="1434,597,1656,624"/>
+<area shape="rect" id="node20" href="$d0/d95/TypeTraits_8h.html" title="Framework/TypeTraits.h" alt="" coords="1450,680,1614,707"/>
+<area shape="rect" id="node34" href="$d0/df4/DataProcessorSpec_8h.html" title="Framework/DataProcessorSpec.h" alt="" coords="2304,200,2523,227"/>
+<area shape="rect" id="node38" href="$d1/d28/DataAllocator_8h.html" title="Framework/DataAllocator.h" alt="" coords="1910,424,2091,451"/>
+<area shape="rect" id="node46" href="$d0/d1c/ConfigParamSpec_8h.html" title="Framework/ConfigParamSpec.h" alt="" coords="2850,507,3058,533"/>
+<area shape="rect" id="node51" href="$d1/df2/DataProcessorLabel_8h.html" title="Framework/DataProcessorLabel.h" alt="" coords="2452,275,2671,301"/>
+<area shape="rect" id="node52" href="$d5/d3f/InputSpec_8h.html" title="Framework/InputSpec.h" alt="" coords="2613,507,2774,533"/>
+<area shape="rect" id="node53" href="$db/d2d/OutputSpec_8h.html" title="Framework/OutputSpec.h" alt="" coords="1827,275,1998,301"/>
+<area shape="rect" id="node36" href="$de/d6a/ProcessingContext_8h.html" title="Framework/ProcessingContext.h" alt="" coords="1184,349,1398,376"/>
+<area shape="rect" id="node43" href="$d7/dad/ErrorContext_8h.html" title="Framework/ErrorContext.h" alt="" coords="814,349,990,376"/>
+<area shape="rect" id="node44" href="$d4/d2b/InitContext_8h.html" title="Framework/InitContext.h" alt="" coords="1473,349,1639,376"/>
+<area shape="rect" id="node37" href="$d6/d5c/InputRecord_8h.html" title="Framework/InputRecord.h" alt="" coords="550,424,723,451"/>
+<area shape="rect" id="node40" href="$d3/ddf/Output_8h.html" title="Framework/Output.h" alt="" coords="1876,507,2016,533"/>
+<area shape="rect" id="node41" href="$d6/d5a/OutputRef_8h.html" title="Framework/OutputRef.h" alt="" coords="2092,507,2255,533"/>
+<area shape="rect" id="node45" href="$de/dc6/ConfigParamRegistry_8h.html" title="Framework/ConfigParamRegistry.h" alt="" coords="1423,507,1650,533"/>
+<area shape="rect" id="node47" href="$de/d56/Variant_8h.html" title="Framework/Variant.h" alt="" coords="2853,597,2995,624"/>
+<area shape="rect" id="node67" href="$d3/d91/MagFieldParam_8h.html" title="Definition of the MagFieldParam: container for ALICE mag. field parameters. " alt="" coords="5794,424,5950,451"/>
+<area shape="rect" id="node70" href="$dd/dfb/MagneticWrapperChebyshev_8h.html" title="Field/MagneticWrapperChebyshev.h" alt="" coords="5974,424,6207,451"/>
+<area shape="rect" id="node76" href="$da/df4/MagFieldFast_8h.html" title="Definition of the fast magnetic field parametrization MagFieldFast. " alt="" coords="5438,507,5582,533"/>
+<area shape="rect" id="node73" href="$d8/d64/Chebyshev3D_8h.html" title="MathUtils/Chebyshev3D.h" alt="" coords="6119,507,6295,533"/>
+<area shape="rect" id="node75" href="$d4/d08/Chebyshev3DCalc_8h.html" title="MathUtils/Chebyshev3DCalc.h" alt="" coords="6220,597,6423,624"/>
+<area shape="rect" id="node77" href="$dd/d76/Cartesian3D_8h.html" title="MathUtils/Cartesian3D.h" alt="" coords="4878,597,5044,624"/>
+<area shape="rect" id="node80" href="$db/dcc/Detectors_2Base_2include_2DetectorsBase_2GeometryManager_8h.html" title="DetectorsBase/GeometryManager.h" alt="" coords="4741,424,4971,451"/>
+<area shape="rect" id="node86" href="$d6/d31/DetID_8h.html" title="DetectorsCommonDataFormats\l/DetID.h" alt="" coords="4318,590,4526,631"/>
+<area shape="rect" id="node91" href="$d1/d3a/Base_2include_2DetectorsBase_2Detector_8h.html" title="DetectorsBase/Detector.h" alt="" coords="3701,507,3875,533"/>
+<area shape="rect" id="node95" href="$d0/dae/ITSMFT_2common_2simulation_2include_2ITSMFTSimulation_2Hit_8h.html" title="ITSMFTSimulation/Hit.h" alt="" coords="4260,424,4423,451"/>
+<area shape="rect" id="node89" href="$d9/d52/Common_2MathUtils_2include_2MathUtils_2Utils_8h.html" title="MathUtils/Utils.h" alt="" coords="4524,680,4644,707"/>
+<area shape="rect" id="node93" href="$d0/d9a/MaterialManager_8h.html" title="DetectorsBase/MaterialManager.h" alt="" coords="3972,597,4191,624"/>
+<area shape="rect" id="node96" href="$d4/d25/BaseHits_8h.html" title="SimulationDataFormat\l/BaseHits.h" alt="" coords="4367,499,4519,541"/>
+<area shape="rect" id="node97" href="$d7/dcd/MCCompLabel_8h.html" title="SimulationDataFormat\l/MCCompLabel.h" alt="" coords="4651,590,4803,631"/>
+</map>

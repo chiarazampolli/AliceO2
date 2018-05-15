@@ -1,0 +1,50 @@
+<map id="/home/travis/build/AliceO2Group/AliceO2/Framework/TestWorkflows/src/o2_sim_tpc.cxx" name="/home/travis/build/AliceO2Group/AliceO2/Framework/TestWorkflows/src/o2_sim_tpc.cxx">
+<area shape="rect" id="node2" href="$d5/db8/DataRefUtils_8h.html" title="Framework/DataRefUtils.h" alt="" coords="444,515,623,541"/>
+<area shape="rect" id="node27" href="$df/da1/WorkflowSpec_8h.html" title="Framework/WorkflowSpec.h" alt="" coords="4027,133,4214,160"/>
+<area shape="rect" id="node29" href="$d0/d14/AlgorithmSpec_8h.html" title="Framework/AlgorithmSpec.h" alt="" coords="2262,291,2448,317"/>
+<area shape="rect" id="node63" href="$d3/d26/MetricsService_8h.html" title="Framework/MetricsService.h" alt="" coords="4442,597,4631,624"/>
+<area shape="rect" id="node64" href="$d9/d9b/RootFileService_8h.html" title="Framework/RootFileService.h" alt="" coords="4122,597,4316,624"/>
+<area shape="rect" id="node72" href="$d9/d6d/Cave_8h.html" title="DetectorsPassive/Cave.h" alt="" coords="4714,440,4886,467"/>
+<area shape="rect" id="node75" href="$db/d4b/MagneticField_8h.html" title="Definition of the MagF class. " alt="" coords="6607,440,6754,467"/>
+<area shape="rect" id="node88" href="$de/daf/GeneratorFromFile_8h.html" title="Generators/GeneratorFrom\lFile.h" alt="" coords="5777,126,5954,167"/>
+<area shape="rect" id="node90" href="$da/d96/TPC_2simulation_2include_2TPCSimulation_2Detector_8h.html" title="TPCSimulation/Detector.h" alt="" coords="5734,440,5908,467"/>
+<area shape="rect" id="node3" href="$d5/dfb/DataRef_8h.html" title="Framework/DataRef.h" alt="" coords="570,597,720,624"/>
+<area shape="rect" id="node4" href="$dc/dcd/DataHeader_8h.html" title="Headers/DataHeader.h" alt="" coords="2176,680,2331,707"/>
+<area shape="rect" id="node10" href="$d8/d3c/TMessageSerializer_8h.html" title="Framework/TMessageSerializer.h" alt="" coords="98,597,315,624"/>
+<area shape="rect" id="node19" href="$d1/d53/SerializationMethods_8h.html" title="Type wrappers for enfording a specific serialization method. " alt="" coords="1300,597,1522,624"/>
+<area shape="rect" id="node20" href="$d0/d95/TypeTraits_8h.html" title="Framework/TypeTraits.h" alt="" coords="1338,680,1502,707"/>
+<area shape="rect" id="node28" href="$d0/df4/DataProcessorSpec_8h.html" title="Framework/DataProcessorSpec.h" alt="" coords="2587,216,2806,243"/>
+<area shape="rect" id="node33" href="$d5/d3f/InputSpec_8h.html" title="Framework/InputSpec.h" alt="" coords="2536,597,2696,624"/>
+<area shape="rect" id="node43" href="$d1/d28/DataAllocator_8h.html" title="Framework/DataAllocator.h" alt="" coords="1987,440,2168,467"/>
+<area shape="rect" id="node48" href="$db/d2d/OutputSpec_8h.html" title="Framework/OutputSpec.h" alt="" coords="1988,597,2159,624"/>
+<area shape="rect" id="node57" href="$d0/d1c/ConfigParamSpec_8h.html" title="Framework/ConfigParamSpec.h" alt="" coords="3418,597,3626,624"/>
+<area shape="rect" id="node62" href="$d1/df2/DataProcessorLabel_8h.html" title="Framework/DataProcessorLabel.h" alt="" coords="2632,291,2851,317"/>
+<area shape="rect" id="node30" href="$de/d6a/ProcessingContext_8h.html" title="Framework/ProcessingContext.h" alt="" coords="2100,365,2314,392"/>
+<area shape="rect" id="node54" href="$d7/dad/ErrorContext_8h.html" title="Framework/ErrorContext.h" alt="" coords="1900,365,2076,392"/>
+<area shape="rect" id="node55" href="$d4/d2b/InitContext_8h.html" title="Framework/InitContext.h" alt="" coords="2389,365,2555,392"/>
+<area shape="rect" id="node31" href="$d6/d5c/InputRecord_8h.html" title="Framework/InputRecord.h" alt="" coords="923,440,1096,467"/>
+<area shape="rect" id="node40" href="$d8/d17/ServiceRegistry_8h.html" title="Framework/ServiceRegistry.h" alt="" coords="2235,440,2430,467"/>
+<area shape="rect" id="node32" href="$d5/d19/InputRoute_8h.html" title="Framework/InputRoute.h" alt="" coords="2166,515,2332,541"/>
+<area shape="rect" id="node36" href="$dc/dca/Lifetime_8h.html" title="Framework/Lifetime.h" alt="" coords="2356,680,2503,707"/>
+<area shape="rect" id="node45" href="$d3/ddf/Output_8h.html" title="Framework/Output.h" alt="" coords="2183,597,2323,624"/>
+<area shape="rect" id="node46" href="$d6/d5a/OutputRef_8h.html" title="Framework/OutputRef.h" alt="" coords="2348,597,2511,624"/>
+<area shape="rect" id="node47" href="$d6/df4/OutputRoute_8h.html" title="Framework/OutputRoute.h" alt="" coords="2808,515,2984,541"/>
+<area shape="rect" id="node49" href="$d7/d31/DataChunk_8h.html" title="Framework/DataChunk.h" alt="" coords="2539,515,2707,541"/>
+<area shape="rect" id="node50" href="$dc/dc4/MessageContext_8h.html" title="Framework/MessageContext.h" alt="" coords="3650,597,3851,624"/>
+<area shape="rect" id="node51" href="$d2/d80/RootObjectContext_8h.html" title="Framework/RootObjectContext.h" alt="" coords="1698,597,1912,624"/>
+<area shape="rect" id="node56" href="$de/dc6/ConfigParamRegistry_8h.html" title="Framework/ConfigParamRegistry.h" alt="" coords="3066,597,3292,624"/>
+<area shape="rect" id="node58" href="$de/d56/Variant_8h.html" title="Framework/Variant.h" alt="" coords="3872,680,4014,707"/>
+<area shape="rect" id="node77" href="$d3/d91/MagFieldParam_8h.html" title="Definition of the MagFieldParam: container for ALICE mag. field parameters. " alt="" coords="6602,515,6758,541"/>
+<area shape="rect" id="node80" href="$dd/dfb/MagneticWrapperChebyshev_8h.html" title="Field/MagneticWrapperChebyshev.h" alt="" coords="7001,515,7234,541"/>
+<area shape="rect" id="node85" href="$da/df4/MagFieldFast_8h.html" title="Definition of the fast magnetic field parametrization MagFieldFast. " alt="" coords="6231,597,6375,624"/>
+<area shape="rect" id="node83" href="$d8/d64/Chebyshev3D_8h.html" title="MathUtils/Chebyshev3D.h" alt="" coords="6964,597,7140,624"/>
+<area shape="rect" id="node84" href="$d4/d08/Chebyshev3DCalc_8h.html" title="MathUtils/Chebyshev3DCalc.h" alt="" coords="6988,680,7191,707"/>
+<area shape="rect" id="node86" href="$dd/d76/Cartesian3D_8h.html" title="MathUtils/Cartesian3D.h" alt="" coords="5816,680,5982,707"/>
+<area shape="rect" id="node91" href="$d1/d3a/Base_2include_2DetectorsBase_2Detector_8h.html" title="DetectorsBase/Detector.h" alt="" coords="4960,515,5134,541"/>
+<area shape="rect" id="node96" href="$d4/de5/Point_8h.html" title="Class for TPC Point. " alt="" coords="5582,515,5735,541"/>
+<area shape="rect" id="node98" href="$d3/dd6/Sector_8h.html" title="TPCBase/Sector.h" alt="" coords="5908,515,6039,541"/>
+<area shape="rect" id="node93" href="$d0/d9a/MaterialManager_8h.html" title="DetectorsBase/MaterialManager.h" alt="" coords="4989,597,5208,624"/>
+<area shape="rect" id="node97" href="$d4/d25/BaseHits_8h.html" title="SimulationDataFormat\l/BaseHits.h" alt="" coords="5639,590,5791,631"/>
+<area shape="rect" id="node99" href="$d0/dda/DataFormats_2Detectors_2TPC_2include_2DataFormatsTPC_2Constants_8h.html" title="DataFormatsTPC/Constants.h" alt="" coords="6007,597,6206,624"/>
+<area shape="rect" id="node100" href="$d1/d73/Defs_8h.html" title="Common definitions for 2D coordinates. " alt="" coords="5815,597,5983,624"/>
+</map>
