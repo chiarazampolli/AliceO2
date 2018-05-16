@@ -13,17 +13,16 @@
 //  fall in the same strip
 //
 
-#ifndef ALICEO2_TOF_STRIP_
-#define ALICEO2_TOF_STRIP_
+#ifndef ALICEO2_TOF_STRIP_H_
+#define ALICEO2_TOF_STRIP_H_
 
 #include <TOFBase/Digit.h>
-#include <TObject.h> // for TObject
+#include <TObject.h> 
 #include <exception>
 #include <map>
 #include <sstream>
 #include <vector>
 #include "MathUtils/Cartesian3D.h"
-#include "SimulationDataFormat/MCCompLabel.h"
 #include "TOFSimulation/Detector.h" // for HitType
 
 
@@ -81,6 +80,7 @@ namespace tof
   /// Get the number of point assigned to the chip
   /// @return Number of points assigned to the chip
   Int_t getNumberOfHits() const { return mHits.size(); }
+  Int_t getNumberOfDigits() const { return mDigits.size(); }
 
   /// Get the strip index from hit
   Int_t getStripIndex(const o2::tof::HitType* hit);
@@ -96,15 +96,16 @@ namespace tof
   
   Int_t addDigit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc, Int_t lbl); // returns the MC label 
 
-  void fillOutputContainer(std::vector<o2::tof::Digit>* digits, UInt_t maxFrame);
+  void fillOutputContainer(std::vector<o2::tof::Digit>* digits);
 
  protected:
   Int_t mStripIndex = -1;                          ///< Strip ID
-  std::vector<const o2::tof::HitType*> mHits;                  ///< Hits connnected to the given chip
-  std::map<ULong64_t, o2::tof::Digit> mDigits; ///< Map of fired pixels, possibly in multiple frames
+  std::vector<const o2::tof::HitType*> mHits;                  ///< Hits connected to the given strip
+  std::map<ULong64_t, o2::tof::Digit> mDigits; ///< Map of fired digits, possibly in multiple frames
 
   ClassDefNV(Strip, 1);
-};
+  };
+
 
 inline o2::tof::Digit* Strip::findDigit(ULong64_t key)
 {
@@ -113,7 +114,9 @@ inline o2::tof::Digit* Strip::findDigit(ULong64_t key)
   return digitentry != mDigits.end() ? &(digitentry->second) : nullptr;
 }
 
+} // close namespace tof
+} // close namespace o2
 
-#endif /* defined(ALICEO2_TOF_STRIP_) */
+#endif /* defined(ALICEO2_TOF_STRIP_H_) */
 
   
