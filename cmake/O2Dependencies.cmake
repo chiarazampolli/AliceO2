@@ -276,6 +276,20 @@ o2_define_bucket(
 
 o2_define_bucket(
     NAME
+    data_format_TOF_bucket
+
+    DEPENDENCIES
+    data_format_reconstruction_bucket
+    ReconstructionDataFormats
+
+    INCLUDE_DIRECTORIES
+#    ${CMAKE_SOURCE_DIR}/DataFormats/simulation/include
+    ${CMAKE_SOURCE_DIR}/DataFormats/Reconstruction/include
+    ${CMAKE_SOURCE_DIR}/DataFormats/Detectors/TOF/include
+)
+
+o2_define_bucket(
+    NAME
     TimeFrame_bucket
 
     DEPENDENCIES
