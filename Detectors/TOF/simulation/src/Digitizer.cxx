@@ -30,10 +30,10 @@ void Digitizer::process(const std::vector<HitType>* hits,std::vector<Digit>* dig
   mDigits = digits;
 
   for (auto& hit : *hits) {
-    Int_t timeframe =
-      Int_t((mEventTime + hit.GetTime()) * Geo::TIMEFRAMEWINDOW_INV); // to be replaced with uncalibrated time
-    //TODO: put timeframe counting/selection
-    //if (timeframe == mTimeFrameCurrent) {
+    Int_t readoutwindow =
+      Int_t((mEventTime + hit.GetTime()) * Geo::READOUTWINDOW_INV); // to be replaced with uncalibrated time
+    //TODO: put readout window counting/selection
+    //if (readoutwindow == mReadoutWindowCurrent) {
       processHit(hit, mEventTime);
     //}
   } // end loop over hits

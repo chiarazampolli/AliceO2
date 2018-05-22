@@ -24,7 +24,7 @@ namespace tof
 class Digitizer
 {
  public:
-  Digitizer(Int_t mode = 0) : mMode(mode), mTimeFrameCurrent(0) { initParameters(); };
+  Digitizer(Int_t mode = 0) : mMode(mode), mReadoutWindowCurrent(0) { initParameters(); };
   ~Digitizer() = default;
 
   void process(const std::vector<HitType>* hits, std::vector<Digit>* digits);
@@ -37,8 +37,8 @@ class Digitizer
   Float_t getEffZ(Float_t z);
   Float_t getFractionOfCharge(Float_t x, Float_t z);
 
-  Int_t getCurrentTimeFrame() const { return mTimeFrameCurrent; }
-  void setCurrentTimeFrame(Double_t value) { mTimeFrameCurrent = value; }
+  Int_t getCurrentReadoutWindow() const { return mReadoutWindowCurrent; }
+  void setCurrentReadoutWindow(Double_t value) { mReadoutWindowCurrent = value; }
   Float_t getTimeLastHit(Int_t idigit) const { return 0; }
   Float_t getTotLastHit(Int_t idigit) const { return 0; }
   Int_t getXshift(Int_t idigit) const { return 0; }
@@ -77,7 +77,7 @@ class Digitizer
   Float_t mEffBoundary3;
 
   // info TOF timewindow
-  Int_t mTimeFrameCurrent;
+  Int_t mReadoutWindowCurrent;
   Double_t mEventTime;
   Int_t mEventID = 0;
   Int_t mSrcID = 0;
