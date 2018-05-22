@@ -15,15 +15,15 @@ using namespace o2::tof;
 
 ClassImp(o2::tof::Digit);
 
-Digit::Digit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc)
-  : o2::dataformats::TimeStamp<double>(time), mChannel(channel), mTDC(tdc), mTOT(tot), mBC(bc)
+Digit::Digit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc, Int_t label)
+  : o2::dataformats::TimeStamp<double>(time), mChannel(channel), mTDC(tdc), mTOT(tot), mBC(bc), mLabel(label)
 {
 }
 
 void Digit::printStream(std::ostream& stream) const
 {
   stream << "TOF Digit: Channel " << mChannel << " TDC " << mTDC << " TOT " << mTOT << " Time " << getTimeStamp()
-         << "Bunch Crossing index" << mBC << "\n";
+         << "Bunch Crossing index" << mBC << " Label " << mLabel << "\n";
 }
 
 std::ostream& operator<<(std::ostream& stream, const Digit& digi)
