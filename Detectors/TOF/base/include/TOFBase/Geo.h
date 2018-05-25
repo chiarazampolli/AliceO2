@@ -50,13 +50,15 @@ class Geo
 
   static constexpr Int_t NPADX = 48;
   static constexpr Int_t NPADZ = 2;
+  static constexpr Int_t NPADS = NPADX*NPADZ;
   static constexpr Int_t NSTRIPA = 15;
   static constexpr Int_t NSTRIPB = 19;
   static constexpr Int_t NSTRIPC = 19;
   static constexpr Int_t NMAXNSTRIP = 20;
   static constexpr Int_t NSTRIPXSECTOR = NSTRIPA + 2 * NSTRIPB + 2 * NSTRIPC;
-
+  
   static constexpr Int_t NSECTORS = 18;
+  static constexpr Int_t NSTRIPS = NSECTORS*NSTRIPXSECTOR;
   static constexpr Int_t NPLATES = 5;
 
   static constexpr Float_t MAXHZTOF = 370.6;      // Max half z-size of TOF (cm)
