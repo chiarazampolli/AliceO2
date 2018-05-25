@@ -25,6 +25,21 @@ using namespace o2::tof;
 
 ClassImp(Digitizer);
 
+void Digitizer::init(){
+
+  // method to initialize the parameters neede to digitize and the array of strip objects containing
+  // the digits belonging to a strip
+
+  initParamters();
+  
+  for (Int_t i = 0; i < Geo::NSTRIPS; i++) {
+    mStrips.emplace_back(i);
+  }
+
+}
+  
+//______________________________________________________________________
+
 void Digitizer::process(const std::vector<HitType>* hits,std::vector<Digit>* digits){
   // hits array of TOF hits for a given simulated event
   mDigits = digits;
@@ -39,6 +54,7 @@ void Digitizer::process(const std::vector<HitType>* hits,std::vector<Digit>* dig
   } // end loop over hits
 }
 
+//______________________________________________________________________
 
 Int_t Digitizer::processHit(const HitType &hit,Double_t event_time)
 {
@@ -77,10 +93,12 @@ Int_t Digitizer::processHit(const HitType &hit,Double_t event_time)
 
   Int_t ndigits = 0;//Number of digits added
 
+  UInt_t istrip = channel/96;
+
   // check the fired PAD 1 (A)
   if (isFired(xLocal, zLocal, charge)){
     ndigits++;
-    addDigit(channel, time, xLocal, zLocal, charge, 0, 0, detInd[3], trackID);
+    addDigit(channel, istrip, time, xLocal, zLocal, charge, 0, 0, detInd[3], trackID);
   }
 
   // check PAD 2
@@ -94,7 +112,7 @@ Int_t Digitizer::processHit(const HitType &hit,Double_t event_time)
     zLocal = deltapos[2] + Geo::ZPAD;
   if (isFired(xLocal, zLocal, charge)) {
       ndigits++;
-      addDigit(channel, time, xLocal, zLocal, charge, 0, iZshift, detInd[3], trackID);
+      addDigit(channel, istrip, time, xLocal, zLocal, charge, 0, iZshift, detInd[3], trackID);
   }
 
   // check PAD 3
@@ -106,7 +124,7 @@ Int_t Digitizer::processHit(const HitType &hit,Double_t event_time)
     zLocal = deltapos[2];             // recompute local coordinates
     if (isFired(xLocal, zLocal, charge)) {
       ndigits++;
-      addDigit(channel, time, xLocal, zLocal, charge, -1, 0, detInd[3], trackID);
+      addDigit(channel, istrip, time, xLocal, zLocal, charge, -1, 0, detInd[3], trackID);
     }
   }
 
@@ -119,7 +137,7 @@ Int_t Digitizer::processHit(const HitType &hit,Double_t event_time)
     zLocal = deltapos[2];             // recompute local coordinates
     if (isFired(xLocal, zLocal, charge)) {
       ndigits++;
-      addDigit(channel, time, xLocal, zLocal, charge, 1, 0, detInd[3], trackID);
+      addDigit(channel, istrip, time, xLocal, zLocal, charge, 1, 0, detInd[3], trackID);
     }
   }
 
@@ -135,7 +153,7 @@ Int_t Digitizer::processHit(const HitType &hit,Double_t event_time)
       zLocal = deltapos[2] + Geo::ZPAD;
     if (isFired(xLocal, zLocal, charge)) {
       ndigits++;
-      addDigit(channel, time, xLocal, zLocal, charge, -1, iZshift, detInd[3], trackID);
+      addDigit(channel, istrip, time, xLocal, zLocal, charge, -1, iZshift, detInd[3], trackID);
     }
   }
 
@@ -151,14 +169,15 @@ Int_t Digitizer::processHit(const HitType &hit,Double_t event_time)
       zLocal = deltapos[2] + Geo::ZPAD;
     if (isFired(xLocal, zLocal, charge)) {
       ndigits++;
-      addDigit(channel, time, xLocal, zLocal, charge, 1, iZshift, detInd[3], trackID);
+      addDigit(channel, istrip, time, xLocal, zLocal, charge, 1, iZshift, detInd[3], trackID);
     }
   }
   return ndigits;
 
 }
 
-void Digitizer::addDigit(Int_t channel, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ,
+//______________________________________________________________________
+void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ,
                          Int_t padZfired, Int_t trackID)
 {
   // TOF digit requires: channel, time and time-over-threshold
@@ -189,63 +208,43 @@ void Digitizer::addDigit(Int_t channel, Float_t time, Float_t x, Float_t z, Floa
   }
   time += TMath::Sqrt(timewalkX * timewalkX + timewalkZ * timewalkZ) - mTimeDelayCorr - mTimeWalkeSlope * 2;
 
-  bool merged = false;
-
   Int_t nbc = Int_t(time * Geo::BC_TIME_INPS_INV); // time elapsed in number of bunch crossing
-  Digit newdigit(time, channel, (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS, tot * Geo::NTOTBIN_PER_NS, nbc);
-
-  // check if such mergeable digit already exists
-  int digitindex = 0;
-  for (auto& digit : *mDigits) {
-    if (isMergable(digit, newdigit)) {
-      LOG(INFO) << "MERGING DIGITS " << digitindex << "\n";
-      merged = true;
-      // merge it
-      if (newdigit.getTDC() < digit.getTDC()) {
-        // adjust TOT
-        digit.setTDC(newdigit.getTDC());
-        digit.setTimeStamp(newdigit.getTimeStamp());
-      } else {
-        // adjust TOT
-      }
-      // adjust truth information
-      if (mMCTruthContainer) {
-        o2::tof::MCLabel label(trackID, mEventID, mSrcID, newdigit.getTDC());
-        mMCTruthContainer->addElementRandomAccess(digitindex, label);
-
-        // sort the labels according to increasing tdc value
-        auto labels = mMCTruthContainer->getLabels(digitindex);
-        std::sort(labels.begin(), labels.end(),
-                  [](o2::tof::MCLabel a, o2::tof::MCLabel b) { return a.getTDC() < b.getTDC(); });
-        //for (auto& e : labels) {
-        //  LOG(INFO) << e.getEventID() << " " << e.getTrackID() << " " << e.getTDC() << "\n";
-        //}
-        // assert(labels[0].getTDC() <= labels[1].getTDC());
-      }
-      break;
-    }
-    digitindex++;
+  //Digit newdigit(time, channel, (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS, tot * Geo::NTOTBIN_PER_NS, nbc);
+  Int_t lblCurrent = 0;
+  if (mMCTruthContainer) {
+    lblCurrent =  mMCTruthContainer->getIndexedSize(); // check that we should not call mMCTruthContainer->getNElements() instead!
   }
+  auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
+  
+  Int_t lbl = mStrips[iStrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
 
-  if (!merged) {
-    // note that tdc calculation is done in [ps]; whereas the tot is done in [ns]
-    auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
-    mDigits->emplace_back(time, channel, tdc, tot * Geo::NTOTBIN_PER_NS, nbc);
-
-    if (mMCTruthContainer) {
-      auto ndigits = mDigits->size() - 1;
+  if (mMCTruthContainer){
+    if (lbl == lblCurrent) { // it means that the digit was a new one --> we have to add the info in the MC container
       o2::tof::MCLabel label(trackID, mEventID, mSrcID, tdc);
-      mMCTruthContainer->addElement(ndigits, label);
+      mMCTruthContainer->addElement(lbl, label);
+    }
+    else {
+      o2::tof::MCLabel label(trackID, mEventID, mSrcID, tdc);
+      mMCTruthContainer->addElementRandomAccess(lbl, label);
+
+      // sort the labels according to increasing tdc value
+      auto labels = mMCTruthContainer->getLabels(lbl);
+      std::sort(labels.begin(), labels.end(),
+		[](o2::tof::MCLabel a, o2::tof::MCLabel b) { return a.getTDC() < b.getTDC(); });
     }
   }
+
+
 }
 
+//______________________________________________________________________
 Float_t Digitizer::getShowerTimeSmeared(Float_t time, Float_t charge)
 {
   // add the smearing common to all the digits belongin to the same shower
   return time + gRandom->Gaus(0, mShowerResolution);
 }
 
+//______________________________________________________________________
 Float_t Digitizer::getDigitTimeSmeared(Float_t time, Float_t x, Float_t z, Float_t charge)
 {
   // add the smearing component which is indepedent for any digit even if belonging to the same shower (in case of
@@ -253,6 +252,7 @@ Float_t Digitizer::getDigitTimeSmeared(Float_t time, Float_t x, Float_t z, Float
   return time + gRandom->Gaus(0, mDigitResolution); // sqrt(33**2 + 50**2) ps = 60 ps
 }
 
+//______________________________________________________________________
 Float_t Digitizer::getCharge(Float_t eDep)
 {
   // transform deposited energy in collected charge
@@ -262,6 +262,7 @@ Float_t Digitizer::getCharge(Float_t eDep)
   return gRandom->Landau(adcMean, adcRms);
 }
 
+//______________________________________________________________________
 Bool_t Digitizer::isFired(Float_t x, Float_t z, Float_t charge)
 {
   if (TMath::Abs(x) > Geo::XPAD * 0.5 + 0.3)
@@ -280,6 +281,7 @@ Bool_t Digitizer::isFired(Float_t x, Float_t z, Float_t charge)
   return kTRUE;
 }
 
+//______________________________________________________________________
 Float_t Digitizer::getEffX(Float_t x)
 {
   Float_t xborder = Geo::XPAD * 0.5 - TMath::Abs(x);
@@ -304,6 +306,7 @@ Float_t Digitizer::getEffX(Float_t x)
   return 0;
 }
 
+//______________________________________________________________________
 Float_t Digitizer::getEffZ(Float_t z)
 {
   Float_t zborder = Geo::ZPAD * 0.5 - TMath::Abs(z);
@@ -328,8 +331,10 @@ Float_t Digitizer::getEffZ(Float_t z)
   return 0;
 }
 
+//______________________________________________________________________
 Float_t Digitizer::getFractionOfCharge(Float_t x, Float_t z) { return 1; }
 
+//______________________________________________________________________
 void Digitizer::initParameters()
 {
   // boundary references for interpolation of efficiency and resolution
@@ -377,6 +382,7 @@ void Digitizer::initParameters()
   mEffBoundary3 = 0.1;   // efficiency in mBound3
 }
 
+//______________________________________________________________________
 void Digitizer::printParameters()
 {
   printf("Efficiency in the pad center = %f\n", mEffCenter);
@@ -390,6 +396,7 @@ void Digitizer::printParameters()
     printf("Time walk ON = %f ps/cm\n", mTimeWalkeSlope);
 }
 
+//______________________________________________________________________
 void Digitizer::test(const char* geo)
 {
   Int_t nhit = 1000000;
@@ -559,6 +566,7 @@ void Digitizer::test(const char* geo)
          (h3->GetEntries() - h3->GetBinContent(1) - h3->GetBinContent(2)) / (h3->GetEntries() - h3->GetBinContent(1)));
 }
 
+//______________________________________________________________________
 void Digitizer::testFromHits(const char* geo, const char* hits)
 {
   TFile* fgeo = new TFile(geo);

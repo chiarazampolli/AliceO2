@@ -14,6 +14,7 @@
 #include "TOFBase/Geo.h"
 #include "TOFBase/Digit.h"
 #include "TOFSimulation/Detector.h"
+#include "TOFSimulation/Strip.h"
 #include "SimulationDataFormat/MCTruthContainer.h"
 #include "TOFSimulation/MCLabel.h"
 
@@ -24,8 +25,10 @@ namespace tof
 class Digitizer
 {
  public:
-  Digitizer(Int_t mode = 0) : mMode(mode), mReadoutWindowCurrent(0) { initParameters(); };
+  Digitizer(Int_t mode = 0) : mMode(mode), mReadoutWindowCurrent(0) { init(); };
   ~Digitizer() = default;
+
+  void init();
 
   void process(const std::vector<HitType>* hits, std::vector<Digit>* digits);
 
@@ -87,8 +90,11 @@ class Digitizer
   o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainer =
     nullptr; ///< Array for MCTruth information associated to digits in mDigitsArrray. Passed from the digitization
 
+  // array of strips to store the digits per strip
+  std::vector<Strip>* mStrips;
+  
   Int_t processHit(const HitType& hit, Double_t event_time);
-  void addDigit(Int_t channel, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ, Int_t padZfired,
+  void addDigit(Int_t channel, Int_t istrip, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ, Int_t padZfired,
                 Int_t trackID);
 
   bool isMergable(Digit digit1, Digit digit2)

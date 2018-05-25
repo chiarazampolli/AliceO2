@@ -26,12 +26,12 @@ class Digit : public o2::dataformats::TimeStamp<double>
  public:
   Digit() = default;
 
-  Digit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc, Int_t label);
+  Digit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc, Int_t label = -1);
   ~Digit() = default;
 
   /// Get global ordering key made of 
   static ULong64_t getOrderingKey(Int_t channel, Int_t bc, Int_t /*tdc*/) {
-    return ( (static_cast<ULong_64>(bc) << 18) + channel); // channel in the least significant bits; then shift by 18 bits (which cover the total number of channels) to write the BC number
+    return ( (static_cast<ULong64_t>(bc) << 18) + channel); // channel in the least significant bits; then shift by 18 bits (which cover the total number of channels) to write the BC number
   } 
 
   Int_t getChannel() const { return mChannel; }
@@ -50,6 +50,8 @@ class Digit : public o2::dataformats::TimeStamp<double>
   void setLabel(Int_t label) { mLabel = label; }
 
   void printStream(std::ostream &stream) const;
+
+  void merge(Double_t time, Int_t tdc, Int_t tot);
 
 private:
   friend class boost::serialization::access;

@@ -20,14 +20,35 @@ Digit::Digit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc, Int_t
 {
 }
 
+//______________________________________________________________________
+
 void Digit::printStream(std::ostream& stream) const
 {
   stream << "TOF Digit: Channel " << mChannel << " TDC " << mTDC << " TOT " << mTOT << " Time " << getTimeStamp()
          << "Bunch Crossing index" << mBC << " Label " << mLabel << "\n";
 }
 
+//______________________________________________________________________
+
 std::ostream& operator<<(std::ostream& stream, const Digit& digi)
 {
   digi.printStream(stream);
   return stream;
 }
+
+//______________________________________________________________________
+
+void Digit::merge(Double_t time, Int_t tdc, Int_t tot){
+
+  // merging two digits
+
+  if (tdc < mTdc) {
+    mTdc = tdc;
+    setTimeStamp(time);
+    // TODO: adjust TOT
+  }
+  else {
+    // TODO: adjust TOT
+  }
+}
+    

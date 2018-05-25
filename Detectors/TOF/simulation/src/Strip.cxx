@@ -34,7 +34,7 @@ Strip::Strip(Int_t index)
 Strip::Strip(const Strip& ref) = default;
 
 //_______________________________________________________________________
-void Strip::InsertHit(const HitType* h)
+void Strip::insertHit(const HitType* h)
 {
   int stripIndex = GetStripIndex(h);
   if (stripIndex != mStripIndex) {
@@ -45,7 +45,7 @@ void Strip::InsertHit(const HitType* h)
 }
 
 //_______________________________________________________________________
-const HitType* Strip::GetHitAt(Int_t i) const
+const HitType* Strip::getHitAt(Int_t i) const
 {
   if (i < mHits.size()) {
     return mHits[i];
@@ -54,9 +54,9 @@ const HitType* Strip::GetHitAt(Int_t i) const
 }
 
 //_______________________________________________________________________
-void Strip::Clear() { ClearHits(); }
+void Strip::clear() { ClearHits(); }
 //_______________________________________________________________________
-Int_t Strip::GetStripIndex(const HitType* hit)
+Int_t Strip::getStripIndex(const HitType* hit)
 {
   // finds the strip index given the hit
   Float_t pos[3] = { hit.GetX(), hit.GetY(), hit.GetZ() };
@@ -73,23 +73,40 @@ Int_t Strip::addDigit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t 
   // return the MC label. We pass it also as argument, but it can change in
   // case the digit was merged
   
-  auto key = Digit::getOrderingKey(channel, bc, tdc);
+  auto key = Digit::getOrderingKey(channel, bc, tdc); // the digits are ordered first per channel, then inside the channel per BC, then per time
   auto dig = findDigit(key);
   if (dig) {
-    lbl = dig->getLabel();
-    dig->addCharge(charge, lbl);
+    lbl = dig->getLabel(); // getting the label from the already existing digit
+    dig->merge(time, tdc, tot); // merging to the existing digit
   } else {
-    auto digIter = mDigits.emplace(
-				   //std::make_pair(key, Digit(static_cast<UShort_t>(mChipIndex), roframe, row, col, charge, timestamp)));
-				   std::make_pair(key, Digit(time, channel, tdc, tot, bc, lbl)));
-    auto pair = digIter.first;
-    dig = &(pair->second);
-    dig->setLabel(0, lbl);
+    auto digIter = mDigits.emplace(std::make_pair(key, Digit(time, channel, tdc, tot, bc, lbl)));
   }
+
   return lbl;
+
 }
 
 //______________________________________________________________________
+void Strip::fillOutputContainer(std::vector<Digit>* digits, Int_t bc)
+{
+  // transfer digits that belong to the strip to the output array of digits
+  // we assume that the Strip has stored inside only digits from one readout
+  // window --> we flush them all
+  
+  if (mDigits.empty())
+    return;
+  auto itBeg = mDigits.begin();
+  auto iter = itBeg;
+
+  for (; iter != mDigits.end(); ++iter) {
+    Digit& dig = iter->second;
+    digits->emplace_back(dig);
+  }
+
+  //  if (iter!=mDigits.end()) iter--;
+  mDigits.erase(itBeg, iter);
+
+}
 
 
 
