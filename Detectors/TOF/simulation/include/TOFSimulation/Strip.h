@@ -16,7 +16,7 @@
 #ifndef ALICEO2_TOF_STRIP_
 #define ALICEO2_TOF_STRIP_
 
-#include <TOF/Digit.h>
+#include <TOFBase/Digit.h>
 #include <TObject.h> // for TObject
 #include <exception>
 #include <map>
@@ -24,11 +24,13 @@
 #include <vector>
 #include "MathUtils/Cartesian3D.h"
 #include "SimulationDataFormat/MCCompLabel.h"
+#include "TOFSimulation/Detector.h" // for HitType
+
 
 
 namespace o2
 {
-namespace TOF
+namespace tof
 {
 
 /// @class Strip
@@ -36,7 +38,7 @@ namespace TOF
 /// This will be used in order to allow a more efficient clusterization
 /// that can happen only between digits that belong to the same strip
 ///
-.
+
   class Strip{
 
   public:
@@ -62,10 +64,11 @@ namespace TOF
   /// Change the chip index
   /// @param index New chip index
   void setStripIndex(Int_t index) { mStripIndex = index; }
-  void init(Int_t index, const o2::Transform3D* mat)
+  void init(Int_t index)
+  //, const o2::Transform3D* mat)
   {
     mStripIndex = index;
-    mMat = mat;
+    //mMat = mat;
   }
 
   /// Get the chip index
@@ -73,37 +76,37 @@ namespace TOF
   Int_t getStripIndex() const { return mStripIndex; }
   /// Insert new ITSMFT point into the Chip
   /// @param p Hit to be added
-  void insertHit(const HitType* p);
+  void insertHit(const o2::tof::HitType* p);
 
   /// Get the number of point assigned to the chip
   /// @return Number of points assigned to the chip
   Int_t getNumberOfHits() const { return mHits.size(); }
 
   /// Get the strip index from hit
-  Int_t getStripIndex(const HitType* hit);
+  Int_t getStripIndex(const o2::tof::HitType* hit);
 
   /// reset points container
   void clearHits() { mHits.clear(); }
-  o2::TOF::Digit* findDigit(ULong64_t key);
+  o2::tof::Digit* findDigit(ULong64_t key);
 
   /// Access Hit assigned to chip at a given index
   /// @param index Index of the point
   /// @return Hit at given index (nullptr if index is out of bounds)
-  const HitType* getHitAt(Int_t index) const;  
+  const o2::tof::HitType* getHitAt(Int_t index) const;  
   
   Int_t addDigit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc, Int_t lbl); // returns the MC label 
 
-  void fillOutputContainer(std::vector<Digit>* digits, UInt_t maxFrame);
+  void fillOutputContainer(std::vector<o2::tof::Digit>* digits, UInt_t maxFrame);
 
  protected:
   Int_t mStripIndex = -1;                          ///< Strip ID
-  std::vector<const HitType*> mHits;                  ///< Hits connnected to the given chip
-  std::map<ULong64_t, o2::TOF::Digit> mDigits; ///< Map of fired pixels, possibly in multiple frames
+  std::vector<const o2::tof::HitType*> mHits;                  ///< Hits connnected to the given chip
+  std::map<ULong64_t, o2::tof::Digit> mDigits; ///< Map of fired pixels, possibly in multiple frames
 
   ClassDefNV(Strip, 1);
 };
 
-inline o2::TOF::Digit* Strip::findDigit(ULong64_t key)
+inline o2::tof::Digit* Strip::findDigit(ULong64_t key)
 {
   // finds the digit corresponding to global key
   auto digitentry = mDigits.find(key);

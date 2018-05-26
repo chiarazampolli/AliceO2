@@ -42,8 +42,8 @@ void Digit::merge(Double_t time, Int_t tdc, Int_t tot){
 
   // merging two digits
 
-  if (tdc < mTdc) {
-    mTdc = tdc;
+  if (tdc < mTDC) {
+    mTDC = tdc;
     setTimeStamp(time);
     // TODO: adjust TOT
   }
