@@ -12,13 +12,14 @@
 /// \brief Implementation of the ITS pixel reader class
 
 #include "TOFReconstruction/DataReader.h"
+#include "TOFBase/Geo.h"
 
 using namespace o2::tof;
 using o2::tof::Digit;
 
 //______________________________________________________________________________
 Bool_t DigitDataReader::getNextStripData(StripData& stripData) {
-
+  
   // getting the next strip that needs to be clusterized
 
   stripData.clear();
@@ -28,20 +29,23 @@ Bool_t DigitDataReader::getNextStripData(StripData& stripData) {
     }
     mLastDigit = &((*mDigitArray)[mIdx++]);
   }
-
-  stripData.stripID = mLastDigit->getChannel()/96;
-  stripData.digits.emplace_back(mLastDigit);
+  
+  stripData.stripID = mLastDigit->getChannel()/Geo::NPADS;
+  
+  stripData.digits.emplace_back(*mLastDigit);
+  
   mLastDigit = nullptr;
-
+  
   while (mIdx < mDigitArray->size()) {
     //    mLastDigit = &((*mDigitArray)[mIdx++]); // this is the version in the ITSMFT code, but we think that idx should be increased later
     mLastDigit = &((*mDigitArray)[mIdx]);
-    if (stripData.stripID != mLastDigit->getChannel()/96)
+    if (stripData.stripID != mLastDigit->getChannel()/Geo::NPADS)
       break;
     mIdx++;
-    stripData.digits.emplace_back(mLastDigit);
+    stripData.digits.emplace_back(*mLastDigit);
     mLastDigit = nullptr;
   }
+  
   return kTRUE;
 }
 
