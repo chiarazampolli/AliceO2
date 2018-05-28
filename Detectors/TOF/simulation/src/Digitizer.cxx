@@ -58,9 +58,6 @@ void Digitizer::process(const std::vector<HitType>* hits,std::vector<Digit>* dig
     processHit(hit, mEventTime);
   } // end loop over hits
 
-
-  
-
   if(!mContinuous){ // fill output container per event
     digits->clear();
     fillOutputContainer(digits);
@@ -238,6 +235,9 @@ void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, 
     strips = mStripsNext;
     mcTruthContainer = mMCTruthContainerNext;
   }
+  auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
+  
+  Int_t lbl = mStrips[istrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
 
   Int_t lblCurrent = 0;
   if (mcTruthContainer) {

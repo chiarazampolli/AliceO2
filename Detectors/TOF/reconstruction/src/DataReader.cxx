@@ -19,7 +19,7 @@ using o2::tof::Digit;
 
 //______________________________________________________________________________
 Bool_t DigitDataReader::getNextStripData(StripData& stripData) {
-  
+
   // getting the next strip that needs to be clusterized
 
   stripData.clear();
