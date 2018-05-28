@@ -23,7 +23,7 @@
 
 using namespace o2::tof;
 
-ClassImp(Strip);
+ClassImp(o2::tof::Strip);
 
 //_______________________________________________________________________
 Strip::Strip(Int_t index)
@@ -36,9 +36,9 @@ Strip::Strip(const Strip& ref) = default;
 //_______________________________________________________________________
 void Strip::insertHit(const HitType* h)
 {
-  int stripIndex = GetStripIndex(h);
+  int stripIndex = getStripIndex(h);
   if (stripIndex != mStripIndex) {
-    LOG(ERROR) << "Strip Index of of requested hit (" << stripIndex << ") does not match with current strip (" << nStripIndex << ")" << endl;
+    LOG(ERROR) << "Strip Index of of requested hit (" << stripIndex << ") does not match with current strip (" << stripIndex << ")" << "\n";
     return;
   }
   mHits.push_back(h);
@@ -54,12 +54,12 @@ const HitType* Strip::getHitAt(Int_t i) const
 }
 
 //_______________________________________________________________________
-void Strip::clear() { ClearHits(); }
+void Strip::clear() { clearHits(); }
 //_______________________________________________________________________
 Int_t Strip::getStripIndex(const HitType* hit)
 {
   // finds the strip index given the hit
-  Float_t pos[3] = { hit.GetX(), hit.GetY(), hit.GetZ() };
+  Float_t pos[3] = { hit->GetX(), hit->GetY(), hit->GetZ() };
   Int_t detInd[5];
   Geo::getDetID(pos, detInd);
   Int_t channelID = Geo::getIndex(detInd);
@@ -87,7 +87,7 @@ Int_t Strip::addDigit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t 
 }
 
 //______________________________________________________________________
-void Strip::fillOutputContainer(std::vector<Digit>* digits, Int_t bc)
+void Strip::fillOutputContainer(std::vector<Digit>* digits)
 {
   // transfer digits that belong to the strip to the output array of digits
   // we assume that the Strip has stored inside only digits from one readout

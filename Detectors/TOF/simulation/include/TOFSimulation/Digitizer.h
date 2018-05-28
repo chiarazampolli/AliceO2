@@ -91,10 +91,10 @@ class Digitizer
     nullptr; ///< Array for MCTruth information associated to digits in mDigitsArrray. Passed from the digitization
 
   // array of strips to store the digits per strip
-  std::vector<Strip>* mStrips;
+  std::vector<Strip> mStrips;
   
   Int_t processHit(const HitType& hit, Double_t event_time);
-  void addDigit(Int_t channel, Int_t istrip, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ, Int_t padZfired,
+  void addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ, Int_t padZfired,
                 Int_t trackID);
 
   bool isMergable(Digit digit1, Digit digit2)
