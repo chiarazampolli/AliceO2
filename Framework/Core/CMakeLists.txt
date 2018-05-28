@@ -43,12 +43,12 @@ set(SRCS
     src/DriverControl.cxx
     src/DriverInfo.cxx
     src/FairOptionsRetriever.cxx
+    src/FairMQDeviceProxy.cxx
     src/GraphvizHelpers.cxx
     src/InputRecord.cxx
     src/LocalRootFileService.cxx
     src/LogParsingHelpers.cxx
     src/ExternalFairMQDeviceProxy.cxx
-    src/SimpleMetricsService.cxx
     src/SimpleResourceManager.cxx
     src/TextControlService.cxx
     src/WorkflowHelpers.cxx
@@ -75,11 +75,9 @@ set(HEADERS
       include/Framework/DebugGUI.h
       include/Framework/TypeTraits.h
       include/Framework/PaletteHelpers.h
-      include/Framework/SimpleMetricsService.h
       include/Framework/ConfigParamSpec.h
       include/Framework/TMessageSerializer.h
       include/Framework/DataProcessorLabel.h
-      include/Framework/MetricsService.h
       include/Framework/LogParsingHelpers.h
       include/Framework/InputSpec.h
       include/Framework/DeviceInfo.h
@@ -105,7 +103,6 @@ set(HEADERS
       include/Framework/DataRef.h
       include/Framework/WorkflowSpec.h
       include/Framework/LocalRootFileService.h
-      include/Framework/RemoteMetricsService.h
       include/Framework/OutputSpec.h
       include/Framework/ChannelSpec.h
       include/Framework/ChannelConfigurationPolicy.h
@@ -124,7 +121,6 @@ set(HEADERS
       include/Framework/RootObjectContext.h
       include/Framework/DataProcessingDevice.h
       include/Framework/Variant.h
-      include/Framework/RootTreeReader.h
       include/Framework/CallbackRegistry.h
       include/Framework/CallbackService.h
       src/ComputingResource.h
@@ -205,7 +201,6 @@ set(TEST_SRCS
       test/test_WorkflowHelpers.cxx
       test/test_TMessageSerializer.cxx
       test/test_DataAllocator.cxx
-      test/test_RootTreeReader.cxx
       test/test_CallbackRegistry.cxx
    )
 

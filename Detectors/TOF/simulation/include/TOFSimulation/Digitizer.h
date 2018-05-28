@@ -49,9 +49,9 @@ class Digitizer
   void setEventTime(double value) { mEventTime = value; }
   void setEventID(Int_t id) { mEventID = id; }
   void setSrcID(Int_t id) { mSrcID = id; }
-  void setMCTruthContainer(o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* truthcontainer)
-  {
-    mMCTruthContainer = truthcontainer;
+
+  void setMCTruthContainer(o2::dataformats::MCTruthContainer<o2::MCCompLabel>* truthcontainer){
+    mMCTrueContainer = truthcontainer;
   }
 
   void initParameters();
@@ -60,6 +60,8 @@ class Digitizer
   void test(const char* geo = "O2geometry.root");
   void testFromHits(const char* geo = "O2geometry.root", const char* hits = "AliceO2_TGeant3.tof.mc_10_event.root");
   void   fillOutputContainer(std::vector<Digit>* digits);
+
+  void setContinuous(bool val) {mContinuous=val;}
 
  private:
   // parameters
@@ -86,13 +88,22 @@ class Digitizer
   Int_t mEventID = 0;
   Int_t mSrcID = 0;
 
+  bool mContinuous=false;
+
   // digit info
   std::vector<Digit>* mDigits;
-  o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainer =
-    nullptr; ///< Array for MCTruth information associated to digits in mDigitsArrray. Passed from the digitization
 
-  // array of strips to store the digits per strip
-  std::vector<Strip> mStrips;
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel> mMCTruthContainerA;
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel> mMCTruthContainerB;
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainerCurrent = &mMCTruthContainerA; ///< Array for MCTruth information associated to digits in mDigitsArrray. 
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainerNext = &mMCTruthContainerB; ///< Array for MCTruth information associated to digits in mDigitsArrray. 
+  o2::dataformats::MCTruthContainer<o2::MCCompLabel>* mMCTrueContainer;
+
+  // array of strips to store the digits per strip (one for the current readout window, one for the next one)
+  std::vector<Strip> mStripsA;
+  std::vector<Strip> mStripsB;
+  std::vector<Strip>* mStripsCurrent = &(mStripsA);
+  std::vector<Strip>* mStripsNext = &(mStripsB);
   
   Int_t processHit(const HitType& hit, Double_t event_time);
   void addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ, Int_t padZfired,

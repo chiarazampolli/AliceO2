@@ -20,11 +20,14 @@
 #include <sys/select.h>
 
 #include "Framework/ChannelConfigurationPolicy.h"
+#include "Framework/ConfigParamSpec.h"
 
 namespace o2
 {
 namespace framework
 {
+
+class ConfigContext;
 
 /// Possible states for the DPL Driver application
 ///
@@ -110,6 +113,10 @@ struct DriverInfo {
   unsigned short startPort;
   /// The size of the port range to consider allocated
   unsigned short portRange;
+  /// The current set of workflow options 
+  std::vector<ConfigParamSpec> workflowOptions;
+  /// The config context. We use a bare pointer because std::observer_ptr is not a thing, yet.
+  ConfigContext const* configContext;
 };
 
 } // namespace framework

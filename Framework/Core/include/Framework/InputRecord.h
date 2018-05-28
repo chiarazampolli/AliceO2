@@ -15,11 +15,6 @@
 #include "Framework/InputRoute.h"
 #include "Framework/TypeTraits.h"
 
-#include <fairmq/FairMQMessage.h>
-#include <Framework/TMessageSerializer.h>
-
-#include <TClass.h>
-
 #include <iterator>
 #include <string>
 #include <vector>
@@ -28,6 +23,8 @@
 #include <exception>
 #include <memory>
 #include <type_traits>
+
+class FairMQMessage;
 
 namespace o2
 {
@@ -407,7 +404,7 @@ private:
   std::vector<std::unique_ptr<FairMQMessage>> const &mCache;
 };
 
-} // framework
-} // o2
+} // namespace framework
+} // namespace o2
 
 #endif // FRAMEWORK_INPUTREGISTRY_H

@@ -8,10 +8,10 @@
 // granted to it by virtue of its status as an Intergovernmental Organization
 // or submit itself to any jurisdiction.
 #include "Framework/DataSourceDevice.h"
-#include "Framework/MetricsService.h"
 #include "Framework/TMessageSerializer.h"
 #include "Framework/DataProcessor.h"
 #include "Framework/FairOptionsRetriever.h"
+#include "Framework/FairMQDeviceProxy.h"
 #include "Framework/DataProcessingHeader.h"
 #include "Framework/CallbackService.h"
 #include <cassert>
@@ -21,8 +21,10 @@ using TimeScale = std::chrono::microseconds;
 
 using namespace o2::framework;
 
-namespace o2 {
-namespace framework {
+namespace o2
+{
+namespace framework
+{
 
 DataSourceDevice::DataSourceDevice(const DeviceSpec &spec, ServiceRegistry &registry)
 : mInit{spec.algorithm.onInit},
@@ -30,7 +32,7 @@ DataSourceDevice::DataSourceDevice(const DeviceSpec &spec, ServiceRegistry &regi
   mStatelessProcess{spec.algorithm.onProcess},
   mError{spec.algorithm.onError},
   mConfigRegistry{nullptr},
-  mAllocator{this,&mContext, &mRootContext, spec.outputs},
+  mAllocator{FairMQDeviceProxy{this},&mContext, &mRootContext, spec.outputs},
   mServiceRegistry{registry},
   mCurrentTimeslice{0},
   mRate{0.},

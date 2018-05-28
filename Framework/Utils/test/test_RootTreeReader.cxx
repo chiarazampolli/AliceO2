@@ -16,9 +16,9 @@
 #include "Framework/InputSpec.h"
 #include "Framework/OutputSpec.h"
 #include "Framework/ControlService.h"
-#include "Framework/RootTreeReader.h"
+#include "Utils/RootTreeReader.h"
 #include "Headers/DataHeader.h"
-#include "TestClasses.h"
+#include "../../Core/test/TestClasses.h"
 #include "FairMQLogger.h"
 #include <TSystem.h>
 #include <TTree.h>
@@ -74,7 +74,7 @@ DataProcessorSpec getSourceSpec()
 
   return DataProcessorSpec{ "source", // name of the processor
                             {},
-                            { OutputSpec{ "TST", "ARRAYOFDATA"} },
+                            { OutputSpec{ "TST", "ARRAYOFDATA" } },
                             AlgorithmSpec(initFct) };
 }
 
@@ -106,8 +106,10 @@ DataProcessorSpec getSinkSpec()
                             AlgorithmSpec(processingFct) };
 }
 
-void defineDataProcessing(WorkflowSpec& specs)
+WorkflowSpec defineDataProcessing(ConfigContext const&)
 {
-  specs.emplace_back(getSourceSpec());
-  specs.emplace_back(getSinkSpec());
+  return WorkflowSpec{
+    getSourceSpec(),
+    getSinkSpec()
+  };
 }

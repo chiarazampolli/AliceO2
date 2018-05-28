@@ -42,6 +42,25 @@ DataProcessorSpec getSimReaderSpec(int fanoutsize, std::shared_ptr<std::vector<i
 
     // counter to make sure we are sending the data only once
     static int counter = 0;
+
+    static bool finished = false;
+    if (finished) {
+      // we need to send this in a different time slice
+      // send message telling tpc workers that they can terminate
+      for (const auto& channel : *tpcsubchannels.get()) {
+        // -1 is marker for end of work
+        pc.outputs().snapshot(
+          Output{ "SIM", "TPCSECTORASSIGN", static_cast<SubSpecificationType>(channel), Lifetime::Condition }, -1);
+        // not sure if I have to resend this as well? Seems not necessary
+        pc.outputs().snapshot(
+          Output{ "SIM", "COLLISIONCONTEXT", static_cast<SubSpecificationType>(channel), Lifetime::Timeframe },
+          context);
+      }
+      // do this only one
+      pc.services().get<ControlService>().readyToQuit(false);
+      return;
+    }
+
     if (counter++ == 0) {
       LOG(INFO) << "SENDING " << eventrecords.size() << " records";
 
@@ -59,16 +78,6 @@ DataProcessorSpec getSimReaderSpec(int fanoutsize, std::shared_ptr<std::vector<i
           context);
         tpcchannelcounter++;
       }
-      // send message telling tpc workers that they can terminate
-      for (const auto& channel : *tpcsubchannels.get()) {
-        // -1 is marker for end of work
-        pc.outputs().snapshot(
-          Output{ "SIM", "TPCSECTORASSIGN", static_cast<SubSpecificationType>(channel), Lifetime::Condition }, -1);
-        // not sure if I have to resend this as well? Seems not necessary
-        pc.outputs().snapshot(
-          Output{ "SIM", "COLLISIONCONTEXT", static_cast<SubSpecificationType>(channel), Lifetime::Timeframe },
-          context);
-      }
 
       // everything not done previously treat here
       for (int subchannel = 0; subchannel < fanoutsize; ++subchannel) {
@@ -80,9 +89,7 @@ DataProcessorSpec getSimReaderSpec(int fanoutsize, std::shared_ptr<std::vector<i
           Output{ "SIM", "COLLISIONCONTEXT", static_cast<SubSpecificationType>(subchannel), Lifetime::Timeframe },
           context);
       }
-
-      // do this only one
-      pc.services().get<ControlService>().readyToQuit(false);
+      finished = true;
     }
   };
 
@@ -95,14 +102,27 @@ DataProcessorSpec getSimReaderSpec(int fanoutsize, std::shared_ptr<std::vector<i
       mgr.addInputSignalFile(ctx.options().get<std::string>("simFileS").c_str());
     }
 
-    // number of collisions asked?
-    auto col = ctx.options().get<int>("ncollisions");
-    if (col != 0) {
-      mgr.setupRun(col);
+    // do we start from an existing context
+    auto incontextstring = ctx.options().get<std::string>("incontext");
+    LOG(INFO) << "INCONTEXTSTRING " << incontextstring;
+    if (incontextstring.size() > 0) {
+      auto success = mgr.setupRunFromExistingContext(incontextstring.c_str());
+      if (!success) {
+        LOG(FATAL) << "Could not read collision context from " << incontextstring;
+      }
     } else {
-      mgr.setupRun();
+      // number of collisions asked?
+      auto col = ctx.options().get<int>("ncollisions");
+      if (col != 0) {
+        mgr.setupRun(col);
+      } else {
+        mgr.setupRun();
+      }
+      LOG(INFO) << "Initializing Spec ... have " << mgr.getRunContext().getEventRecords().size() << " times ";
+      LOG(INFO) << "Serializing Context for later reuse";
+      mgr.writeRunContext(ctx.options().get<std::string>("outcontext").c_str());
     }
-    LOG(INFO) << "Initializing Spec ... have " << mgr.getRunContext().getEventRecords().size() << " times ";
+
     return doit;
   };
 
@@ -120,12 +140,15 @@ DataProcessorSpec getSimReaderSpec(int fanoutsize, std::shared_ptr<std::vector<i
     /* ALGORITHM */
     AlgorithmSpec{ initIt },
     /* OPTIONS */
-    Options{ { "simFile", VariantType::String, "o2sim.root", { "Sim input filename" } },
-             { "simFileS", VariantType::String, "", { "Sim (signal) input filename" } },
-             { "ncollisions,n",
-               VariantType::Int,
-               0,
-               { "number of collisions to sample (default is given by number of entries in chain" } } }
+    Options{
+      { "simFile", VariantType::String, "o2sim.root", { "Sim input filename" } },
+      { "simFileS", VariantType::String, "", { "Sim (signal) input filename" } },
+      { "outcontext", VariantType::String, "collisioncontext.root", { "Output file for collision context" } },
+      { "incontext", VariantType::String, "", { "Take collision context from this file" } },
+      { "ncollisions,n",
+        VariantType::Int,
+        0,
+        { "number of collisions to sample (default is given by number of entries in chain" } } }
   };
 }
 }

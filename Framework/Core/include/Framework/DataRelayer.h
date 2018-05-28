@@ -10,16 +10,21 @@
 #ifndef FRAMEWORK_DATARELAYER_H
 #define FRAMEWORK_DATARELAYER_H
 
-#include <fairmq/FairMQMessage.h>
 #include "Framework/InputRoute.h"
 #include "Framework/ForwardRoute.h"
 #include <cstddef>
 #include <vector>
 
-namespace o2 {
-namespace framework {
+class FairMQMessage;
 
-class MetricsService;
+namespace o2
+{
+namespace monitoring
+{
+class Monitoring;
+}
+namespace framework
+{
 
 class DataRelayer {
 public:
@@ -38,9 +43,7 @@ public:
     std::unique_ptr<FairMQMessage> payload;
   };
 
-  DataRelayer(std::vector<InputRoute> const&,
-              std::vector<ForwardRoute> const&,
-              MetricsService &);
+  DataRelayer(std::vector<InputRoute> const&, std::vector<ForwardRoute> const&, monitoring::Monitoring&);
 
   /// This is used to ask for relaying a given (header,payload) pair.
   /// Notice that we expect that the header is an O2 Header Stack
@@ -75,7 +78,7 @@ public:
 private:
   std::vector<InputRoute> mInputs;
   std::vector<ForwardRoute> mForwards;
-  MetricsService &mMetrics;
+  monitoring::Monitoring& mMetrics;
 
   /// This is the actual cache of all the parts in flight. 
   /// Notice that we store them as a NxM sized vector, where
@@ -89,7 +92,7 @@ private:
   std::vector<bool> mForwardingMask;
 };
 
-}
-}
+} // namespace framework
+} // namespace o2
 
 #endif

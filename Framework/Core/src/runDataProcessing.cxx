@@ -8,9 +8,12 @@
 // granted to it by virtue of its status as an Intergovernmental Organization
 // or submit itself to any jurisdiction.
 #include "FairMQDevice.h"
+#include "Framework/BoostOptionsRetriever.h"
 #include "Framework/ChannelConfigurationPolicy.h"
 #include "Framework/ChannelMatching.h"
 #include "Framework/ConfigParamsHelper.h"
+#include "Framework/ConfigParamSpec.h"
+#include "Framework/ConfigContext.h"
 #include "Framework/DataProcessingDevice.h"
 #include "Framework/DataProcessorSpec.h"
 #include "Framework/DataSourceDevice.h"
@@ -25,7 +28,6 @@
 #include "Framework/LogParsingHelpers.h"
 #include "Framework/ParallelContext.h"
 #include "Framework/RawDeviceService.h"
-#include "Framework/SimpleMetricsService.h"
 #include "Framework/SimpleRawDeviceService.h"
 #include "Framework/TextControlService.h"
 #include "Framework/CallbackService.h"
@@ -62,10 +64,15 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <boost/program_options.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/variables_map.hpp>
 #include <csignal>
 
 #include <fairmq/DeviceRunner.h>
 #include <fairmq/FairMQLogger.h>
+
+#include <Monitoring/MonitoringFactory.h>
+using namespace o2::monitoring;
 
 /// Helper class to find a free port.
 class FreePortFinder {
@@ -533,7 +540,7 @@ int doChild(int argc, char** argv, const o2::framework::DeviceSpec& spec)
     // declared in the workflow definition are allowed.
     runner.AddHook<fair::mq::hooks::SetCustomCmdLineOptions>([&spec](fair::mq::DeviceRunner& r) {
       boost::program_options::options_description optsDesc;
-      populateBoostProgramOptions(optsDesc, spec.options, gHiddenDeviceOptions);
+      ConfigParamsHelper::populateBoostProgramOptions(optsDesc, spec.options, gHiddenDeviceOptions);
       r.fConfig.AddToCmdLineOptions(optsDesc, true);
     });
 
@@ -541,13 +548,13 @@ int doChild(int argc, char** argv, const o2::framework::DeviceSpec& spec)
     // different versions of the service
     ServiceRegistry serviceRegistry;
 
-    auto simpleMetricsService = std::make_unique<SimpleMetricsService>();
     auto localRootFileService = std::make_unique<LocalRootFileService>();
     auto textControlService = std::make_unique<TextControlService>();
     auto parallelContext = std::make_unique<ParallelContext>(spec.rank, spec.nSlots);
     auto simpleRawDeviceService = std::make_unique<SimpleRawDeviceService>(nullptr);
     auto callbackService = std::make_unique<CallbackService>();
-    serviceRegistry.registerService<MetricsService>(simpleMetricsService.get());
+    auto monitoringService = MonitoringFactory::Get("infologger://");
+    serviceRegistry.registerService<Monitoring>(monitoringService.get());
     serviceRegistry.registerService<RootFileService>(localRootFileService.get());
     serviceRegistry.registerService<ControlService>(textControlService.get());
     serviceRegistry.registerService<ParallelContext>(parallelContext.get());
@@ -716,7 +723,8 @@ int runStateMachine(DataProcessorSpecs const& workflow, DriverControl& driverCon
         deviceExecutions.resize(deviceSpecs.size());
 
         DeviceSpecHelpers::prepareArguments(driverInfo.argc, driverInfo.argv, driverControl.defaultQuiet,
-                                            driverControl.defaultStopped, deviceSpecs, deviceExecutions, controls);
+                                            driverControl.defaultStopped, deviceSpecs,
+                                            driverInfo.workflowOptions, deviceExecutions, controls);
         for (size_t di = 0; di < deviceSpecs.size(); ++di) {
           spawnDevice(deviceSpecs[di], driverInfo.socket2DeviceInfo, controls[di], deviceExecutions[di], infos,
                       driverInfo.maxFd, driverInfo.childFdset);
@@ -872,8 +880,10 @@ void initialiseDriverControl(bpo::variables_map const& varmap, DriverControl& co
 //     killing them all on ctrl-c).
 //   - Child, pick the data-processor ID and start a O2DataProcessorDevice for
 //     each DataProcessorSpec
-int doMain(int argc, char** argv, const o2::framework::WorkflowSpec& workflow,
-           std::vector<ChannelConfigurationPolicy> const& channelPolicies)
+int doMain(int argc, char** argv, o2::framework::WorkflowSpec const& workflow,
+           std::vector<ChannelConfigurationPolicy> const& channelPolicies,
+           std::vector<ConfigParamSpec> const &workflowOptions,
+           o2::framework::ConfigContext &configContext)
 {
   enum CompletionPolicy policy;
   bpo::options_description executorOptions("Executor options");
@@ -903,7 +913,7 @@ int doMain(int argc, char** argv, const o2::framework::WorkflowSpec& workflow,
   // Use the hidden options as veto, all config specs matching a definition
   // in the hidden options are skipped in order to avoid duplicate definitions
   // in the main parser. Note: all config specs are forwarded to devices
-  visibleOptions.add(prepareOptionDescriptions(workflow, gHiddenDeviceOptions));
+  visibleOptions.add(ConfigParamsHelper::prepareOptionDescriptions(workflow, workflowOptions, gHiddenDeviceOptions));
 
   bpo::options_description od;
   od.add(visibleOptions);
@@ -923,7 +933,7 @@ int doMain(int argc, char** argv, const o2::framework::WorkflowSpec& workflow,
     bpo::options_description helpOptions;
     helpOptions.add(executorOptions);
     // this time no veto is applied, so all the options are added for printout
-    helpOptions.add(prepareOptionDescriptions(workflow));
+    helpOptions.add(ConfigParamsHelper::prepareOptionDescriptions(workflow, workflowOptions));
     std::cout << helpOptions << std::endl;
     exit(0);
   }
@@ -945,6 +955,8 @@ int doMain(int argc, char** argv, const o2::framework::WorkflowSpec& workflow,
   driverInfo.timeout = varmap["timeout"].as<double>();
   driverInfo.startPort = varmap["start-port"].as<unsigned short>();
   driverInfo.portRange = varmap["port-range"].as<unsigned short>();
+  driverInfo.workflowOptions = workflowOptions;
+  driverInfo.configContext = &configContext;
 
   std::string frameworkId;
   // If the id is set, this means this is a device,
