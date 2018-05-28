@@ -63,8 +63,9 @@ void DigitizerTask::Exec(Option_t* option)
 {
   FairRootManager* mgr = FairRootManager::Instance();
 
-  if (mDigitsArray)
-    mDigitsArray->clear();
+  /*if (mDigitsArray)
+    mDigitsArray->clear(); // this clear is now moved to the digitizer
+  */
   mDigitizer.setEventTime(mgr->GetEventTime());
 
   if (mMCTruthArray) {
@@ -109,5 +110,5 @@ void DigitizerTask::FinishTask()
     mDigitsArray->clear();
 
   // TODO: reenable this
-  // mDigitizer.fillOutputContainer(mDigitsArray);
+  mDigitizer.fillOutputContainer(mDigitsArray);
 }

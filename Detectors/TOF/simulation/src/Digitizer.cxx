@@ -52,6 +52,10 @@ void Digitizer::process(const std::vector<HitType>* hits,std::vector<Digit>* dig
       processHit(hit, mEventTime);
     //}
   } // end loop over hits
+
+  digits->clear();
+  fillOutputContainer(digits);
+
 }
 
 //______________________________________________________________________
@@ -212,7 +216,7 @@ void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, 
   //Digit newdigit(time, channel, (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS, tot * Geo::NTOTBIN_PER_NS, nbc);
   Int_t lblCurrent = 0;
   if (mMCTruthContainer) {
-    lblCurrent =  mMCTruthContainer->getIndexedSize(); // check that we should not call mMCTruthContainer->getNElements() instead!
+    lblCurrent =  mMCTruthContainer->getIndexedSize(); // this is the size of mHeaderArray; 
   }
   auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
   
@@ -613,4 +617,13 @@ void Digitizer::testFromHits(const char* geo, const char* hits)
   h2->Draw();
   new TCanvas();
   h3->Draw();
+}
+//______________________________________________________________________
+void Digitizer::fillOutputContainer(std::vector<Digit>* digits){
+
+  // filling the digit container doing a loop on all strips
+  
+  for (auto& strip : mStrips) {
+    strip.fillOutputContainer(digits);
+  }
 }
