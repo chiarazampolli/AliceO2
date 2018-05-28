@@ -243,8 +243,14 @@ void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, 
 
   auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
   
+<<<<<<< HEAD
   Int_t lbl = (*strips)[istrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
 
+=======
+
+  Int_t lbl = (*strips)[istrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
+
+>>>>>>> enable tof continuous readout simulation
   if (mcTruthContainer){
     if (lbl == lblCurrent) { // it means that the digit was a new one --> we have to add the info in the MC container
       o2::tof::MCLabel label(trackID, mEventID, mSrcID, tdc);
