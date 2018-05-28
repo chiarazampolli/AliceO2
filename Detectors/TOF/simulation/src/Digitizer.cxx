@@ -33,7 +33,8 @@ void Digitizer::init(){
   initParameters();
   
   for (Int_t i = 0; i < Geo::NSTRIPS; i++) {
-    mStrips.emplace_back(i);
+    mStripsA.emplace_back(i);
+    mStripsB.emplace_back(i);
   }
 
 }
@@ -44,17 +45,26 @@ void Digitizer::process(const std::vector<HitType>* hits,std::vector<Digit>* dig
   // hits array of TOF hits for a given simulated event
   mDigits = digits;
 
+  Int_t readoutwindow = Int_t((mEventTime) * Geo::READOUTWINDOW_INV); // to be replaced with uncalibrated time
+  while(mContinuous && readoutwindow > mReadoutWindowCurrent){
+    digits->clear();
+    fillOutputContainer(digits);
+    mReadoutWindowCurrent++;
+  }
+
   for (auto& hit : *hits) {
-    Int_t readoutwindow =
-      Int_t((mEventTime + hit.GetTime()) * Geo::READOUTWINDOW_INV); // to be replaced with uncalibrated time
     //TODO: put readout window counting/selection
-    //if (readoutwindow == mReadoutWindowCurrent) {
-      processHit(hit, mEventTime);
-    //}
+
+    processHit(hit, mEventTime);
   } // end loop over hits
 
-  digits->clear();
-  fillOutputContainer(digits);
+
+  
+
+  if(!mContinuous){ // fill output container per event
+    digits->clear();
+    fillOutputContainer(digits);
+  }
 
 }
 
@@ -214,25 +224,42 @@ void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, 
 
   Int_t nbc = Int_t(time * Geo::BC_TIME_INPS_INV); // time elapsed in number of bunch crossing
   //Digit newdigit(time, channel, (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS, tot * Geo::NTOTBIN_PER_NS, nbc);
-  Int_t lblCurrent = 0;
-  if (mMCTruthContainer) {
-    lblCurrent =  mMCTruthContainer->getIndexedSize(); // this is the size of mHeaderArray; 
+
+  bool iscurrent=true; // if we are in the current readout window
+
+  std::vector<Strip>* strips;
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mcTruthContainer;
+
+  if(iscurrent){
+    strips = mStripsCurrent;
+    mcTruthContainer = mMCTruthContainerCurrent;
   }
+  else{
+    strips = mStripsNext;
+    mcTruthContainer = mMCTruthContainerNext;
+  }
+
+  Int_t lblCurrent = 0;
+  if (mcTruthContainer) {
+    lblCurrent =  mcTruthContainer->getIndexedSize(); // this is the size of mHeaderArray; 
+  }
+
   auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
   
-  Int_t lbl = mStrips[istrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
 
-  if (mMCTruthContainer){
+  Int_t lbl = (*strips)[istrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
+
+  if (mcTruthContainer){
     if (lbl == lblCurrent) { // it means that the digit was a new one --> we have to add the info in the MC container
       o2::tof::MCLabel label(trackID, mEventID, mSrcID, tdc);
-      mMCTruthContainer->addElement(lbl, label);
+      mcTruthContainer->addElement(lbl, label);
     }
     else {
       o2::tof::MCLabel label(trackID, mEventID, mSrcID, tdc);
-      mMCTruthContainer->addElementRandomAccess(lbl, label);
+      mcTruthContainer->addElementRandomAccess(lbl, label);
 
       // sort the labels according to increasing tdc value
-      auto labels = mMCTruthContainer->getLabels(lbl);
+      auto labels = mcTruthContainer->getLabels(lbl);
       std::sort(labels.begin(), labels.end(),
 		[](o2::tof::MCLabel a, o2::tof::MCLabel b) { return a.getTDC() < b.getTDC(); });
     }
@@ -622,8 +649,37 @@ void Digitizer::testFromHits(const char* geo, const char* hits)
 void Digitizer::fillOutputContainer(std::vector<Digit>* digits){
 
   // filling the digit container doing a loop on all strips
-  
-  for (auto& strip : mStrips) {
+  for (auto& strip : *mStripsCurrent) {
     strip.fillOutputContainer(digits);
+  }
+
+  //  if(! digits->size()) return;
+
+  // copying the transient labels to the output labels (stripping the tdc information)
+  if (mMCTrueContainer) {
+    // copy from transientTruthContainer to mMCTruthAray
+    // a brute force solution for the moment; should be handled by a dedicated API
+    for (int index = 0; index < mMCTruthContainerCurrent->getIndexedSize(); ++index) {
+      mMCTrueContainer->addElements(index, mMCTruthContainerCurrent->getLabels(index));
+    }
+  }
+
+
+  mMCTruthContainerCurrent->clear();
+
+  // switch mStripA and mStrip after flushing current readout window data
+  if(mStripsCurrent == &mStripsA){
+    mStripsCurrent = &mStripsB;
+    mStripsNext = &mStripsA;
+
+    mMCTruthContainerCurrent = &mMCTruthContainerB;
+    mMCTruthContainerNext = &mMCTruthContainerA;
+  }
+  else{
+    mStripsCurrent = &mStripsA;
+    mStripsNext = &mStripsB;
+
+    mMCTruthContainerCurrent = &mMCTruthContainerA;
+    mMCTruthContainerNext = &mMCTruthContainerB;
   }
 }
