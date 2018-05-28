@@ -59,6 +59,7 @@ class Digitizer
 
   void test(const char* geo = "O2geometry.root");
   void testFromHits(const char* geo = "O2geometry.root", const char* hits = "AliceO2_TGeant3.tof.mc_10_event.root");
+  void   fillOutputContainer(std::vector<Digit>* digits);
 
  private:
   // parameters
