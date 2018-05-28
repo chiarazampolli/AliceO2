@@ -8,7 +8,7 @@
 // granted to it by virtue of its status as an Intergovernmental Organization
 // or submit itself to any jurisdiction.
 
-/// \file HitReader.h
+/// \file DataReader.h
 /// \brief Definition of the TOF hit reader
 
 #ifndef ALICEO2_TOF_HITREADER_H
@@ -21,18 +21,18 @@ namespace o2
 {
 namespace TOF
 {
-/// \class HitReader
-/// \brief HitReader class for TOF
+/// \class DataReader
+/// \brief DataReader class for TOF
 ///
-class HitReader
+class DataReader
 {
   using Label = o2::MCCompLabel;
 
-  HitReader() = default;
-  HitReader(const HitReader& cluster) = delete;
-  virtual ~HitReader() = default;
+  DataReader() = default;
+  DataReader(const DataReader& cluster) = delete;
+  virtual ~DataReader() = default;
 
-  HitReader& operator=(const HitReader& src) = delete;
+  DataReader& operator=(const DataReader& src) = delete;
 
   virtual void init() = 0;
   //
@@ -40,13 +40,13 @@ class HitReader
   //
 };
 
-/// \class DigitHitReader
-/// \brief DigitHitReader class for TOF. Feeds the MC digits to the Cluster Finder
+/// \class DigitDataReader
+/// \brief DigitDataReader class for TOF. Feeds the MC digits to the Cluster Finder
 ///
-class DigitHitReader : public HitReader
+class DigitDataReader : public DataReader
 {
  public:
-  DigitHitReader() = default;
+  DigitDataReader() = default;
   void setDigitArray(const std::vector<o2::TOF::Digit>* a)
   {
     mDigitArray = a;
@@ -65,10 +65,10 @@ class DigitHitReader : public HitReader
   Int_t mIdx = 0;
 };
 
-/// \class RawHitReader
-/// \brief RawHitReader class for TOF. Feeds raw data to the Cluster Finder
+/// \class RawDataReader
+/// \brief RawDataReader class for TOF. Feeds raw data to the Cluster Finder
 ///
-class RawHitReader : public HitReader
+class RawDataReader : public DataReader
 {
  public:
   Bool_t getNextChipData(ChipPixelData& chipData) override;
@@ -77,4 +77,4 @@ class RawHitReader : public HitReader
 } // namespace ITSMFT
 } // namespace o2
 
-#endif /* ALICEO2_ITS_PIXELREADER_H */
+#endif /* ALICEO2_TOF_DATAREADER_H */
