@@ -1197,6 +1197,30 @@ o2_define_bucket(
 
 o2_define_bucket(
     NAME
+    tof_reconstruction_bucket
+
+    DEPENDENCIES
+    tof_base_bucket
+    root_base_bucket
+    fairroot_geom
+    RIO
+    Graf
+    Gpad
+    Matrix
+    Physics
+    TOFBase
+    DetectorsBase
+    SimulationDataFormat
+
+    INCLUDE_DIRECTORIES
+    ${FAIRROOT_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/Detectors/Base/include
+    ${CMAKE_SOURCE_DIR}/Detectors/TOF/base/include
+    ${MS_GSL_INCLUDE_DIR}
+)
+
+o2_define_bucket(
+    NAME
     fit_base_bucket
 
     DEPENDENCIES # library names

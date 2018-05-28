@@ -17,13 +17,12 @@
 #define ALICEO2_TOF_STRIP_H_
 
 #include <TOFBase/Digit.h>
-#include <TObject.h> // for TObject
+#include <TObject.h> 
 #include <exception>
 #include <map>
 #include <sstream>
 #include <vector>
 #include "MathUtils/Cartesian3D.h"
-#include "SimulationDataFormat/MCCompLabel.h"
 #include "TOFSimulation/Detector.h" // for HitType
 
 
@@ -100,8 +99,8 @@ namespace tof
 
  protected:
   Int_t mStripIndex = -1;                          ///< Strip ID
-  std::vector<const o2::tof::HitType*> mHits;                  ///< Hits connnected to the given chip
-  std::map<ULong64_t, o2::tof::Digit> mDigits; ///< Map of fired pixels, possibly in multiple frames
+  std::vector<const o2::tof::HitType*> mHits;                  ///< Hits connected to the given strip
+  std::map<ULong64_t, o2::tof::Digit> mDigits; ///< Map of fired digits, possibly in multiple frames
 
   ClassDefNV(Strip, 1);
   };
