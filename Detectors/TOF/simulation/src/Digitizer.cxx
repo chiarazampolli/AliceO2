@@ -30,7 +30,7 @@ void Digitizer::init(){
   // method to initialize the parameters neede to digitize and the array of strip objects containing
   // the digits belonging to a strip
 
-  initParamters();
+  initParameters();
   
   for (Int_t i = 0; i < Geo::NSTRIPS; i++) {
     mStrips.emplace_back(i);
@@ -216,7 +216,7 @@ void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, 
   }
   auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
   
-  Int_t lbl = mStrips[iStrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
+  Int_t lbl = mStrips[istrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
 
   if (mMCTruthContainer){
     if (lbl == lblCurrent) { // it means that the digit was a new one --> we have to add the info in the MC container

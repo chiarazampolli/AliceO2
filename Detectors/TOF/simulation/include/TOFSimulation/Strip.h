@@ -13,8 +13,8 @@
 //  fall in the same strip
 //
 
-#ifndef ALICEO2_TOF_STRIP_
-#define ALICEO2_TOF_STRIP_
+#ifndef ALICEO2_TOF_STRIP_H_
+#define ALICEO2_TOF_STRIP_H_
 
 #include <TOFBase/Digit.h>
 #include <TObject.h> // for TObject
@@ -96,7 +96,7 @@ namespace tof
   
   Int_t addDigit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc, Int_t lbl); // returns the MC label 
 
-  void fillOutputContainer(std::vector<o2::tof::Digit>* digits, UInt_t maxFrame);
+  void fillOutputContainer(std::vector<o2::tof::Digit>* digits);
 
  protected:
   Int_t mStripIndex = -1;                          ///< Strip ID
@@ -104,7 +104,8 @@ namespace tof
   std::map<ULong64_t, o2::tof::Digit> mDigits; ///< Map of fired pixels, possibly in multiple frames
 
   ClassDefNV(Strip, 1);
-};
+  };
+
 
 inline o2::tof::Digit* Strip::findDigit(ULong64_t key)
 {
@@ -113,7 +114,9 @@ inline o2::tof::Digit* Strip::findDigit(ULong64_t key)
   return digitentry != mDigits.end() ? &(digitentry->second) : nullptr;
 }
 
+} // close namespace tof
+} // close namespace o2
 
-#endif /* defined(ALICEO2_TOF_STRIP_) */
+#endif /* defined(ALICEO2_TOF_STRIP_H_) */
 
   
