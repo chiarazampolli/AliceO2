@@ -11,22 +11,29 @@
 /// \file DataReader.h
 /// \brief Definition of the TOF hit reader
 
-#ifndef ALICEO2_TOF_HITREADER_H
-#define ALICEO2_TOF_HITREADER_H
+#ifndef ALICEO2_TOF_DATAREADER_H
+#define ALICEO2_TOF_DATAREADER_H
 
 #include "TOFBase/Digit.h"
-#include "SimulationDataFormat/MCCompLabel.h"
 
 namespace o2
 {
-namespace TOF
+namespace tof
 {
 /// \class DataReader
 /// \brief DataReader class for TOF
 ///
 class DataReader
 {
-  using Label = o2::MCCompLabel;
+
+ public:
+  /// Transient data for single strip digits
+  struct StripData {
+    UShort_t stripID = 0;           // strip id 
+    std::vector<Digit> digits; // vector of digits
+
+    void clear() { digits.clear(); }
+  };
 
   DataReader() = default;
   DataReader(const DataReader& cluster) = delete;
@@ -35,11 +42,16 @@ class DataReader
   DataReader& operator=(const DataReader& src) = delete;
 
   virtual void init() = 0;
+  
+  virtual Bool_t getNextStripData(StripData& stripData) = 0;
+
   //
  protected:
   //
 };
 
+//_______________________________________________________________________
+ 
 /// \class DigitDataReader
 /// \brief DigitDataReader class for TOF. Feeds the MC digits to the Cluster Finder
 ///
@@ -47,7 +59,7 @@ class DigitDataReader : public DataReader
 {
  public:
   DigitDataReader() = default;
-  void setDigitArray(const std::vector<o2::TOF::Digit>* a)
+  void setDigitArray(const std::vector<o2::tof::Digit>* a)
   {
     mDigitArray = a;
     mIdx = 0;
@@ -59,22 +71,27 @@ class DigitDataReader : public DataReader
     mLastDigit = nullptr;
   }
 
+  Bool_t getNextStripData(StripData& stripData) override;
+
  private:
-  const std::vector<o2::ITSMFT::Digit>* mDigitArray = nullptr;
+  const std::vector<o2::tof::Digit>* mDigitArray = nullptr;
   const Digit* mLastDigit = nullptr;
   Int_t mIdx = 0;
 };
 
+
+//_______________________________________________________________________
+ 
 /// \class RawDataReader
 /// \brief RawDataReader class for TOF. Feeds raw data to the Cluster Finder
 ///
 class RawDataReader : public DataReader
 {
  public:
-  Bool_t getNextChipData(ChipPixelData& chipData) override;
+  Bool_t getNextStripData(StripData& stripData) override;
 };
 
-} // namespace ITSMFT
+} // namespace tof
 } // namespace o2
 
 #endif /* ALICEO2_TOF_DATAREADER_H */
