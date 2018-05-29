@@ -235,9 +235,6 @@ void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, 
     strips = mStripsNext;
     mcTruthContainer = mMCTruthContainerNext;
   }
-  auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
-  
-  Int_t lbl = mStrips[istrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
 
   Int_t lblCurrent = 0;
   if (mcTruthContainer) {
@@ -246,7 +243,6 @@ void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, 
 
   auto tdc = (time - Geo::BC_TIME_INPS * nbc) * Geo::NTDCBIN_PER_PS;
   
-
   Int_t lbl = (*strips)[istrip].addDigit(time, channel, tdc, tot*Geo::NTOTBIN_PER_NS, nbc, lblCurrent); 
 
   if (mcTruthContainer){
