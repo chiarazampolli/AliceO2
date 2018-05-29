@@ -112,7 +112,7 @@ Int_t Digitizer::processHit(const HitType &hit,Double_t event_time)
 
   Int_t ndigits = 0;//Number of digits added
 
-  UInt_t istrip = channel/96;
+  UInt_t istrip = channel/Geo::NPADS;
 
   // check the fired PAD 1 (A)
   if (isFired(xLocal, zLocal, charge)){
