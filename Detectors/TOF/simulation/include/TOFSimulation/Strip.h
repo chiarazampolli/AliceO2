@@ -80,6 +80,7 @@ namespace tof
   /// Get the number of point assigned to the chip
   /// @return Number of points assigned to the chip
   Int_t getNumberOfHits() const { return mHits.size(); }
+  Int_t getNumberOfDigits() const { return mDigits.size(); }
 
   /// Get the strip index from hit
   Int_t getStripIndex(const o2::tof::HitType* hit);

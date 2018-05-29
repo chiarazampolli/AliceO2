@@ -69,6 +69,8 @@ void DigitizerTask::Exec(Option_t* option)
   mDigitizer.setEventTime(mgr->GetEventTime());
   mDigitizer.setContinuous(mContinuous);
 
+  mDigitsArray->clear();
+
   if (mMCTruthArray) {
     mMCTruthArray->clear();
   }
