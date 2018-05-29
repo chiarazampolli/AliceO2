@@ -27,13 +27,11 @@ namespace dataformats
   class MCTruthContainer;
 }
  
-namespace TOF
+namespace tof
 {
   
 class ClustererTask : public FairTask
 {
-  using Clusterer = o2::TOF::Clusterer;
-  using Cluster = o2::TOF::Cluster;
 
  public:
   ClustererTask(Bool_t useMCTruth=kTRUE);
@@ -44,6 +42,7 @@ class ClustererTask : public FairTask
   
  private:
 
+  DigitDataReader mReader;  ///< Digit reader
   Clusterer mClusterer;      ///< Cluster finder
 
   std::vector<Cluster> *mClustersArray=nullptr; ///< Array of clusters
@@ -51,7 +50,7 @@ class ClustererTask : public FairTask
 
   ClassDefOverride(ClustererTask, 1)
 };
-}
-}
+} // namespace tof
+} // namespace o2
 
 #endif /* ALICEO2_TOF_CLUSTERERTASK */

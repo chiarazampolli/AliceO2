@@ -17,6 +17,7 @@
 #include <vector>
 #include "DataFormatsTOF/Cluster.h"
 #include "TOFBase/Geo.h"
+#include "TOFReconstruction/DataReader.h"
 
 namespace o2
 {
@@ -27,11 +28,11 @@ template <typename T>
 class MCTruthContainer;
 }
 
-namespace TOF
+namespace tof
 {
 class Clusterer
 {
-  using Cluster = o2::TOF::Cluster;
+  //using Cluster = o2::TOF::Cluster;
   using Label = o2::MCCompLabel;
 
  public:
@@ -41,20 +42,36 @@ class Clusterer
   Clusterer(const Clusterer&) = delete;
   Clusterer& operator=(const Clusterer&) = delete;
 
-  void process(PixelReader& r, std::vector<Cluster>& clusters);
+  void process(DataReader& r, std::vector<Cluster>& clusters);
 
-  // provide the common ITSMFT::GeometryTGeo to access matrices
-  void setGeometry(const o2::TOF::Geo* gm) { mGeometry = gm; }
   void setMCTruthContainer(o2::dataformats::MCTruthContainer<o2::MCCompLabel>* truth) { mClsLabels = truth; }
 
  private:
 
-  ...
+  void initStrip();
+  void updateStrip(int ip);
+  void finishStrip(std::vector<Cluster>& clusters);
+  void fetchMCLabels(const Digit* dig, std::array<Label, Cluster::maxLabels>& labels, int& nfilled) const;
 
-   const o2::TOF::Geo* mGeometry = nullptr;                      ///< TOF upgrade geometry
+  StripData mStripData; ///< single strip data provided by the reader
+
+  Int_t mColumn1[kMaxRow + 2]; // not sure we will need it, for now I just took it from ITSMFT
+  Int_t mColumn2[kMaxRow + 2]; // not sure we will need it, for now I just took it from ITSMFT
+  Int_t *mCurr, *mPrev; // not sure we will need it, for now I just took it from ITSMFT
+
+  using NextIndex = Int_t;
+  std::vector<std::pair<NextIndex, const Digit*>> mDigits;
+
+  using FirstIndex = Int_t;
+  std::vector<FirstIndex> mPreClusterHeads;
+
+  std::vector<Int_t> mPreClusterIndices;
+
+  UShort_t mCol = 0xffff; ///< Column being processed
+
   o2::dataformats::MCTruthContainer<o2::MCCompLabel>* mClsLabels = nullptr; // Cluster MC labels
 };
 
-} // namespace TOF
+} // namespace tof
 } // namespace o2
 #endif /* ALICEO2_TOF_CLUSTERER_H */
