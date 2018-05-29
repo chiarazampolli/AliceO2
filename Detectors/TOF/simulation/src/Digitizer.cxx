@@ -33,8 +33,13 @@ void Digitizer::init(){
   initParameters();
   
   for (Int_t i = 0; i < Geo::NSTRIPS; i++) {
-    mStripsA.emplace_back(i);
-    mStripsB.emplace_back(i);
+    for(Int_t j=0;j < MAXWINDOWS;j++){
+      mStrips[j].emplace_back(i);
+      if(j < MAXWINDOWS-1){
+	mMCTruthContainerNext[j] = &(mMCTruthContainer[j+1]);
+	mStripsNext[j] = &(mStrips[j+1]); 
+      }
+    }
   }
 
 }
@@ -235,8 +240,8 @@ void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, 
     mcTruthContainer = mMCTruthContainerCurrent;
   }
   else{
-    strips = mStripsNext;
-    mcTruthContainer = mMCTruthContainerNext;
+    strips = mStripsNext[0];
+    mcTruthContainer = mMCTruthContainerNext[0];
   }
 
   Int_t lblCurrent = 0;
@@ -666,19 +671,14 @@ void Digitizer::fillOutputContainer(std::vector<Digit>* digits){
 
   mMCTruthContainerCurrent->clear();
 
-  // switch mStripA and mStrip after flushing current readout window data
-  if(mStripsCurrent == &mStripsA){
-    mStripsCurrent = &mStripsB;
-    mStripsNext = &mStripsA;
+  // switch to next mStrip after flushing current readout window data
+  mCurrentReadoutWindow++;
+  if(mCurrentReadoutWindow >= MAXWINDOWS) mCurrentReadoutWindow=0;
 
-    mMCTruthContainerCurrent = &mMCTruthContainerB;
-    mMCTruthContainerNext = &mMCTruthContainerA;
-  }
-  else{
-    mStripsCurrent = &mStripsA;
-    mStripsNext = &mStripsB;
-
-    mMCTruthContainerCurrent = &mMCTruthContainerA;
-    mMCTruthContainerNext = &mMCTruthContainerB;
+  int k=mCurrentReadoutWindow+1;
+  for(Int_t i=0; i < MAXWINDOWS-1;i++){
+    if(k >= MAXWINDOWS) k=0;
+    mMCTruthContainerNext[i] = &(mMCTruthContainer[k]);
+    mStripsNext[i] = &(mStrips[k]);
   }
 }

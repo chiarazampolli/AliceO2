@@ -93,17 +93,18 @@ class Digitizer
   // digit info
   std::vector<Digit>* mDigits;
 
-  o2::dataformats::MCTruthContainer<o2::tof::MCLabel> mMCTruthContainerA;
-  o2::dataformats::MCTruthContainer<o2::tof::MCLabel> mMCTruthContainerB;
-  o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainerCurrent = &mMCTruthContainerA; ///< Array for MCTruth information associated to digits in mDigitsArrray. 
-  o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainerNext = &mMCTruthContainerB; ///< Array for MCTruth information associated to digits in mDigitsArrray. 
+  static const int MAXWINDOWS = 3; // how many readout windows we can buffer
+
+  int mCurrentReadoutWindow=0;
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel> mMCTruthContainer[MAXWINDOWS];
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainerCurrent = &mMCTruthContainer[0]; ///< Array for MCTruth information associated to digits in mDigitsArrray. 
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainerNext[MAXWINDOWS-1]; ///< Array for MCTruth information associated to digits in mDigitsArrray. 
   o2::dataformats::MCTruthContainer<o2::MCCompLabel>* mMCTrueContainer;
 
   // array of strips to store the digits per strip (one for the current readout window, one for the next one)
-  std::vector<Strip> mStripsA;
-  std::vector<Strip> mStripsB;
-  std::vector<Strip>* mStripsCurrent = &(mStripsA);
-  std::vector<Strip>* mStripsNext = &(mStripsB);
+  std::vector<Strip> mStrips[MAXWINDOWS];
+  std::vector<Strip>* mStripsCurrent = &(mStrips[0]);
+  std::vector<Strip>* mStripsNext[MAXWINDOWS-1];
   
   Int_t processHit(const HitType& hit, Double_t event_time);
   void addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ, Int_t padZfired,
