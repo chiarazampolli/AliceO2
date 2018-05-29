@@ -105,7 +105,7 @@ void Strip::fillOutputContainer(std::vector<Digit>* digits)
 
   //  if (iter!=mDigits.end()) iter--;
   mDigits.erase(itBeg, iter);
-
+  clearHits();
 }
 
 
