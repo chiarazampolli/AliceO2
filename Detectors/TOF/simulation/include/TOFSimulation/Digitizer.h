@@ -91,11 +91,11 @@ class Digitizer
   bool mContinuous=false;
 
   // digit info
-  std::vector<Digit>* mDigits;
+  //std::vector<Digit>* mDigits;
 
-  static const int MAXWINDOWS = 3; // how many readout windows we can buffer
+  static const int MAXWINDOWS = 10; // how many readout windows we can buffer
 
-  int mCurrentReadoutWindow=0;
+  int mIcurrentReadoutWindow=0;
   o2::dataformats::MCTruthContainer<o2::tof::MCLabel> mMCTruthContainer[MAXWINDOWS];
   o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainerCurrent = &mMCTruthContainer[0]; ///< Array for MCTruth information associated to digits in mDigitsArrray. 
   o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mMCTruthContainerNext[MAXWINDOWS-1]; ///< Array for MCTruth information associated to digits in mDigitsArrray. 
@@ -106,6 +106,16 @@ class Digitizer
   std::vector<Strip>* mStripsCurrent = &(mStrips[0]);
   std::vector<Strip>* mStripsNext[MAXWINDOWS-1];
   
+  // arrays with digit and MCLabels out of the current readout windows (stored to fill future readout window)
+  std::vector<Digit> mFutureDigits;
+  std::vector<int> mFutureIevent;
+  std::vector<int> mFutureIsource;
+  std::vector<int> mFutureItrackID;
+
+  o2::dataformats::MCTruthContainer<o2::tof::MCLabel> mFutureMCTruthContainer;
+
+  void fillDigitsInStrip(std::vector<Strip>* strips,o2::dataformats::MCTruthContainer<o2::tof::MCLabel>* mcTruthContainer,double time,int channel,int tdc,int tot,int nbc, UInt_t istrip, Int_t trackID, Int_t eventID, Int_t sourceID);
+
   Int_t processHit(const HitType& hit, Double_t event_time);
   void addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ, Int_t padZfired,
                 Int_t trackID);
