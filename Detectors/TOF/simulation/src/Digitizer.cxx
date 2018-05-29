@@ -103,7 +103,7 @@ void Digitizer::process(const std::vector<HitType>* hits,std::vector<Digit>* dig
 	mFutureDigits.erase(mFutureDigits.begin()+idigit);
       }
       else{
-	idigit++;
+	idigit++; // increment when moving to the next only if the current is not removed from the buffer
       }
     }
 
@@ -756,3 +756,9 @@ void Digitizer::fillOutputContainer(std::vector<Digit>* digits){
     k++;
   }
 }
+//______________________________________________________________________
+void Digitizer::flushOutputContainer(std::vector<Digit>* digits){ // flush all residual buffered data
+  // TO be implemented
+  fillOutputContainer(digits);
+}
+ 
