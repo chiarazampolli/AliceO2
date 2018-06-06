@@ -49,6 +49,14 @@ class Cluster : public o2::BaseCluster<float>
   float  getR()   const   {return mR;}   // Cluster Radius  
   float  getPhi() const   {return mPhi;} // Cluster Phi
 
+  int    getContributingChannels() const {return mContributingChannels;}
+  int    getNumOfContributingChannels() const; // returns the number of hits associated to the cluster, i.e. the number of hits that built the cluster; it is the equivalente of teh old AliESDTOFCluster::GetNTOFhits() 
+  int    getMainContributingChannel() const {return mContributingChannels & 0x3FFFF;}
+  bool   isUpContributing() const {return (mContributingChannels & 0x40000) == 0x40000 ? 1 : 0;}
+  bool   isDownContributing() const {return (mContributingChannels & 0x80000) == 0x80000 ? 1 : 0;}
+  bool   isLeftContributing() const {return (mContributingChannels & 0x100000) == 0x100000 ? 1 : 0;}
+  bool   isRightContributing() const {return (mContributingChannels & 0x200000) == 0x200000 ? 1 : 0;}
+  
  private:
   friend class boost::serialization::access;
 
@@ -60,7 +68,13 @@ class Cluster : public o2::BaseCluster<float>
   //float  mZ;           //! z-coordinate // CZ: to be verified if it is the same in the BaseCluster class
   float  mR;           //! radius
   float  mPhi;         //! phi coordinate 
-
+  int    mContributingChannels;       // index of the channels that contributed to the cluster; to be read like this:
+                                      //channel & 0x3FFFF -> first 18 bits to strore the main channel
+                                      //channel & bit19 (0x40000) -> alsoUP
+                                      //channel & bit20 (0x80000)-> alsoDOWN
+                                      //channel & bit21 (0x100000)-> alsoRIGHT
+                                      //channel & bit22 (0x200000)-> alsoLEFT
+  
   ClassDefNV(Cluster, 1);
 };
 

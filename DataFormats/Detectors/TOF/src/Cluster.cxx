@@ -28,12 +28,33 @@ Cluster::Cluster(std::int16_t sensid, float x, float y, float z, float sy2, floa
   // caching R and phi
   mR = TMath::Sqrt(x*x + y*y);
   mPhi = TMath::ATan2(y, x);
-
+  mContributingChannels = 0;
+  
 }
 
+//______________________________________________________________________
+int Cluster::getNumOfContributingChannels() const {
+  //
+  // returning how many hits contribute to this cluster
+  //
+  int nContributingChannels = 0;
+  if (mContributingChannels == 0) {
+    LOG(ERROR) << "The current cluster has no hit contributing to it!" << FairLogger::endl;
+  }
+  else {
+    nContributingChannels++;
+    if ((mContributingChannels & 0x40000) == 0x40000)  nContributingChannels++; // alsoUP
+    if ((mContributingChannels & 0x80000) == 0x80000)  nContributingChannels++; // alsoDOWN
+    if ((mContributingChannels & 0x100000) == 0x100000)  nContributingChannels++; // alsoRIGHT
+    if ((mContributingChannels & 0x200000) == 0x200000)  nContributingChannels++; // alsoLEFT
+  }
+  return nContributingChannels;
+}  
+
+//______________________________________________________________________
 std::ostream& operator<<(std::ostream& os, const Cluster& c) {  
   os << (o2::BaseCluster<float>&)c;
-  os << " TOF cluster: raw time = " << std::scientific << c.getTimeRaw() << ", time = "  << std::scientific << c.getTime() << ", Tot = " << std::scientific << c.getTot() << ", L0L1Latency = " << c.getL0L1Latency() << ", deltaBC = " << c.getDeltaBC() << ", R = " << c.getR() << ", mPhi = " << c.getPhi() << "\n";
+  os << " TOF cluster: raw time = " << std::scientific << c.getTimeRaw() << ", time = "  << std::scientific << c.getTime() << ", Tot = " << std::scientific << c.getTot() << ", L0L1Latency = " << c.getL0L1Latency() << ", deltaBC = " << c.getDeltaBC() << ", R = " << c.getR() << ", mPhi = " << c.getPhi() << ", ContributingChannels = " << c.getNumOfContributingChannels() << "\n";
 }
   
 
