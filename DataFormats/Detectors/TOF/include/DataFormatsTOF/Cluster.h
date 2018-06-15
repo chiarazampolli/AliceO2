@@ -96,6 +96,7 @@ class Cluster : public o2::BaseCluster<float>
   bool   isDownContributing()      const {return (mContributingChannels & kDown) == kDown ? 1 : 0;}
   bool   isDownLeftContributing()  const {return (mContributingChannels & kDownLeft) == kDownLeft ? 1 : 0;}
   bool   isLeftContributing()      const {return (mContributingChannels & kLeft) == kLeft ? 1 : 0;}
+  void   addAndShiftContributingChannels(int mask); 
   
  private:
   friend class boost::serialization::access;

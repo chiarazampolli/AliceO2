@@ -48,7 +48,7 @@ void Clusterer::processStrip(std::vector<Cluster>& clusters)
   // method to clusterize the current strip
 
   Int_t detId[5];
-  Int_t chan1, chan2, chan3;
+  Int_t chan, chan2, chan3;
   Int_t strip1,strip2;
   Int_t iphi,iphi2,iphi3;
   Int_t ieta,ieta2,ieta3; // it is the number of padz-row increasing along the various strips
@@ -56,8 +56,8 @@ void Clusterer::processStrip(std::vector<Cluster>& clusters)
   for (int idig = 1; idig < mStripData.digits.size()-1; idig++) {
     Digit* dig = &mStripData.digits[idig];
     if (dig->isUsedInCluster()) continue; // the digit was already used to build a cluster
-    chan1 = dig->getChannel(); // note that inside the strip the digits are ordered per channel number
-    Geo::getVolumeIndices(chan1, detId); // Get volume index from channel index
+    chan = dig->getChannel(); // note that inside the strip the digits are ordered per channel number
+    Geo::getVolumeIndices(chan, detId); // Get volume index from channel index
     ieta = detId[2]/*strip*/*2 + detId[3]/*pad Z*/;
     if(detId[1]/*module*/ == 0) ieta += 0;
     else if(detId[1] == 1) ieta += 38;
@@ -79,7 +79,7 @@ void Clusterer::processStrip(std::vector<Cluster>& clusters)
       Digit* digNext = &mStripData.digits[idigNext];
       if (digNext->isUsedInCluster()) continue; // the digit was already used to build a cluster
       chan2 = digNext->getChannel(); // note that inside the strip the digits are ordered per channel number
-      if (chan1 == chan2) {
+      if (chan == chan2) {
 	// the digits belong to the same channel, but were not merged; let's assume that they can make a cluster
 	LOG(DEBUG) << " found two digits from the same channel that were not merged - they can still make a cluster " << FairLogger::endl;
       }
@@ -99,7 +99,7 @@ void Clusterer::processStrip(std::vector<Cluster>& clusters)
 	continue;
       
       // check if the TOF time are close enough to be merged
-      float timeDig =; c.GetTime();
+      float timeDig = c.GetTime();
       float timeDigNext = digNext->GetTDC()*Geo::TDCBIN; // we assume it calibrated (for now); in ps
       
       if(TMath::Abs(timeDig - timeDigNext) > 500/*in ps*/) continue;
@@ -108,6 +108,14 @@ void Clusterer::processStrip(std::vector<Cluster>& clusters)
       int deltaEta = ieta - ieta2; // difference in z between cluster and digit to be merged
       // merge the digit to the existing cluster
       bool swapped = mergeClusters(c, digNext, deltaPhi, deltaEta);
+
+      if (swapped) {
+	// swapping the channels
+	chan = chan2;
+	ieta = ieta2;
+	iphi = iphi2;
+      }
+      
     } // loop on the second digit
   } // loop on the first digit
 }
@@ -118,6 +126,7 @@ bool Cluster::mergeClusters(Cluster& c, Digit* dig, int deltaPhi, int deltaEta){
   // routine to merge two clusters
 
   float totDigit = dig->getTOT()*Geo::TOTBIN*1E-3;
+  float timeDigit = dig->getTDC()*Geo::TDCBIN;
   int mask;
   if (deltaPhi == 1) { // the digit is to the LEFT of the cluster; let's check about UP/DOWN/Same Line
     if (deltaEta == 1) { // the digit is DOWN LEFT wrt the cluster
@@ -153,13 +162,19 @@ bool Cluster::mergeClusters(Cluster& c, Digit* dig, int deltaPhi, int deltaEta){
     }
   }
   else { // impossible!!! We checked above... 
-      LOG(DEBUG) << " Check what is going on, the digit you are trying to merge to the cluster is too far from the cluster, you should have not got here... " << FairLogger::endl;
+    LOG(DEBUG) << " Check what is going on, the digit you are trying to merge to the cluster is too far from the cluster, you should have not got here... " << FairLogger::endl;
   }
       
   dig->setIsUsedInCluster();
 
-  if (c->GetTot() < totDigit) {
-      // the main channel contributing to the cluster is the one from the digit --> changing it
+  if (c.getTot() < totDigit) {
+    // the main channel contributing to the cluster is the one from the digit --> changing it
+    c.setTot(totDigit);
+    c.setTime(timeDigit);
+    c.setL0L1Latency(/*to be set from the digit*/);
+    c.setDeltaBC(/*to be set from the digit*/ );
+    c.setMainContributingChannel(dig->getChannel());
+    c.addAndShiftContributingChannels(mask);
     return kTRUE;
   }
   else {
