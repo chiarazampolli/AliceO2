@@ -16,7 +16,6 @@
 
 #include "ReconstructionDataFormats/BaseCluster.h"
 #include <boost/serialization/base_object.hpp> // for base_object
-#include <TOFBase/Digit.h>
 
 
 namespace o2
@@ -97,7 +96,6 @@ class Cluster : public o2::BaseCluster<float>
   bool   isDownContributing()      const {return (mContributingChannels & kDown) == kDown ? 1 : 0;}
   bool   isDownLeftContributing()  const {return (mContributingChannels & kDownLeft) == kDownLeft ? 1 : 0;}
   bool   isLeftContributing()      const {return (mContributingChannels & kLeft) == kLeft ? 1 : 0;}
-  void   addContributingDigit(Digit* dig);
   
  private:
   friend class boost::serialization::access;
@@ -119,10 +117,7 @@ class Cluster : public o2::BaseCluster<float>
                                       // channel & bit23 (0x400000)-> alsoDOWNRIGHT
                                       // channel & bit24 (0x800000)-> alsoDOWN
                                       // channel & bit25 (0x1000000)-> alsoDOWNLEFT
-                                      // channel & bit26 (0x2000000)-> alsoLEFT
-  Digit* mContributingDigit[6];       //! array of digits contributing to the cluster; this will not be stored, it is temporary to build the final cluster
-  int    mNumberOfContributingDigits; //! number of digits contributing to the cluster; this will not be stored, it is temporary to build the final cluster
-  
+                                      // channel & bit26 (0x2000000)-> alsoLEFT  
   ClassDefNV(Cluster, 1);
 };
 
