@@ -97,10 +97,6 @@ void Strip::fillOutputContainer(std::vector<Digit>* digits)
     return;
   auto itBeg = mDigits.begin();
   auto iter = itBeg;
-
-  std::sort(mDigits.begin(), mDigits.end(),
-	    [](Digit a, Digit b) { return a.getTDC() < b.getTDC(); });
-
   for (; iter != mDigits.end(); ++iter) {
     Digit& dig = iter->second;
     digits->emplace_back(dig);

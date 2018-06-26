@@ -13,7 +13,7 @@
 #pragma link off all globals;
 #pragma link off all classes;
 #pragma link off all functions;
-#pragma link C++ class o2::TOF::Cluster + ;
-#pragma link C++ class std::vector < o2::TOF::Cluster > +;
+#pragma link C++ class o2::tof::Cluster + ;
+#pragma link C++ class std::vector < o2::tof::Cluster > +;
 
 #endif

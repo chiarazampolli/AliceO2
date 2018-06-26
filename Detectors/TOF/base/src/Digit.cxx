@@ -74,3 +74,11 @@ void Digit::getPhiAndEtaIndex(int& phi, int& eta) {
 
   return;
 }
+//______________________________________________________________________
+int Digit::operator-(const Digit& digi) {
+
+  // operator "-" needed for sorting
+
+  return getTDC()-digi.getTDC();
+
+}

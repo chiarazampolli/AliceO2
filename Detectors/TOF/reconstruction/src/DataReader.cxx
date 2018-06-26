@@ -13,6 +13,8 @@
 
 #include "TOFReconstruction/DataReader.h"
 #include "TOFBase/Geo.h"
+#include <algorithm>
+
 
 using namespace o2::tof;
 using o2::tof::Digit;
@@ -45,7 +47,11 @@ Bool_t DigitDataReader::getNextStripData(StripData& stripData) {
     stripData.digits.emplace_back(*mLastDigit);
     mLastDigit = nullptr;
   }
-  
+
+  // sorting the digits of the current strip according to the TDC
+  std::sort(stripData.digits.begin(), stripData.digits.end(),
+	    [](const Digit& a, const Digit& b) { return a.getTDC() < b.getTDC(); });
+
   return kTRUE;
 }
 

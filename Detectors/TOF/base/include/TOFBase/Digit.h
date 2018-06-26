@@ -55,7 +55,9 @@ class Digit : public o2::dataformats::TimeStamp<double>
 
   void getPhiAndEtaIndex(int& phi, int& eta);
 
-private:
+  int operator-(const Digit& digi);
+
+ private:
   friend class boost::serialization::access;
 
   Int_t mChannel;       ///< TOF channel index
