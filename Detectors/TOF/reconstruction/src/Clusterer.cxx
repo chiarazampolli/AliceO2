@@ -27,7 +27,7 @@ Clusterer::Clusterer()
   
 }
 //__________________________________________________
-void Clusterer::process(DataReader& reader, std::vector<Cluster>& clusters)
+void Clusterer::process(DataReader& reader, std::vector<Cluster>& clusters, MCLabelContainer const* digitMCTruth)
 {
   reader.init();
 
@@ -35,12 +35,12 @@ void Clusterer::process(DataReader& reader, std::vector<Cluster>& clusters)
     LOG(DEBUG) << "TOFClusterer got Strip " << mStripData.stripID << " Ndigits "
                << mStripData.digits.size() << FairLogger::endl;
     
-    processStrip(clusters);
+    processStrip(clusters, digitMCTruth);
   }
 }
 
 //__________________________________________________
-void Clusterer::processStrip(std::vector<Cluster>& clusters)
+void Clusterer::processStrip(std::vector<Cluster>& clusters, MCLabelContainer const* digitMCTruth)
 {
   // method to clusterize the current strip
 
@@ -80,7 +80,7 @@ void Clusterer::processStrip(std::vector<Cluster>& clusters)
       
     } // loop on the second digit
 
-    buildCluster(c);
+    buildCluster(c, digitMCTruth);
 
   } // loop on the first digit
 }
@@ -100,7 +100,7 @@ void Cluster::addContributingDigit(Digit* dig) {
 }
 
 //_____________________________________________________________________
-void Cluster::buildCluster(Cluster& c) {
+void Cluster::buildCluster(Cluster& c, MCLabelContainer const* digitMCTruth) {
 
   // here we finally build the cluster from all the digits contributing to it
 
@@ -169,6 +169,22 @@ void Cluster::buildCluster(Cluster& c) {
       LOG(DEBUG) << " Check what is going on, the digit you are trying to merge to the cluster is too far from the cluster, you should have not got here... " << FairLogger::endl;
     }
     c.addBitInContributingChannels(mask);
+  }
+
+  // filling the MC labels of this cluster; the first will be those of the main digit; then the others
+  if (digitMCTruth != 0x0) {
+    int lbl = mClsLabels->getIndexedSize(); // this should correspond to the number of digits also;
+    for (int i = 0; i < mNumberOfContributingDigits; i++){
+      int digitLabel = mContributingDigit[i]->getLabel();
+      gsl::span<const o2::MCCompLabel> mcArray = mMCTruthArray.getLabels(digitLabel);
+      for (int j = 0; j < static_cast<int>(mcArray.size()); ++j) {
+	auto evID = mMCTruthArray.getElement(mMCTruthArray.getMCTruthHeader(digit).index + j).getEventID();
+	auto trID = mMCTruthArray.getElement(mMCTruthArray.getMCTruthHeader(digit).index + j).getTrackID();
+	auto srcID = mMCTruthArray.getElement(mMCTruthArray.getMCTruthHeader(digit).index + j).getSourceID();
+	o2::MCCompLabel label(trID, evID, srcID);
+	mClsLabels->addElement(lbl, label);
+      }
+    }    
   }
 
   return;

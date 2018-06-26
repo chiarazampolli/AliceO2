@@ -8,6 +8,8 @@ set(SRCS
 
 set(HEADERS
   include/TOFReconstruction/DataReader.h
+  include/TOFReconstruction/Clusterer.h
+  include/TOFReconstruction/ClustererTask.h
 )
 
 SET(LINKDEF src/TOFReconstructionLinkDef.h)

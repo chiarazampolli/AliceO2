@@ -18,23 +18,19 @@
 #include "DataFormatsTOF/Cluster.h"
 #include "TOFBase/Geo.h"
 #include "TOFReconstruction/DataReader.h"
+#include "SimulationDataFormat/MCTruthContainer.h"
+#include "SimulationDataFormat/MCCompLabel.h"
 
 namespace o2
 {
-class MCCompLabel;
-namespace dataformats
-{
-template <typename T>
-class MCTruthContainer;
-}
 
 namespace tof
 {
 class Clusterer
 {
-  //using Cluster = o2::TOF::Cluster;
-  using Label = o2::MCCompLabel;
-
+  using MCLabelContainer = o2::dataformats::MCTruthContainer<o2::MCCompLabel>;
+  using Cluster = o2::tof::Cluster;
+  
  public:
   Clusterer();
   ~Clusterer() = default;
@@ -42,13 +38,13 @@ class Clusterer
   Clusterer(const Clusterer&) = delete;
   Clusterer& operator=(const Clusterer&) = delete;
 
-  void process(DataReader& r, std::vector<Cluster>& clusters);
+  void process(DataReader& r, std::vector<Cluster>& clusters, MCLabelContainer const* digitMCTruth);
 
   void setMCTruthContainer(o2::dataformats::MCTruthContainer<o2::MCCompLabel>* truth) { mClsLabels = truth; }
 
  private:
 
-  void processStrip(std::vector<Cluster>& clusters);
+  void processStrip(std::vector<Cluster>& clusters, MCLabelContainer const* digitMCTruth);
   //void fetchMCLabels(const Digit* dig, std::array<Label, Cluster::maxLabels>& labels, int& nfilled) const;
 
   StripData mStripData; ///< single strip data provided by the reader
@@ -58,7 +54,7 @@ class Clusterer
   Digit* mContributingDigit[6];       //! array of digits contributing to the cluster; this will not be stored, it is temporary to build the final cluster
   int    mNumberOfContributingDigits; //! number of digits contributing to the cluster; this will not be stored, it is temporary to build the final cluster
   void   addContributingDigit(Digit* dig);
-  void buildCluster(Cluster& c);
+  void   buildCluster(Cluster& c, MCLabelContainer const* digitMCTruth);
 
 };
 
