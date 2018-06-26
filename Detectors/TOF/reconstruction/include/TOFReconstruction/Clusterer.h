@@ -54,6 +54,12 @@ class Clusterer
   StripData mStripData; ///< single strip data provided by the reader
 
   o2::dataformats::MCTruthContainer<o2::MCCompLabel>* mClsLabels = nullptr; // Cluster MC labels
+
+  Digit* mContributingDigit[6];       //! array of digits contributing to the cluster; this will not be stored, it is temporary to build the final cluster
+  int    mNumberOfContributingDigits; //! number of digits contributing to the cluster; this will not be stored, it is temporary to build the final cluster
+  void   addContributingDigit(Digit* dig);
+  void buildCluster(Cluster& c);
+
 };
 
 } // namespace tof
