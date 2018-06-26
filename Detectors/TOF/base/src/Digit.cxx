@@ -9,6 +9,8 @@
 // or submit itself to any jurisdiction.
 
 #include "TOFBase/Digit.h"
+#include "TOFBase/Geo.h"
+
 #include <iostream>
 
 using namespace o2::tof;
@@ -51,4 +53,24 @@ void Digit::merge(Double_t time, Int_t tdc, Int_t tot){
     // TODO: adjust TOT
   }
 }
-    
+
+//______________________________________________________________________
+
+void Digit::getPhiAndEtaIndex(int& phi, int& eta) {
+
+  // method that returns the index in phi and eta of the digit
+
+  int chan;
+  int detId[5];
+  chan = getChannel(); // note that inside the strip the digits are ordered per channel number
+  Geo::getVolumeIndices(chan, detId); // Get volume index from channel index
+  eta = detId[2]/*strip*/*2 + detId[3]/*pad Z*/;
+  if(detId[1]/*module*/ == 0) eta += 0;
+  else if(detId[1] == 1) eta += 38;
+  else if(detId[1] == 2) eta += 76;
+  else if(detId[1] == 3) eta += 106;
+  else if(detId[1] == 4) eta += 144;
+  phi = detId[0]/*phi sector*/*48 + detId[4]/*pad x*/;
+
+  return;
+}

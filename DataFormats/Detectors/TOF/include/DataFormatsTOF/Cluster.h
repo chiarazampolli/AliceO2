@@ -16,11 +16,12 @@
 
 #include "ReconstructionDataFormats/BaseCluster.h"
 #include <boost/serialization/base_object.hpp> // for base_object
+#include <TOFBase/Digit.h>
 
 
 namespace o2
 {
-namespace TOF
+namespace tof
 {
 /// \class Cluster
 /// \brief Cluster class for TOF
@@ -29,15 +30,15 @@ namespace TOF
 class Cluster : public o2::BaseCluster<float>
 {
  public:
-  enum {kMain      = 0x3FFFF,
-	kUpLeft    = 0x40000,
-	kUp        = 0x80000,
-	kUpRight   = 0x100000,
-	kRight     = 0x200000,
-	kDownRight = 0x400000,
-	kDown      = 0x800000,
-	kDownLeft  = 0x1000000,
-	kLeft      = 0x2000000}
+  enum {kMain      = 0x3FFFF,   
+	kUpLeft    = 0x40000,    // 2^18, 19th bit
+	kUp        = 0x80000,    // 2^19, 20th bit
+	kUpRight   = 0x100000,   // 2^20, 21th bit
+	kRight     = 0x200000,   // 2^21, 22th bit
+	kDownRight = 0x400000,   // 2^22, 23th bit
+	kDown      = 0x800000,   // 2^23, 24th bit
+	kDownLeft  = 0x1000000,  // 2^24, 25th bit
+	kLeft      = 0x2000000}; // 2^25, 26th bit
 
   Cluster() = default;
 
@@ -65,17 +66,17 @@ class Cluster : public o2::BaseCluster<float>
   int    getNumOfContributingChannels() const; // returns the number of hits associated to the cluster, i.e. the number of hits that built the cluster; it is the equivalente of the old AliESDTOFCluster::GetNTOFhits() 
   int    getMainContributingChannel() const {return mContributingChannels & kMain;}
 
-  void   setMainContributingChannel(int newvalue) {int mask = kMain; mContributingChannels &= ~mask; mContributingChannel |= newvalue & mask;} // first we do "bitwise-and" with all bits set to 1 but the first 18, which is the negation of "mask"
+  void   setMainContributingChannel(int newvalue) {int mask = kMain; mContributingChannels &= ~mask; mContributingChannels |= newvalue & mask;} // first we do "bitwise-and" with all bits set to 1 but the first 18, which is the negation of "mask"
 
   // setting the up, down, right, left bits
-  void   setUpLeftContributingChannel()    {mContributingChannel |= kUpLeft;}    // we do "bitwise-or" with the 19th bit
-  void   setUpContributingChannel()        {mContributingChannel |= kUp;}        // we do "bitwise-or" with the 20th bit
-  void   setUpRightContributingChannel()   {mContributingChannel |= kUpRight;}   // we do "bitwise-or" with the 21th bit
-  void   setRightContributingChannel()     {mContributingChannel |= kRight;}     // we do "bitwise-or" with the 22th bit
-  void   setDownRightContributingChannel() {mContributingChannel |= kDownRight;} // we do "bitwise-or" with the 23th bit
-  void   setDownContributingChannel()      {mContributingChannel |= kDown;}      // we do "bitwise-or" with the 24th bit
-  void   setDownLeftContributingChannel()  {mContributingChannel |= kDownLeft;}  // we do "bitwise-or" with the 25th bit
-  void   setLeftContributingChannel()      {mContributingChannel |= kLeft;}      // we do "bitwise-or" with the 26th bit
+  void   setUpLeftContributingChannel()    {mContributingChannels |= kUpLeft;}    // we do "bitwise-or" with the 19th bit (2^18)
+  void   setUpContributingChannel()        {mContributingChannels |= kUp;}        // we do "bitwise-or" with the 20th bit (2^19)
+  void   setUpRightContributingChannel()   {mContributingChannels |= kUpRight;}   // we do "bitwise-or" with the 21th bit (2^20)
+  void   setRightContributingChannel()     {mContributingChannels |= kRight;}     // we do "bitwise-or" with the 22th bit (2^21)
+  void   setDownRightContributingChannel() {mContributingChannels |= kDownRight;} // we do "bitwise-or" with the 23th bit (2^22)
+  void   setDownContributingChannel()      {mContributingChannels |= kDown;}      // we do "bitwise-or" with the 24th bit (2^23)
+  void   setDownLeftContributingChannel()  {mContributingChannels |= kDownLeft;}  // we do "bitwise-or" with the 25th bit (2^24)
+  void   setLeftContributingChannel()      {mContributingChannels |= kLeft;}      // we do "bitwise-or" with the 26th bit (2^25)
 
   // resetting the up, down, right, left bits
   void   resetUpLeftContributingChannel()    {mContributingChannels &= ~kUpLeft;}    // we do "bitwise-and" with the 19th bit only set to zero, which is the negation of "mask"
@@ -96,7 +97,7 @@ class Cluster : public o2::BaseCluster<float>
   bool   isDownContributing()      const {return (mContributingChannels & kDown) == kDown ? 1 : 0;}
   bool   isDownLeftContributing()  const {return (mContributingChannels & kDownLeft) == kDownLeft ? 1 : 0;}
   bool   isLeftContributing()      const {return (mContributingChannels & kLeft) == kLeft ? 1 : 0;}
-  void   addAndShiftContributingChannels(int mask); 
+  void   addContributingDigit(Digit* dig);
   
  private:
   friend class boost::serialization::access;
@@ -119,6 +120,8 @@ class Cluster : public o2::BaseCluster<float>
                                       // channel & bit24 (0x800000)-> alsoDOWN
                                       // channel & bit25 (0x1000000)-> alsoDOWNLEFT
                                       // channel & bit26 (0x2000000)-> alsoLEFT
+  Digit* mContributingDigit[6];       //! array of digits contributing to the cluster; this will not be stored, it is temporary to build the final cluster
+  int    mNumberOfContributingDigits; //! number of digits contributing to the cluster; this will not be stored, it is temporary to build the final cluster
   
   ClassDefNV(Cluster, 1);
 };

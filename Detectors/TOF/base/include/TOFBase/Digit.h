@@ -53,6 +53,8 @@ class Digit : public o2::dataformats::TimeStamp<double>
 
   void merge(Double_t time, Int_t tdc, Int_t tot);
 
+  void getPhiAndEtaIndex(int& phi, int& eta);
+
 private:
   friend class boost::serialization::access;
 
