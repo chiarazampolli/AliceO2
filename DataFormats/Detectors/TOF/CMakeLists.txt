@@ -3,6 +3,8 @@ set(MODULE_BUCKET_NAME data_format_TOF_bucket)
 
 O2_SETUP(NAME ${MODULE_NAME})
 
+link_directories( ${LINK_DIRECTORIES})
+
 set(SRCS
    src/Cluster.cxx
 )

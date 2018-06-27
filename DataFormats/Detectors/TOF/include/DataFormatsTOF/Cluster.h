@@ -17,11 +17,8 @@
 #include "ReconstructionDataFormats/BaseCluster.h"
 #include <boost/serialization/base_object.hpp> // for base_object
 
-
-namespace o2
-{
-namespace tof
-{
+namespace o2 {
+namespace tof {
 /// \class Cluster
 /// \brief Cluster class for TOF
 ///

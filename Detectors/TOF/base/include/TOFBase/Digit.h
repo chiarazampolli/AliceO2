@@ -55,8 +55,10 @@ class Digit : public o2::dataformats::TimeStamp<double>
 
   void getPhiAndEtaIndex(int& phi, int& eta);
 
-  int operator-(const Digit& digi);
+  Bool_t isUsedInCluster() const {return mIsUsedInCluster;}
 
+  void setIsUsedInCluster() {mIsUsedInCluster = kTRUE;}
+    
  private:
   friend class boost::serialization::access;
 
@@ -65,6 +67,7 @@ class Digit : public o2::dataformats::TimeStamp<double>
   Int_t mTOT;           ///< TOT bin number
   Int_t mBC;            ///< Bunch Crossing
   Int_t mLabel;         ///< Index of the corresponding entry in the MC label array
+  Bool_t mIsUsedInCluster; ///< flag to declare that the digit was used to build a cluster
   
   ClassDefNV(Digit, 1);
 };

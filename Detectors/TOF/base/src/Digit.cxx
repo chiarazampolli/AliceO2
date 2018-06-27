@@ -18,7 +18,7 @@ using namespace o2::tof;
 ClassImp(o2::tof::Digit);
 
 Digit::Digit(Double_t time, Int_t channel, Int_t tdc, Int_t tot, Int_t bc, Int_t label)
-  : o2::dataformats::TimeStamp<double>(time), mChannel(channel), mTDC(tdc), mTOT(tot), mBC(bc), mLabel(label)
+  : o2::dataformats::TimeStamp<double>(time), mChannel(channel), mTDC(tdc), mTOT(tot), mBC(bc), mLabel(label), mIsUsedInCluster(kFALSE)
 {
 }
 
@@ -73,12 +73,4 @@ void Digit::getPhiAndEtaIndex(int& phi, int& eta) {
   phi = detId[0]/*phi sector*/*48 + detId[4]/*pad x*/;
 
   return;
-}
-//______________________________________________________________________
-int Digit::operator-(const Digit& digi) {
-
-  // operator "-" needed for sorting
-
-  return getTDC()-digi.getTDC();
-
 }

@@ -23,8 +23,6 @@
 ClassImp(o2::tof::ClustererTask)
 
 using namespace o2::tof;
-using namespace o2::Base;
-using namespace o2::utils;
 
 //_____________________________________________________________________
 ClustererTask::ClustererTask(Bool_t useMCTruth) : FairTask("TOFClustererTask")
@@ -63,7 +61,7 @@ InitStatus ClustererTask::Init()
   }
   mReader.setDigitArray(arr);
 
-  if (useMCTruth) { // here we take the array of labels used for the digits
+  if (mClsLabels) { // here we take the array of labels used for the digits
     mDigitMCTruth =
       mgr->InitObjectAs<const dataformats::MCTruthContainer<MCCompLabel>*>("TOFDigitMCTruth");
     if (!mDigitMCTruth) {

@@ -33,6 +33,7 @@ namespace tof
 class ClustererTask : public FairTask
 {
 
+  using MCLabelContainer = o2::dataformats::MCTruthContainer<o2::MCCompLabel>;
  public:
   ClustererTask(Bool_t useMCTruth=kTRUE);
   ~ClustererTask() override;

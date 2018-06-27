@@ -4,6 +4,8 @@ O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
   src/DataReader.cxx
+  src/Clusterer.cxx
+  src/ClustererTask.cxx
 )
 
 set(HEADERS

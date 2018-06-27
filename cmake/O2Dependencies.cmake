@@ -283,7 +283,6 @@ o2_define_bucket(
     ReconstructionDataFormats
 
     INCLUDE_DIRECTORIES
-#    ${CMAKE_SOURCE_DIR}/DataFormats/simulation/include
     ${CMAKE_SOURCE_DIR}/DataFormats/Reconstruction/include
     ${CMAKE_SOURCE_DIR}/DataFormats/Detectors/TOF/include
 )
@@ -1235,6 +1234,7 @@ o2_define_bucket(
     DEPENDENCIES
     tof_base_bucket
     root_base_bucket
+    data_format_TOF_bucket
     fairroot_geom
     RIO
     Graf
@@ -1244,11 +1244,13 @@ o2_define_bucket(
     TOFBase
     DetectorsBase
     SimulationDataFormat
-
+    DataFormatsTOF
+    
     INCLUDE_DIRECTORIES
     ${FAIRROOT_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/Detectors/Base/include
     ${CMAKE_SOURCE_DIR}/Detectors/TOF/base/include
+#    ${CMAKE_SOURCE_DIR}/DataFormats/Detectors/TOF/include
     ${MS_GSL_INCLUDE_DIR}
 )
 

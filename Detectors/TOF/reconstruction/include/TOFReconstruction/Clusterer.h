@@ -30,6 +30,8 @@ class Clusterer
 {
   using MCLabelContainer = o2::dataformats::MCTruthContainer<o2::MCCompLabel>;
   using Cluster = o2::tof::Cluster;
+  using StripData = o2::tof::DataReader::StripData;
+  using Digit = o2::tof::Digit;
   
  public:
   Clusterer();
