@@ -113,6 +113,18 @@ void GeneratorFactory::setPrimaryGenerator(o2::conf::SimConfig const& conf, Fair
     py8Gen->SetParameters("ParticleDecays:zMax 1.");
     py8Gen->SetParameters("ParticleDecays:limitCylinder on");
     primGen->AddGenerator(py8Gen);
+  } else if (genconfig.compare("toftest") == 0) { // 1 muon per sector and per module
+    LOG(INFO) << "Init tof test generator -> 1 muon per sector and per module";
+    for(int i=0;i<18;i++){
+      for(int j=0;j<5;j++){
+	auto boxGen = new FairBoxGenerator(13, 1); /*protons*/
+	boxGen->SetEtaRange(-0.8+0.32*j+0.15,-0.8+0.32*j + 0.17);
+	boxGen->SetPRange(9, 10);
+	boxGen->SetPhiRange(10+20.*i-1, 10+20.*i +1);
+	boxGen->SetDebug(kTRUE);
+	primGen->AddGenerator(boxGen);
+      }
+    }
   } else {
     LOG(FATAL) << "Invalid generator";
   }
