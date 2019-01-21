@@ -8,9 +8,9 @@ set(SRCS
   src/TrackTPCITS.cxx
   src/Vertex.cxx
   src/MatchInfoTOF.cxx
-  src/CalibInfoTOF.cxx
   src/TrackLTIntegral.cxx
   src/PID.cxx
+  src/CalibInfoTOF.cxx
  )
 
 Set(HEADERS
@@ -19,9 +19,9 @@ Set(HEADERS
   include/${MODULE_NAME}/TrackTPCITS.h
   include/${MODULE_NAME}/Vertex.h
   include/${MODULE_NAME}/MatchInfoTOF.h
-  include/${MODULE_NAME}/CalibInfoTOF.h
   include/${MODULE_NAME}/TrackLTIntegral.h
   include/${MODULE_NAME}/PID.h
+  include/${MODULE_NAME}/CalibInfoTOF.h
 )
 
 Set(LINKDEF src/ReconstructionDataFormatsLinkDef.h)

@@ -53,6 +53,7 @@ class TrackLTIntegral
 
   void setL(float l) { mL = l; }
   void setX2X0(float x) { mX2X0 = x; }
+
   void setTOF(float t, int id) { mT[id] = t; }
 
   void print() const;
@@ -60,6 +61,7 @@ class TrackLTIntegral
  private:
   float mL = 0.;                           // length in cm
   float mX2X0 = 0.;                        // integrated X/X0
+
   float mT[o2::track::PID::NIDs] = { 0. }; // TOF in ps
 
   ClassDefNV(TrackLTIntegral, 1);
