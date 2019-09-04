@@ -25,7 +25,8 @@ list(APPEND O2_ROOT_MACRO_EXCLUSION_LIST
             Detectors/Passive/macro/PutFrameInTop.C
             Detectors/TPC/reconstruction/macro/addInclude.C
             Detectors/TPC/reconstruction/macro/getTPCTransformationExample.C
-            Detectors/EMCAL/calib/macros/ReadTestBadChannelMap_CCDBApi.C 
+            Detectors/EMCAL/calib/macros/ReadTestBadChannelMap_CCDBApi.C
+	    Detectors/TOF/prototyping/ConvertRun2CalibrationToO2.C
             GPU/GPUTracking/Merger/macros/checkPropagation.C
             GPU/GPUTracking/Merger/macros/fitPolynomialFieldIts.C
             GPU/GPUTracking/Merger/macros/fitPolynomialFieldTpc.C
