@@ -55,10 +55,10 @@ class Geo
     kNCh = 8      // Number of channels per Tdc
   };
 
-  static constexpr Float_t BC_TIME = o2::constants::lhc::LHCBunchSpacingNS; // bunch crossing in ns
-  static constexpr Float_t BC_TIME_INV = 1. / BC_TIME;                      // inv bunch crossing in ns
-  static constexpr Float_t BC_TIME_INPS = BC_TIME * 1000;                   // bunch crossing in ps
-  static constexpr Float_t BC_TIME_INPS_INV = 1. / BC_TIME_INPS;            // inv bunch crossing in ps
+  static constexpr Double_t BC_TIME = o2::constants::lhc::LHCBunchSpacingNS; // bunch crossing in ns
+  static constexpr Double_t BC_TIME_INV = 1. / BC_TIME;                      // inv bunch crossing in ns
+  static constexpr Double_t BC_TIME_INPS = BC_TIME * 1000;                   // bunch crossing in ps
+  static constexpr Double_t BC_TIME_INPS_INV = 1. / BC_TIME_INPS;            // inv bunch crossing in ps
   static constexpr int BC_IN_ORBIT = o2::constants::lhc::LHCMaxBunches;     // N. bunch crossing in 1 orbit
 
   static constexpr Int_t NPADX = 48;
@@ -99,11 +99,11 @@ class Geo
 
   static constexpr Float_t PHISEC = 20; // sector Phi width (deg)
 
-  static constexpr Float_t TDCBIN = o2::constants::lhc::LHCBunchSpacingNS * 1E3 / 1024; ///< TDC bin width [ps]
-  static constexpr Float_t NTDCBIN_PER_PS = 1. / TDCBIN;     ///< number of TDC bins in 1 ns
-  static constexpr Float_t TOTBIN = TDCBIN * 2;              // time-over-threshold bin width [ps]
-  static constexpr Float_t NTOTBIN_PER_NS = 1000. / TOTBIN;  // number of time-over-threshold bin in 1 ns
-  static constexpr Float_t BUNCHCROSSINGBIN = TDCBIN * 1024; // bunch-crossing bin width [ps]
+  static constexpr Double_t TDCBIN = o2::constants::lhc::LHCBunchSpacingNS * 1E3 / 1024; ///< TDC bin width [ps]
+  static constexpr Double_t NTDCBIN_PER_PS = 1. / TDCBIN;     ///< number of TDC bins in 1 ns
+  static constexpr Double_t TOTBIN = TDCBIN * 2;              // time-over-threshold bin width [ps]
+  static constexpr Double_t NTOTBIN_PER_NS = 1000. / TOTBIN;  // number of time-over-threshold bin in 1 ns
+  static constexpr Double_t BUNCHCROSSINGBIN = TDCBIN * 1024; // bunch-crossing bin width [ps]
 
   static constexpr Float_t SLEWTOTMIN = 10.; // min TOT for slewing correction [ns]
   static constexpr Float_t SLEWTOTMAX = 16.; // max TOT for slewing correction [ns]

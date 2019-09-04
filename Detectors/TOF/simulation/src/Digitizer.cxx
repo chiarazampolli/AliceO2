@@ -100,7 +100,7 @@ Int_t Digitizer::processHit(const HitType& hit, Double_t event_time)
 
   Float_t charge = getCharge(hit.GetEnergyLoss());
   // NOTE: FROM NOW ON THE TIME IS IN PS ... AND NOT IN NS
-  Float_t time = getShowerTimeSmeared((event_time + hit.GetTime()) * 1E3, charge);
+  Double_t time = event_time*1E3 + getShowerTimeSmeared(hit.GetTime() * 1E3, charge);
 
   Float_t xLocal = deltapos[0];
   Float_t zLocal = deltapos[2];
@@ -198,12 +198,12 @@ Int_t Digitizer::processHit(const HitType& hit, Double_t event_time)
 }
 
 //______________________________________________________________________
-void Digitizer::addDigit(Int_t channel, UInt_t istrip, Float_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ,
+void Digitizer::addDigit(Int_t channel, UInt_t istrip, Double_t time, Float_t x, Float_t z, Float_t charge, Int_t iX, Int_t iZ,
                          Int_t padZfired, Int_t trackID)
 {
   // TOF digit requires: channel, time and time-over-threshold
 
-  time = getDigitTimeSmeared(time, x, z, charge); // add time smearing
+  time = time + getDigitTimeSmeared(0, x, z, charge); // add time smearing
 
   charge *= getFractionOfCharge(x, z);
   Float_t tot = 12; // time-over-threshold
