@@ -46,5 +46,5 @@ o2_add_test_root_macro(checkTS.C
 
 o2_add_test_root_macro(testCCDB.C
                        PUBLIC_LINK_LIBRARIES O2::DataFormatsTOF
-		       			     02::TOFCalibration
+		       			     O2::TOFCalibration
 		       LABELS tof)
