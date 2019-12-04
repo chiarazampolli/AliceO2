@@ -20,6 +20,8 @@
 #include "DataFormatsTOF/Cluster.h"
 #include "SimulationDataFormat/MCTruthContainer.h"
 #include "SimulationDataFormat/MCCompLabel.h"
+#include "DataFormatsTOF/CalibLHCphaseTOF.h"
+#include "DataFormatsTOF/CalibTimeSlewingParamTOF.h"
 #include <memory> // for make_shared, make_unique, unique_ptr
 #include <vector>
 
@@ -59,6 +61,12 @@ class TOFDPLClustererTask
       mClusterer.setMCTruthContainer(&mClsLabels);
       mClsLabels.clear();
     }
+    // check LHC phase
+    auto lhcPhase = pc.inputs().get<o2::dataformats::CalibLHCphaseTOF*>("tofccdbLHCphase");
+    printf("\n\n\n\n\n\n\n\nlhcPhase size = %d\n\n\n\n\n\n\n\n", lhcPhase->size());
+    auto channelCalib = pc.inputs().get<o2::dataformats::CalibTimeSlewingParamTOF*>("tofccdbChannelCalib");
+    printf("\n\n\n\n\n\n\n\nchannelCalib size = %d\n\n\n\n\n\n\n\n", channelCalib->size());
+
     // call actual clustering routine
     mClustersArray.clear();
 
@@ -97,6 +105,8 @@ o2::framework::DataProcessorSpec getTOFClusterizerSpec(bool useMC)
 {
   std::vector<InputSpec> inputs;
   inputs.emplace_back("tofdigits", "TOF", "DIGITS", 0, Lifetime::Timeframe);
+  inputs.emplace_back("tofccdbLHCphase", "TOF", "LHCphase");
+  inputs.emplace_back("tofccdbChannelCalib", "TOF", "ChannelCalib");
   if (useMC)
     inputs.emplace_back("tofdigitlabels", "TOF", "DIGITSMCTR", 0, Lifetime::Timeframe);
 
