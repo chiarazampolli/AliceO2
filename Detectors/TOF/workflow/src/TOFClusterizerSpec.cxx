@@ -69,7 +69,12 @@ class TOFDPLClustererTask
     auto channelCalib = pc.inputs().get<o2::dataformats::CalibTimeSlewingParamTOF*>("tofccdbChannelCalib");
     printf("\n\n\n\n\n\n\n\nchannelCalib size = %d\n\n\n\n\n\n\n\n", channelCalib->size());
 
-    o2::tof::CalibTOFapi calibapi(long(0), lhcPhase, channelCalib);
+    o2::dataformats::CalibLHCphaseTOF lhcPhaseObj = std::move(*lhcPhase);
+    printf("\n\n\n\n\n\n\n\nlhcPhaseObj size = %d\n\n\n\n\n\n\n\n", lhcPhaseObj.size());
+    o2::dataformats::CalibTimeSlewingParamTOF channelCalibOjb = std::move(*channelCalib);
+    printf("\n\n\n\n\n\n\n\nchannelCalibObj size = %d\n\n\n\n\n\n\n\n", channelCalibObj.size());
+
+    o2::tof::CalibTOFapi calibapi(long(0), &lhcPhaseObj, &channelCalibObj);
     mClusterer.setCalibApi(&calibapi);
 
     // call actual clustering routine
