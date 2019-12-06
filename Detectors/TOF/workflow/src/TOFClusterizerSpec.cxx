@@ -22,6 +22,8 @@
 #include "SimulationDataFormat/MCCompLabel.h"
 #include "DataFormatsTOF/CalibLHCphaseTOF.h"
 #include "DataFormatsTOF/CalibTimeSlewingParamTOF.h"
+#include "TOFCalibration/CalibTOFapi.h"
+
 #include <memory> // for make_shared, make_unique, unique_ptr
 #include <vector>
 
@@ -66,6 +68,9 @@ class TOFDPLClustererTask
     printf("\n\n\n\n\n\n\n\nlhcPhase size = %d\n\n\n\n\n\n\n\n", lhcPhase->size());
     auto channelCalib = pc.inputs().get<o2::dataformats::CalibTimeSlewingParamTOF*>("tofccdbChannelCalib");
     printf("\n\n\n\n\n\n\n\nchannelCalib size = %d\n\n\n\n\n\n\n\n", channelCalib->size());
+
+    o2::tof::CalibTOFapi calibapi(long(0), lhcPhase, channelCalib);
+    mClusterer.setCalibApi(&calibapi);
 
     // call actual clustering routine
     mClustersArray.clear();
