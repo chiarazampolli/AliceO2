@@ -71,7 +71,7 @@ class TOFDPLClustererTask
 
     o2::dataformats::CalibLHCphaseTOF lhcPhaseObj = std::move(*lhcPhase);
     printf("\n\n\n\n\n\n\n\nlhcPhaseObj size = %d\n\n\n\n\n\n\n\n", lhcPhaseObj.size());
-    o2::dataformats::CalibTimeSlewingParamTOF channelCalibOjb = std::move(*channelCalib);
+    o2::dataformats::CalibTimeSlewingParamTOF channelCalibObj = std::move(*channelCalib);
     printf("\n\n\n\n\n\n\n\nchannelCalibObj size = %d\n\n\n\n\n\n\n\n", channelCalibObj.size());
 
     o2::tof::CalibTOFapi calibapi(long(0), &lhcPhaseObj, &channelCalibObj);
@@ -100,7 +100,8 @@ class TOFDPLClustererTask
 
     // declare done
     finished = true;
-    pc.services().get<ControlService>().readyToQuit(QuitRequest::Me);
+    //pc.services().get<ControlService>().readyToQuit(QuitRequest::Me);
+    pc.services().get<ControlService>().endOfStream();
   }
 
  private:

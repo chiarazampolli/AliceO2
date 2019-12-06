@@ -24,6 +24,9 @@
 #include "DataFormatsParameters/GRPObject.h"
 #include <SimulationDataFormat/MCCompLabel.h>
 #include <SimulationDataFormat/MCTruthContainer.h>
+#include "DataFormatsTOF/CalibLHCphaseTOF.h"
+#include "DataFormatsTOF/CalibTimeSlewingParamTOF.h"
+#include "TOFCalibration/CalibTOFapi.h"
 
 using namespace o2::framework;
 using SubSpecificationType = o2::framework::DataAllocator::SubSpecificationType;
@@ -88,6 +91,20 @@ DataProcessorSpec getTOFDigitizerSpec(int channel)
     timer.Start();
 
     LOG(INFO) << " CALLING TOF DIGITIZATION ";
+
+    // get TOF CCDB objects
+    auto lhcPhase = pc.inputs().get<o2::dataformats::CalibLHCphaseTOF*>("tofccdbLHCphase");
+    printf("\n\n\n\n\n\n\n\nlhcPhase size = %d\n\n\n\n\n\n\n\n", lhcPhase->size());
+    auto channelCalib = pc.inputs().get<o2::dataformats::CalibTimeSlewingParamTOF*>("tofccdbChannelCalib");
+    printf("\n\n\n\n\n\n\n\nchannelCalib size = %d\n\n\n\n\n\n\n\n", channelCalib->size());
+
+    o2::dataformats::CalibLHCphaseTOF lhcPhaseObj = std::move(*lhcPhase);
+    printf("\n\n\n\n\n\n\n\nlhcPhaseObj size = %d\n\n\n\n\n\n\n\n", lhcPhaseObj.size());
+    o2::dataformats::CalibTimeSlewingParamTOF channelCalibObj = std::move(*channelCalib);
+    printf("\n\n\n\n\n\n\n\nchannelCalibObj size = %d\n\n\n\n\n\n\n\n", channelCalibObj.size());
+
+    o2::tof::CalibTOFapi calibapi(long(0), &lhcPhaseObj, &channelCalibObj);
+    digitizer->setCalibApi(&calibapi);
 
     static std::vector<o2::tof::HitType> hits;
     o2::dataformats::MCTruthContainer<o2::MCCompLabel> labelAccum;
@@ -191,7 +208,10 @@ DataProcessorSpec getTOFDigitizerSpec(int channel)
   //  algorithmic description (here a lambda getting called once to setup the actual processing function)
   //  options that can be used for this processor (here: input file names where to take the hits)
   return DataProcessorSpec{
-    "TOFDigitizer", Inputs{InputSpec{"collisioncontext", "SIM", "COLLISIONCONTEXT", static_cast<SubSpecificationType>(channel), Lifetime::Timeframe}},
+    "TOFDigitizer",
+      Inputs{InputSpec{"collisioncontext", "SIM", "COLLISIONCONTEXT", static_cast<SubSpecificationType>(channel), Lifetime::Timeframe},
+	     InputSpec{"tofccdbLHCphase", "TOF", "LHCphase"},
+	     InputSpec{"tofccdbChannelCalib", "TOF", "ChannelCalib"}},
     Outputs{OutputSpec{"TOF", "DIGITS", 0, Lifetime::Timeframe},
             OutputSpec{"TOF", "DIGITSMCTR", 0, Lifetime::Timeframe},
             OutputSpec{"TOF", "ROMode", 0, Lifetime::Timeframe}},
