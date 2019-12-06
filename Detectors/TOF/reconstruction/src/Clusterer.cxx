@@ -53,9 +53,9 @@ void Clusterer::calibrateStrip()
   for (int idig = 0; idig < mStripData.digits.size(); idig++) {
     //    LOG(DEBUG) << "Checking digit " << idig;
     Digit* dig = &mStripData.digits[idig];
-    double calib = mCalibApi->getTimeCalibration(dig->getChannel(), dig->getTOT());
+    double calib = mCalibApi->getTimeCalibration(dig->getChannel(), dig->getTOT() * Geo::TOTBIN);
     dig->setIsProblematic(mCalibApi->isProblematic(dig->getChannel()));
-    dig->setCalibratedTime(dig->getTDC() * Geo::TDCBIN + mContributingDigit[0]->getBC() * o2::constants::lhc::LHCBunchSpacingNS * 1E3 - calib); //TODO:  to be checked that "-" is correct, and we did not need "+" instead :-)
+    dig->setCalibratedTime(dig->getTDC() * Geo::TDCBIN + dig->getBC() * o2::constants::lhc::LHCBunchSpacingNS * 1E3 - calib); //TODO:  to be checked that "-" is correct, and we did not need "+" instead :-)
   }
 }
 
