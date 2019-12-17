@@ -71,13 +71,10 @@ class TOFDPLClustererTask
     if(mUseCCDB){ // read calibration objects from ccdb
       // check LHC phase
       auto lhcPhase = pc.inputs().get<o2::dataformats::CalibLHCphaseTOF*>("tofccdbLHCphase");
-      printf("\n\n\n\n\n\n\n\nCCDB: lhcPhase size = %d\n\n\n\n\n\n\n\n", lhcPhase->size());
       auto channelCalib = pc.inputs().get<o2::dataformats::CalibTimeSlewingParamTOF*>("tofccdbChannelCalib");
-      printf("\n\n\n\n\n\n\n\nCCDB: channelCalib size = %d\n\n\n\n\n\n\n\n", channelCalib->size());
 
       o2::dataformats::CalibLHCphaseTOF lhcPhaseObjTmp = std::move(*lhcPhase);
       o2::dataformats::CalibTimeSlewingParamTOF channelCalibObjTmp = std::move(*channelCalib);
-
 
       // make a copy in global scope
       lhcPhaseObj = lhcPhaseObjTmp;
@@ -94,9 +91,6 @@ class TOFDPLClustererTask
 	  channelCalibObj.setFractionUnderPeak(sector, channelInSector, 1);
       }
     }
-
-    printf("\n\n\n\n\n\n\n\nlhcPhaseObj size = %d\n\n\n\n\n\n\n\n", lhcPhaseObj.size());
-    printf("\n\n\n\n\n\n\n\nchannelCalibObj size = %d\n\n\n\n\n\n\n\n", channelCalibObj.size());
 
     o2::tof::CalibTOFapi calibapi(long(0), &lhcPhaseObj, &channelCalibObj);
 
