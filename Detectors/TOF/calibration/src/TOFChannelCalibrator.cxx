@@ -29,12 +29,8 @@ using Slot = o2::calibration::TimeSlot<o2::tof::TOFChannelData>;
 using TimeSlewing = o2::dataformats::CalibTimeSlewingParamTOF;
 using clbUtils = o2::calibration::Utils;
 using o2::math_utils::math_base::fitGaus;
-
-//_____________________________________________
-TOFChannelData::TOFChannelData()
-{
-  LOG(INFO) << "Default c-tor, not to be used";
-}
+using boost::histogram::indexed;
+  //using boost::histogram::algorithm; // not sure why it does not work...
 
 //_____________________________________________
 void TOFChannelData::fill(const gsl::span<const o2::dataformats::CalibInfoTOF> data)
@@ -43,25 +39,25 @@ void TOFChannelData::fill(const gsl::span<const o2::dataformats::CalibInfoTOF> d
   for (int i = data.size(); i--;) {
     auto dt = data[i].getDeltaTimePi();
     auto ch = data[i].getTOFChIndex();
-    histo.fill(dt, ch);
+    mHisto(dt, ch);
   }
 }
 
 //_____________________________________________
-void TOFChannelData::merge(const LHCClockDataHisto* prev)
+void TOFChannelData::merge(const TOFChannelData* prev)
 {
   // merge data of 2 slots
-  histo += prev->histo;
+  mHisto += prev->getHisto();
 }
   
 //_____________________________________________
-bool TOFChannelData::hasEnoughData(const Slot& slot) const
+  bool TOFChannelData::hasEnoughData(const Slot& slot, int minEntries) const
 {
   // true if all channels can be fitted --> have enough statistics
-  for (ich = 0; ich < o2::tof::Geo::NCHANNELS; ich++) {
+  for (int ich = 0; ich < o2::tof::Geo::NCHANNELS; ich++) {
     // make the slice of the 2D histogram so that we have the 1D of the current channel
-    auto hch = algorithm::reduce(c->histo, algorithm::shrink(1, float(ich), float(ich)));
-    if (hch.sum() < mMinEntries) return false;
+    auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)));
+    if (boost::histogram::algorithm::sum(hch) < minEntries) return false;
   }
   return true;
 }
@@ -71,15 +67,15 @@ void TOFChannelData::print() const
 {
   LOG(INFO) << "Printing histogram:";
   std::ostringstream os;
-  os << histo;
-  LOG(INFO) << "Number of entries in histogram: " << histo.sum();
+  os << mHisto;
+  LOG(INFO) << "Number of entries in histogram: " << boost::histogram::algorithm::sum(mHisto);
 }
 
 //_____________________________________________
 int TOFChannelData::findBin(float v) const
 {
   // find the bin along the x-axis (with t-texp) where the value "v" is; this does not depend on the channel (axis 1)
-  for (auto&& x : indexed(histo)) {
+  for (auto&& x : indexed(mHisto)) {
     const auto b0 = x.bin(0); // we take the bin limits along axis 0
     if (b0.lower() <= v && b0.upper() > v) return x.index(0);
   }
@@ -87,11 +83,13 @@ int TOFChannelData::findBin(float v) const
 }
 
 //_____________________________________________
-float TOFChannelData::integral(int ch, int binmin, int binmax) const
+float TOFChannelData::integral(int ich, int binmin, int binmax) const
 {
   // calculates the integral along one channel only, in [binmin, binmax]
-  auto hch = algorithm::reduce(histo, algorithm::shrink(1, float(ich), float(ich)), algorithm::slice(0, binmin, binmax));
-  return hch.sum();
+  //  auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)), boost::histogram::algorithm::slice(0, binmin, binmax)); // slice does not work with the current boost!
+  auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)), boost::histogram::algorithm::shrink(0, binmin, binmax)); // slice does not work with the current boost!
+  
+  return boost::histogram::algorithm::sum(hch);
 }
   
 //===================================================================
@@ -110,22 +108,21 @@ void TOFChannelCalibrator::finalizeSlot(Slot& slot)
 {
   // Extract results for the single slot
   o2::tof::TOFChannelData* c = slot.getContainer();
-  LOG(INFO) << "Finalize slot " << slot.getTFStart() << " <= TF <= " << slot.getTFEnd() << " with "
-	    << c->getEntries() << " entries";
+  LOG(INFO) << "Finalize slot " << slot.getTFStart() << " <= TF <= " << slot.getTFEnd();
 
   // for the CCDB entry
   std::map<std::string, std::string> md;
   TimeSlewing ts;
   
-  for (ich = 0; ich < o2::tof::Geo::NCHANNELS; ich++) {
+  for (int ich = 0; ich < o2::tof::Geo::NCHANNELS; ich++) {
     // make the slice of the 2D histogram so that we have the 1D of the current channel
-    auto hch = algorithm::reduce(c->histo, algorithm::shrink(1, float(ich), float(ich)));
+    auto hch = boost::histogram::algorithm::reduce(c->getHisto(), boost::histogram::algorithm::shrink(1, float(ich), float(ich)));
     std::vector<float> fitValues;
     std::vector<float> histoValues;
     for (auto x : indexed(hch)) {
       histoValues.push_back(x.get());
     }
-    int fitres = fitGaus(c->nbins, histoValues.data(), -(c->range), c->range, fitValues);
+    int fitres = fitGaus(c->getNbins(), histoValues.data(), -(c->getRange()), c->getRange(), fitValues);
     if (fitres >= 0) {
       LOG(INFO) << "Channel " << ich << " :: Fit result " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
     } else {
@@ -145,30 +142,40 @@ void TOFChannelCalibrator::finalizeSlot(Slot& slot)
       intmin = -12500;
       intmax2 = 12500;
       if (intmin2 > intmax) {
+	/* 
+	// to be used if slice worked with our boost version
 	int binmin2 = c->findBin(intmin2);
 	int binmax2 = c->findBin(intmax2);
-	addduetoperiodicity = c->integral(ich, binmin2, binmax2);
+	addduetoperiodicity = c->integral(ich, binmin2, binmax2); 
+	*/
+	addduetoperiodicity = c->integral(ich, intmin2, intmax2);
       }
     } else if (intmax > 12500) { // at right border
       intmax2 = intmax - 25000;
       intmax = 12500;
       intmin2 = -12500;
       if (intmax2 < intmin) {
+	/*
+	// to be used if slice worked with our boost version
 	int binmin2 = c->findBin(intmin2);
 	int binmax2 = c->findBin(intmax2);
 	addduetoperiodicity = c->integral(ich, binmin2, binmax2);
+	*/
+	addduetoperiodicity = c->integral(ich, intmin2, intmax2);
       }
     }
     
     int binmin = c->findBin(intmin);
     int binmax = c->findBin(intmax);
 
+    // for now these checks are useless, as we pass the value of the bin
     if (binmin < 1)
       binmin = 1; // avoid to take the underflow bin (can happen in case the sigma is too large)
-    if (binmax > c->nbins)
-      binmax = c->nbins; // avoid to take the overflow bin (can happen in case the sigma is too large)
+    if (binmax > c->getNbins())
+      binmax = c->getNbins(); // avoid to take the overflow bin (can happen in case the sigma is too large)
 
-    float fractionUnderPeak = (c->integral(ch, binmin, binmax) + addduetoperiodicity) / c->integral(ch, 1, c->nbins());
+    //    float fractionUnderPeak = (c->integral(ch, binmin, binmax) + addduetoperiodicity) / c->integral(ch, 1, c->nbins());
+    fractionUnderPeak = (c->integral(ich, intmin, intmax) + addduetoperiodicity) / c->integral(ich, 1, c->getNbins());
     // now we need to store the results in the TimeSlewingObject
     ts.setFractionUnderPeak(ich / o2::tof::Geo::NPADSXSECTOR, ich % o2::tof::Geo::NPADSXSECTOR, fractionUnderPeak);
     ts.setSigmaPeak(ich / o2::tof::Geo::NPADSXSECTOR, ich % o2::tof::Geo::NPADSXSECTOR, abs(fitValues[2]));
@@ -177,7 +184,7 @@ void TOFChannelCalibrator::finalizeSlot(Slot& slot)
   auto clName = o2::utils::MemFileHelper::getClassName(ts);
   auto flName = o2::ccdb::CcdbApi::generateFileName(clName);
   mInfoVector.emplace_back("TOF/ChannelCalib", clName, flName, md, slot.getTFStart(), 99999999999999);
-  mTimeSlewingVector.emplace_back(l);
+  mTimeSlewingVector.emplace_back(ts);
 
   slot.print();
 }

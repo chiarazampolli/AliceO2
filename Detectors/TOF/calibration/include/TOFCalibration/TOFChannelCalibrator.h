@@ -26,24 +26,23 @@ namespace o2
 namespace tof
 {
 
-struct TOFChannelData {
-  static float range = 24400;
-  static int nbins = 1000;
-  float v2Bin = nbins / (2 * range);
-  // do I really have to initialize it like below?
-  static auto histo = boost::histogram::make_histogram(boost::histogram::axis::regular<>(nbins, -range, range, "t-texp"),
-						boost::histogram::axis::regular<>(o2::tof::Geo::NCHANNELS, -0.5, o2::tof::Geo::NCHANNELS-0.5, "channel index")); // bin along channel axis is centered in the channel index
+class TOFChannelData {
 
-  TOFChannelData();
+using Slot = o2::calibration::TimeSlot<o2::tof::TOFChannelData>;
 
-  TOFChannelData(int nb, float r) : nbins(nb), range(r), v2Bin(0)
+public: 
+  TOFChannelData() {
+    LOG(INFO) << "Default c-tor, not to be used";
+  }
+
+  TOFChannelData(int nb, float r) : mNbins(nb), mRange(r)
   {
     if (r <= 0. || nb < 1) {
       throw std::runtime_error("Wrong initialization of the histogram");
     }
-    v2Bin = nbins / (2 * range);
-    histo = boost::histogram::make_histogram(boost::histogram::axis::regular<>(nbins, -range, range, "t-text"),
-					     boost::histogram::axis::regular<>(o2::tof::Geo::NCHANNELS, -0.5, o2::tof::Geo::NCHANNELS-0.5, "channel index")); // bin along channel axis is centered in the channel index
+    mV2Bin = mNbins / (2 * mRange);
+    mHisto = boost::histogram::make_histogram(boost::histogram::axis::regular<>(mNbins, -mRange, mRange, "t-text"),
+					      boost::histogram::axis::regular<>(o2::tof::Geo::NCHANNELS, -0.5, o2::tof::Geo::NCHANNELS-0.5, "channel index")); // bin along channel axis is centered in the channel index
   }
 
   void print() const;
@@ -51,7 +50,23 @@ struct TOFChannelData {
   void merge(const TOFChannelData* prev);
   int findBin(float v) const;
   float integral(int ch, int binmin, int binmax) const;
+  bool hasEnoughData(const Slot& slot, int minEntries) const;
+
+  float getRange() const { return mRange; }
+  void setRange(float r) { mRange = r; }
+
+  float getNbins() const { return mNbins; }
+  void setNbins(float nb) { mNbins = nb; }
+
+  boost::histogram::histogram<std::tuple<boost::histogram::axis::regular<double, boost::use_default, boost::use_default, boost::use_default> >, boost::histogram::unlimited_storage<std::allocator<char> > > getHisto() const { return mHisto; }
     
+ private:
+  float mRange = 24400;
+  int mNbins = 1000;
+  float mV2Bin;
+  // do I really have to initialize it like below?
+  boost::histogram::histogram<std::tuple<boost::histogram::axis::regular<double, boost::use_default, boost::use_default, boost::use_default> >, boost::histogram::unlimited_storage<std::allocator<char> > > mHisto;
+
   ClassDefNV(TOFChannelData, 1);
 };
 
