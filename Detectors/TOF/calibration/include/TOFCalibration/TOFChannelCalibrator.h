@@ -16,6 +16,7 @@
 #include "DataFormatsTOF/CalibInfoTOF.h"
 #include "TOFCalibration/CalibTOFapi.h"
 #include "DataFormatsTOF/CalibLHCphaseTOF.h"
+#include "TOFBase/Geo.h"
 #include "CCDB/CcdbObjectInfo.h"
 #include <array>
 #include <boost/histogram.hpp>
@@ -26,12 +27,12 @@ namespace tof
 {
 
 struct TOFChannelData {
-  float range = 24400;
-  int nbins = 1000;
+  static float range = 24400;
+  static int nbins = 1000;
   float v2Bin = nbins / (2 * range);
   // do I really have to initialize it like below?
-  auto histo = boost::histogram::make_histogram(axis::regular<>(nbins, -range, range, "t-text"),
-						axis::integer<>(-0.5, o2::tof::Geo::NCHANNELS-0.5, "channel index")); // bin along channel axis is centered in the channel index
+  static auto histo = boost::histogram::make_histogram(boost::histogram::axis::regular<>(nbins, -range, range, "t-texp"),
+						boost::histogram::axis::regular<>(o2::tof::Geo::NCHANNELS, -0.5, o2::tof::Geo::NCHANNELS-0.5, "channel index")); // bin along channel axis is centered in the channel index
 
   TOFChannelData();
 
@@ -41,8 +42,8 @@ struct TOFChannelData {
       throw std::runtime_error("Wrong initialization of the histogram");
     }
     v2Bin = nbins / (2 * range);
-    histo = boost::histogram::make_histogram(axis::regular<>(nbins, -range, range, "t-text"),
-					     axis::integer<>(-0.5, o2::tof::Geo::NCHANNELS-0.5, "channel index")); // bin along channel axis is centered in the channel index
+    histo = boost::histogram::make_histogram(boost::histogram::axis::regular<>(nbins, -range, range, "t-text"),
+					     boost::histogram::axis::regular<>(o2::tof::Geo::NCHANNELS, -0.5, o2::tof::Geo::NCHANNELS-0.5, "channel index")); // bin along channel axis is centered in the channel index
   }
 
   void print() const;
