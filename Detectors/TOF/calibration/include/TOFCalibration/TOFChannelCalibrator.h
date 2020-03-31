@@ -8,8 +8,8 @@
 // granted to it by virtue of its status as an Intergovernmental Organization
 // or submit itself to any jurisdiction.
 
-#ifndef TOF_CHANNEL_CALIBRATION_H_
-#define TOF_CHANNEL_CALIBRATION_H_
+#ifndef TOF_CHANNEL_CALIBRATOR_H_
+#define TOF_CHANNEL_CALIBRATOR_H_
 
 #include "DetectorsCalibration/TimeSlotCalibration.h"
 #include "DetectorsCalibration/TimeSlot.h"
@@ -44,6 +44,8 @@ public:
     mHisto = boost::histogram::make_histogram(boost::histogram::axis::regular<>(mNbins, -mRange, mRange, "t-text"),
 					      boost::histogram::axis::regular<>(o2::tof::Geo::NCHANNELS, -0.5, o2::tof::Geo::NCHANNELS-0.5, "channel index")); // bin along channel axis is centered in the channel index
   }
+
+  ~TOFChannelData() = default;
 
   void print() const;
   void fill(const gsl::span<const o2::dataformats::CalibInfoTOF> data);
@@ -111,4 +113,4 @@ class TOFChannelCalibrator : public o2::calibration::TimeSlotCalibration<o2::dat
 } // end namespace tof
 } // end namespace o2
 
-#endif /* TOF_CHANNEL_CALIBRATION_H_ */
+#endif /* TOF_CHANNEL_CALIBRATOR_H_ */
