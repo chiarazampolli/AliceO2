@@ -39,7 +39,9 @@ void TOFChannelData::fill(const gsl::span<const o2::dataformats::CalibInfoTOF> d
   for (int i = data.size(); i--;) {
     auto dt = data[i].getDeltaTimePi();
     auto ch = data[i].getTOFChIndex();
+    //LOG(INFO) << "dt = " << dt << " ch = " << ch;
     mHisto(dt, ch);
+    mEntries[ch] += 1;
   }
 }
 
@@ -51,15 +53,32 @@ void TOFChannelData::merge(const TOFChannelData* prev)
 }
   
 //_____________________________________________
-  bool TOFChannelData::hasEnoughData(const Slot& slot, int minEntries) const
+  bool TOFChannelData::hasEnoughData(int minEntries) const
 {
   // true if all channels can be fitted --> have enough statistics
+  /*
+  LOG(INFO) << "initial number of entries " << boost::histogram::algorithm::sum(mHisto);
   for (int ich = 0; ich < o2::tof::Geo::NCHANNELS; ich++) {
     // make the slice of the 2D histogram so that we have the 1D of the current channel
-    auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)));
-    if (boost::histogram::algorithm::sum(hch) < minEntries) return false;
+    LOG(INFO) << "ch " << ich;
+    auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)+0.1));
+    double nentries = 0;
+    for (auto x : indexed(hch)) {
+      nentries += x.get();
+    }
+    //    auto nentries = boost::histogram::algorithm::sum(hch);
+    LOG(INFO) << "ch " << ich << " has " << nentries << " entries";
+    if (nentries < minEntries) return false;
   }
   return true;
+  */
+  // we can simply check if the min of the elements of the mEntries vector is >= minEntries
+  auto minElementIndex = std::min_element(mEntries.begin(), mEntries.end());
+  LOG(INFO) << "minElement is at position " << std::distance(mEntries.begin(), minElementIndex) <<
+    " and is " << *minElementIndex;
+  bool enough = *minElementIndex < minEntries ? false : true;
+  LOG(INFO) << "hasEnough = " << (int)enough; 
+  return enough;
 }
   
 //_____________________________________________
@@ -75,11 +94,17 @@ void TOFChannelData::print() const
 int TOFChannelData::findBin(float v) const
 {
   // find the bin along the x-axis (with t-texp) where the value "v" is; this does not depend on the channel (axis 1)
+  // to be checked if this is provided already by the library (see
+  // https://github.com/scikit-hep/boost-histogram)
+  /*
   for (auto&& x : indexed(mHisto)) {
     const auto b0 = x.bin(0); // we take the bin limits along axis 0
     if (b0.lower() <= v && b0.upper() > v) return x.index(0);
   }
-  return -1; // if we cannot find the bin  
+  return -1; // if we cannot find the bin
+  */
+  return mHisto.axis(0).index(v);
+  
 }
 
 //_____________________________________________
@@ -87,9 +112,20 @@ float TOFChannelData::integral(int ich, int binmin, int binmax) const
 {
   // calculates the integral along one channel only, in [binmin, binmax]
   //  auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)), boost::histogram::algorithm::slice(0, binmin, binmax)); // slice does not work with the current boost!
-  auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)), boost::histogram::algorithm::shrink(0, binmin, binmax)); // slice does not work with the current boost!
+  if (binmin == binmax) binmax += 1e-4;
+  auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)+0.1), boost::histogram::algorithm::shrink(0, binmin, binmax)); // slice does not work with the current boost!
+  // first way: does not compile for now
+  //auto indhch = indexed(hch);
+  //const double enthch = std::accumulate(indhch.begin(), indhch.end(), 0.0); // does not compile? 
+  //return enthch;
+  // second way: shouldn't be used, since it includes under/overflow bins, where we have all entries outside the reduction 
+  //return boost::histogram::algorithm::sum(hch);
+  double sumAfter = 0;
+  for (auto x : indexed(hch)) {
+    sumAfter += x.get();
+  }
+  return sumAfter;
   
-  return boost::histogram::algorithm::sum(hch);
 }
   
 //===================================================================
@@ -103,6 +139,18 @@ void TOFChannelCalibrator::initOutput()
   return;
 }
 
+//_____________________________________________
+bool TOFChannelCalibrator::hasEnoughData(const Slot& slot) const
+{
+
+  // Checking if all channels have enough data to do calibration.
+  // Delegating this to TOFChannelData
+  
+  const o2::tof::TOFChannelData* c = slot.getContainer();
+  return c->hasEnoughData(mMinEntries);
+  
+}
+  
 //_____________________________________________
 void TOFChannelCalibrator::finalizeSlot(Slot& slot)
 {
