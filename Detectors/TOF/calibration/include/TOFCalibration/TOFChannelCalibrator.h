@@ -29,8 +29,12 @@ namespace tof
 class TOFChannelData {
 
 using Slot = o2::calibration::TimeSlot<o2::tof::TOFChannelData>;
+using boostHisto = boost::histogram::histogram<std::tuple<boost::histogram::axis::regular<double, boost::use_default, boost::use_default, boost::use_default>, boost::histogram::axis::integer<> >, boost::histogram::unlimited_storage<std::allocator<char> > >;
 
-public: 
+public:
+
+  static const int NCHANNELSXSECTOR = o2::tof::Geo::NCHANNELS / o2::tof::Geo::NSECTORS;
+  
   TOFChannelData() {
     LOG(INFO) << "Default c-tor, not to be used";
   }
@@ -41,8 +45,28 @@ public:
       throw std::runtime_error("Wrong initialization of the histogram");
     }
     mV2Bin = mNbins / (2 * mRange);
-    mHisto = boost::histogram::make_histogram(boost::histogram::axis::regular<>(mNbins, -mRange, mRange, "t-texp"),
-					      boost::histogram::axis::integer<>(0, o2::tof::Geo::NCHANNELS, "channel index")); // bin is defined as [low, high[
+    mHisto[0] = &mHisto00;
+    mHisto[1] = &mHisto01;
+    mHisto[2] = &mHisto02;
+    mHisto[3] = &mHisto03;
+    mHisto[4] = &mHisto04;
+    mHisto[5] = &mHisto05;
+    mHisto[6] = &mHisto06;
+    mHisto[7] = &mHisto07;
+    mHisto[8] = &mHisto08;
+    mHisto[9] = &mHisto09;
+    mHisto[10] = &mHisto10;
+    mHisto[11] = &mHisto11;
+    mHisto[12] = &mHisto12;
+    mHisto[13] = &mHisto13;
+    mHisto[14] = &mHisto14;
+    mHisto[15] = &mHisto15;
+    mHisto[16] = &mHisto16;
+    mHisto[17] = &mHisto17;
+    for (int isect = 0; isect < 18; isect ++){
+      *mHisto[isect] = boost::histogram::make_histogram(boost::histogram::axis::regular<>(mNbins, -mRange, mRange, "t-texp"),
+						       boost::histogram::axis::integer<>(0, o2::tof::Geo::NPADSXSECTOR, "channel index in sector" + std::to_string(isect))); // bin is defined as [low, high[
+    }
     mEntries.resize(o2::tof::Geo::NCHANNELS, 0);
   }
 
@@ -61,15 +85,35 @@ public:
   float getNbins() const { return mNbins; }
   void setNbins(float nb) { mNbins = nb; }
 
-  boost::histogram::histogram<std::tuple<boost::histogram::axis::regular<double, boost::use_default, boost::use_default, boost::use_default>, boost::histogram::axis::integer<> >, boost::histogram::unlimited_storage<std::allocator<char> > > getHisto() const { return mHisto; }
+  boostHisto* getHisto(int isect) const { return mHisto[isect]; }
+  //const boostHisto getHisto() const { return &mHisto[0]; }
+  // boostHisto* getHisto(int isect) const { return &mHisto[isect]; }
 
  private:
   float mRange = 24400;
   int mNbins = 1000;
   float mV2Bin;
   // do I really have to initialize it like below?
-  boost::histogram::histogram<std::tuple<boost::histogram::axis::regular<double, boost::use_default, boost::use_default, boost::use_default>, boost::histogram::axis::integer<> >, boost::histogram::unlimited_storage<std::allocator<char> > > mHisto;
-  //  std::vector<int> mEntries(o2::tof::Geo::NCHANNELS); // vector containing number of entries per channel
+
+  boostHisto* mHisto[18]; //! pointers to the sector histos
+  boostHisto mHisto00;
+  boostHisto mHisto01;
+  boostHisto mHisto02;
+  boostHisto mHisto03;
+  boostHisto mHisto04;
+  boostHisto mHisto05;
+  boostHisto mHisto06;
+  boostHisto mHisto07;
+  boostHisto mHisto08;
+  boostHisto mHisto09;
+  boostHisto mHisto10;
+  boostHisto mHisto11;
+  boostHisto mHisto12;
+  boostHisto mHisto13;
+  boostHisto mHisto14;
+  boostHisto mHisto15;
+  boostHisto mHisto16;
+  boostHisto mHisto17;
   std::vector<int> mEntries; // vector containing number of entries per channel
 
   ClassDefNV(TOFChannelData, 1);
@@ -86,6 +130,8 @@ class TOFChannelCalibrator : public o2::calibration::TimeSlotCalibration<o2::dat
   using TimeSlewingVector = std::vector<TimeSlewing>;
 
  public:
+
+  static const int NCHANNELSXSECTOR = o2::tof::Geo::NCHANNELS / o2::tof::Geo::NSECTORS;
   TOFChannelCalibrator(int minEnt = 500, int nb = 1000, float r = 24400, const std::string path = "http://ccdb-test.cern.ch:8080") : mMinEntries(minEnt), mNBins(nb), mRange(r) { mCalibTOFapi.setURL(path); }
 
   ~TOFChannelCalibrator() final = default;
