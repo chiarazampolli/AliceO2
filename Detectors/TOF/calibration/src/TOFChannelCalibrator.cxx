@@ -115,24 +115,54 @@ int TOFChannelData::findBin(float v) const
 }
 
 //_____________________________________________
-float TOFChannelData::integral(int ich, int binmin, int binmax) const
+float TOFChannelData::integral(int ich, float binmin, float binmax) const
 {
   // calculates the integral along one channel only, in [binmin, binmax]
   //  auto hch = boost::histogram::algorithm::reduce(mHisto, boost::histogram::algorithm::shrink(1, float(ich), float(ich)), boost::histogram::algorithm::slice(0, binmin, binmax)); // slice does not work with the current boost!
   int sector = ich / NCHANNELSXSECTOR;
+  int chinsector = ich % NCHANNELSXSECTOR;
+  LOG(INFO) << "Calculating integral for channel " << ich << " which is in sector " << sector
+	    << " (channel in sector is " << chinsector << ")";;
   if (binmin == binmax) binmax += 1e-4;
-  auto hch = boost::histogram::algorithm::reduce((*(mHisto[sector])), boost::histogram::algorithm::shrink(1, float(ich), float(ich)+0.1), boost::histogram::algorithm::shrink(0, binmin, binmax)); // slice does not work with the current boost!
+  LOG(INFO) << "Bin min = " << binmin << ", binmax = " << binmax;
+  std::ostringstream os;
+  for (int isect = 0; isect < o2::tof::Geo::NSECTORS; isect++) {
+    LOG(INFO) << "Number of entries in histogram for sector " << isect << ": " << boost::histogram::algorithm::sum(*mHisto[isect]);
+  }
+  auto hch = boost::histogram::algorithm::reduce((*(mHisto[sector])), boost::histogram::algorithm::shrink(1, float(chinsector), float(chinsector)+0.1), boost::histogram::algorithm::shrink(0, binmin, binmax)); // slice does not work with the current boost!
+
   // first way: does not compile for now
   //auto indhch = indexed(hch);
-  //const double enthch = std::accumulate(indhch.begin(), indhch.end(), 0.0); // does not compile? 
+  //const double enthch = std::accumulate(indhch.begin(), indhch.end(), 0.0); // does not compile, needs boost 1.72 
   //return enthch;
   // second way: shouldn't be used, since it includes under/overflow bins, where we have all entries outside the reduction 
   //return boost::histogram::algorithm::sum(hch);
+  // also this does not work... no idea why
+
+  // ????????????? Why the following lines do not work??????????????
   double sumAfter = 0;
-  for (auto x : indexed(hch)) {
+  LOG(INFO) << "Trying indexed";
+  for (auto x : indexed(hch)) { // does not work also when I use indexed(*(mHisto[sector]))
     sumAfter += x.get();
+    //LOG(INFO) << "x = " << x.get();
   }
-  return sumAfter;
+  LOG(INFO) << "sum = " << sumAfter;
+
+  // now I try the way Ruben suggested, but also here they don't work:
+  // it looks like hch is not a reduced version of the original histogram
+  auto integral = std::accumulate(++(*(mHisto[sector])).begin(), --(*(mHisto[sector])).end(), 0.0);
+  LOG(INFO) << "integral (full sector) = " << integral;
+  auto integral2 = std::accumulate(++hch.begin(), --hch.end(), 0.0);
+  LOG(INFO) << "integral (channel) = " << integral2;
+  auto integral3 = boost::histogram::algorithm::sum(hch) - (*hch.begin() + *(--hch.end()));
+  LOG(INFO) << "integral3 (channel) = " << integral3;
+  LOG(INFO) << "end = " << *(--hch.end());
+  auto overfl = --hch.end();
+  for (auto it = ++hch.begin(); it != overfl; it++) {
+    //*it += 1; // to modifiy
+    if (*it != 0) std::cout << *it << '\n'; // to access.
+  }
+  return integral2;
   
 }
   

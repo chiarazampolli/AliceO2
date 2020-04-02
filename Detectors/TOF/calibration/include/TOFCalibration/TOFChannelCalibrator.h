@@ -76,7 +76,7 @@ public:
   void fill(const gsl::span<const o2::dataformats::CalibInfoTOF> data);
   void merge(const TOFChannelData* prev);
   int findBin(float v) const;
-  float integral(int ch, int binmin, int binmax) const;
+  float integral(int ch, float binmin, float binmax) const;
   bool hasEnoughData(int minEntries) const;
 
   float getRange() const { return mRange; }
