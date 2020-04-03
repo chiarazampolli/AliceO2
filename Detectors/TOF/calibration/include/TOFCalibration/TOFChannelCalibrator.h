@@ -33,7 +33,7 @@ using boostHisto = boost::histogram::histogram<std::tuple<boost::histogram::axis
 
 public:
 
-  static const int NCHANNELSXSECTOR = o2::tof::Geo::NCHANNELS / o2::tof::Geo::NSECTORS;
+  static constexpr int NCHANNELSXSECTOR = o2::tof::Geo::NCHANNELS / o2::tof::Geo::NSECTORS;
   
   TOFChannelData() {
     LOG(INFO) << "Default c-tor, not to be used";
@@ -45,26 +45,8 @@ public:
       throw std::runtime_error("Wrong initialization of the histogram");
     }
     mV2Bin = mNbins / (2 * mRange);
-    mHisto[0] = &mHisto00;
-    mHisto[1] = &mHisto01;
-    mHisto[2] = &mHisto02;
-    mHisto[3] = &mHisto03;
-    mHisto[4] = &mHisto04;
-    mHisto[5] = &mHisto05;
-    mHisto[6] = &mHisto06;
-    mHisto[7] = &mHisto07;
-    mHisto[8] = &mHisto08;
-    mHisto[9] = &mHisto09;
-    mHisto[10] = &mHisto10;
-    mHisto[11] = &mHisto11;
-    mHisto[12] = &mHisto12;
-    mHisto[13] = &mHisto13;
-    mHisto[14] = &mHisto14;
-    mHisto[15] = &mHisto15;
-    mHisto[16] = &mHisto16;
-    mHisto[17] = &mHisto17;
     for (int isect = 0; isect < 18; isect ++){
-      *mHisto[isect] = boost::histogram::make_histogram(boost::histogram::axis::regular<>(mNbins, -mRange, mRange, "t-texp"),
+      mHisto[isect] = boost::histogram::make_histogram(boost::histogram::axis::regular<>(mNbins, -mRange, mRange, "t-texp"),
 						       boost::histogram::axis::integer<>(0, o2::tof::Geo::NPADSXSECTOR, "channel index in sector" + std::to_string(isect))); // bin is defined as [low, high[
     }
     mEntries.resize(o2::tof::Geo::NCHANNELS, 0);
@@ -85,7 +67,8 @@ public:
   float getNbins() const { return mNbins; }
   void setNbins(float nb) { mNbins = nb; }
 
-  boostHisto* getHisto(int isect) const { return mHisto[isect]; }
+  boostHisto& getHisto(int isect) { return mHisto[isect]; }
+  const boostHisto& getHisto(int isect) const { return mHisto[isect]; }
   //const boostHisto getHisto() const { return &mHisto[0]; }
   // boostHisto* getHisto(int isect) const { return &mHisto[isect]; }
 
@@ -94,26 +77,7 @@ public:
   int mNbins = 1000;
   float mV2Bin;
   // do I really have to initialize it like below?
-
-  boostHisto* mHisto[18]; //! pointers to the sector histos
-  boostHisto mHisto00;
-  boostHisto mHisto01;
-  boostHisto mHisto02;
-  boostHisto mHisto03;
-  boostHisto mHisto04;
-  boostHisto mHisto05;
-  boostHisto mHisto06;
-  boostHisto mHisto07;
-  boostHisto mHisto08;
-  boostHisto mHisto09;
-  boostHisto mHisto10;
-  boostHisto mHisto11;
-  boostHisto mHisto12;
-  boostHisto mHisto13;
-  boostHisto mHisto14;
-  boostHisto mHisto15;
-  boostHisto mHisto16;
-  boostHisto mHisto17;
+  std::array<boostHisto,18> mHisto;
   std::vector<int> mEntries; // vector containing number of entries per channel
 
   ClassDefNV(TOFChannelData, 1);

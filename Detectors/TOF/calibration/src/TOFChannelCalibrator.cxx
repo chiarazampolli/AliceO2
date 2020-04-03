@@ -41,7 +41,7 @@ void TOFChannelData::fill(const gsl::span<const o2::dataformats::CalibInfoTOF> d
     auto ch = data[i].getTOFChIndex();
     //LOG(INFO) << "dt = " << dt << " ch = " << ch;
     int sector = ch / NCHANNELSXSECTOR;
-    (*mHisto[sector])(dt, ch);
+    mHisto[sector](dt, ch);
     mEntries[ch] += 1;
   }
 }
@@ -51,8 +51,7 @@ void TOFChannelData::merge(const TOFChannelData* prev)
 {
   // merge data of 2 slots
   for (int isect = 0; isect < o2::tof::Geo::NSECTORS; isect++) {
-    auto tmp = prev->getHisto(isect);
-    *mHisto[isect] += *tmp;
+    mHisto[isect] += prev->getHisto(isect);
   }
 }
   
@@ -92,7 +91,7 @@ void TOFChannelData::print() const
   std::ostringstream os;
   for (int isect = 0; isect < o2::tof::Geo::NSECTORS; isect++) {
     os << mHisto[isect];
-    LOG(INFO) << "Number of entries in histogram: " << boost::histogram::algorithm::sum(*mHisto[isect]);
+    LOG(INFO) << "Number of entries in histogram: " << boost::histogram::algorithm::sum(mHisto[isect]);
   }
 }
 
@@ -110,7 +109,7 @@ int TOFChannelData::findBin(float v) const
   }
   return -1; // if we cannot find the bin
   */
-  return (*(mHisto[0])).axis(0).index(v);
+  return mHisto[0].axis(0).index(v);
   
 }
 
@@ -127,9 +126,11 @@ float TOFChannelData::integral(int ich, float binmin, float binmax) const
   LOG(INFO) << "Bin min = " << binmin << ", binmax = " << binmax;
   std::ostringstream os;
   for (int isect = 0; isect < o2::tof::Geo::NSECTORS; isect++) {
-    LOG(INFO) << "Number of entries in histogram for sector " << isect << ": " << boost::histogram::algorithm::sum(*mHisto[isect]);
+    LOG(INFO) << "Number of entries in histogram for sector " << isect << ": " << boost::histogram::algorithm::sum(mHisto[isect]);
   }
-  auto hch = boost::histogram::algorithm::reduce((*(mHisto[sector])), boost::histogram::algorithm::shrink(1, float(chinsector), float(chinsector)+0.1), boost::histogram::algorithm::shrink(0, binmin, binmax)); // slice does not work with the current boost!
+  auto hch = boost::histogram::algorithm::reduce(mHisto[sector],
+						 boost::histogram::algorithm::shrink(1, chinsector, chinsector+0.1),
+						 boost::histogram::algorithm::shrink(0, binmin, binmax)); // slice does not work with the current boost!
 
   // first way: does not compile for now
   //auto indhch = indexed(hch);
@@ -142,25 +143,36 @@ float TOFChannelData::integral(int ich, float binmin, float binmax) const
   // ????????????? Why the following lines do not work??????????????
   double sumAfter = 0;
   LOG(INFO) << "Trying indexed";
+  int cnt = 0;
   for (auto x : indexed(hch)) { // does not work also when I use indexed(*(mHisto[sector]))
     sumAfter += x.get();
-    //LOG(INFO) << "x = " << x.get();
+    cnt++;
+    //    LOG(INFO) << " c " << cnt << " i " << x.index(0) << " j " << x.index(1) << " b0 " <<  x.bin(0) <<  " b1 " <<  x.bin(1) << " val= " << *x << "|" << x.get(); 
+    if (x.get()>0) {
+      LOG(INFO) << "x = " << x.get() << " c " << cnt;
+    }
   }
-  LOG(INFO) << "sum = " << sumAfter;
+  LOG(INFO) << "sum = " << sumAfter << " cnt "  << cnt;
 
+  
   // now I try the way Ruben suggested, but also here they don't work:
   // it looks like hch is not a reduced version of the original histogram
-  auto integral = std::accumulate(++(*(mHisto[sector])).begin(), --(*(mHisto[sector])).end(), 0.0);
+  auto integral = std::accumulate(++mHisto[sector].begin(), --mHisto[sector].end(), 0.0);
   LOG(INFO) << "integral (full sector) = " << integral;
+  
   auto integral2 = std::accumulate(++hch.begin(), --hch.end(), 0.0);
   LOG(INFO) << "integral (channel) = " << integral2;
+  
   auto integral3 = boost::histogram::algorithm::sum(hch) - (*hch.begin() + *(--hch.end()));
-  LOG(INFO) << "integral3 (channel) = " << integral3;
+  LOG(INFO) << "integral3 (channel) = " << integral3 << " under " << (*hch.begin()) << " over " << *(--hch.end());
   LOG(INFO) << "end = " << *(--hch.end());
-  auto overfl = --hch.end();
-  for (auto it = ++hch.begin(); it != overfl; it++) {
+  auto overfl = hch.end();
+  cnt = 0;
+  for (auto it = hch.begin(); it != overfl; it++) {
     //*it += 1; // to modifiy
-    if (*it != 0) std::cout << *it << '\n'; // to access.
+    //    if (*it != 0) std::cout << *it << '\n'; // to access.
+    if (*it) LOG(INFO) << "x = " << *it << " c " << cnt;
+    cnt++;
   }
   return integral2;
   
@@ -203,7 +215,7 @@ void TOFChannelCalibrator::finalizeSlot(Slot& slot)
   for (int ich = 0; ich < o2::tof::Geo::NCHANNELS; ich++) {
     // make the slice of the 2D histogram so that we have the 1D of the current channel
     int sector = ich / NCHANNELSXSECTOR;
-    auto hch = boost::histogram::algorithm::reduce((*(c->getHisto(sector))), boost::histogram::algorithm::shrink(1, float(ich), float(ich)));
+    auto hch = boost::histogram::algorithm::reduce( c->getHisto(sector), boost::histogram::algorithm::shrink(1, float(ich), float(ich)));
     std::vector<float> fitValues;
     std::vector<float> histoValues;
     for (auto x : indexed(hch)) {
