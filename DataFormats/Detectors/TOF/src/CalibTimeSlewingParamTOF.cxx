@@ -156,24 +156,3 @@ CalibTimeSlewingParamTOF& CalibTimeSlewingParamTOF::operator+=(const CalibTimeSl
   return *this;
 }
 
-/*
-CalibTimeSlewingParamTOF& CalibTimeSlewingParamTOF::operator+=(const CalibTimeSlewingParamTOF& other)
-{
-  for (int i = 0; i < NSECTORS; i++) {
-    if (other.mTimeSlewing[i].size() > mTimeSlewing[i].size()) {
-
-      mTimeSlewing[i].clear();
-      for (auto obj = other.mTimeSlewing[i].begin(); obj != other.mTimeSlewing[i].end(); obj++)
-        mTimeSlewing[i].push_back(*obj);
-
-      for (int j = 0; j < NCHANNELXSECTOR; j++) {
-        mChannelStart[i][j] = other.mChannelStart[i][j];
-        mFractionUnderPeak[i][j] = other.mFractionUnderPeak[i][j];
-        mSigmaPeak[i][j] = other.mSigmaPeak[i][j];
-      }
-    }
-  }
-  return *this;
-}
-*/
-//______________________________________________
