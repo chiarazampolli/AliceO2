@@ -169,215 +169,38 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
       foundBools = 0, foundStrings = 0, foundTimes = 0, foundBinaries = 0;
 
   // char type
-  auto s = mAliaseschars.size();
-  if (s > 0) {
-    for (size_t i = 0; i != s; ++i) {
-      std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliaseschars[i], DeliveryType::RAW_CHAR, map, it);
-      if (it == map.end()) {
-	LOG(ERROR) << "Element " << mAliaseschars[i] << " not found " << std::endl;
-	continue;
-      }
-      foundChars++;
-      auto& val = it->second;
-      auto flags = val.get_flags();
-      if (processFlag(flags, mAliaseschars[i].get_alias()) == 0) {
-        auto etime = val.get_epoch_time();
-        // fill only if new value has a timestamp different from the timestamp of the previous one
-        LOG(DEBUG) << "mDpscharsmap[mAliaseschars[i]].size() = " << mDpscharsmap[mAliaseschars[i]].size();
-        if (mDpscharsmap[mAliaseschars[i]].size() == 0 || (i > 0 && etime != mLatestTimestampchars[i])) {
-          mDpscharsmap[mAliaseschars[i]].push_back(val.payload_pt1);
-          mLatestTimestampchars[i] = etime;
-        }
-      }
-    }
-    processChars();
-  }
+  foundChars = processArrayType(mAliaseschars, DeliveryType::RAW_CHAR, map, mLatestTimestampchars, mDpscharsmap);
+  if (foundChars > 0) processChars();
 
   // int type
-  s = mAliasesints.size();
-  if (s > 0) {
-    for (size_t i = 0; i != mAliasesints.size(); ++i) {
-      std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesints[i], DeliveryType::RAW_INT, map, it);
-      if (it == map.end()) {
-	LOG(ERROR) << "Element " << mAliasesints[i] << " not found " << std::endl;
-	continue;
-      }
-      foundInts++;
-      auto& val = it->second;
-      auto flags = val.get_flags();
-      if (processFlag(flags, mAliasesints[i].get_alias()) == 0) {
-        auto etime = val.get_epoch_time();
-        // fill only if new value has a timestamp different from the timestamp of the previous one
-        LOG(DEBUG) << "mDpsintsmap[mAliasesints[i]].size() = " << mDpsintsmap[mAliasesints[i]].size();
-        if (mDpsintsmap[mAliasesints[i]].size() == 0 || (etime != mLatestTimestampints[i])) {
-          mDpsintsmap[mAliasesints[i]].push_back(val.payload_pt1);
-          mLatestTimestampints[i] = etime;
-        }
-      }
-    }
-    processInts();
-  }
+  foundInts = processArrayType(mAliasesints, DeliveryType::RAW_INT, map, mLatestTimestampints, mDpsintsmap);
+  if (foundInts > 0) processInts();
 
   // double type
-  s = mAliasesdoubles.size();
-  if (s > 0) {
-    for (size_t i = 0; i != mAliasesdoubles.size(); ++i) {
-      std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesdoubles[i], DeliveryType::RAW_DOUBLE, map, it);
-      if (it == map.end()) {
-	LOG(ERROR) << "Element " << mAliasesdoubles[i] << " not found " << std::endl;
-	continue;
-      }
-      foundDoubles++;
-      auto& val = it->second;
-      auto flags = val.get_flags();
-      if (processFlag(flags, mAliasesdoubles[i].get_alias()) == 0) {
-        auto etime = val.get_epoch_time();
-        // fill only if new value has a timestamp different from the timestamp of the previous one
-        LOG(DEBUG) << "mDpsdoublemap[mAliasesdoubles[i]].size() = " << mDpsdoublesmap[mAliasesdoubles[i]].size();
-        if (mDpsdoublesmap[mAliasesdoubles[i]].size() == 0 || (etime != mLatestTimestampdoubles[i])) {
-          mDpsdoublesmap[mAliasesdoubles[i]].push_back(val.payload_pt1);
-          mLatestTimestampdoubles[i] = etime;
-        }
-      }
-    }
-    processDoubles();
-  }
+  foundDoubles = processArrayType(mAliasesdoubles, DeliveryType::RAW_DOUBLE, map, mLatestTimestampdoubles, mDpsdoublesmap);
+  if (foundDoubles > 0) processDoubles();
 
   // UInt type
-  s = mAliasesUints.size();
-  if (s > 0) {
-    for (size_t i = 0; i != mAliasesUints.size(); ++i) {
-      std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesUints[i], DeliveryType::RAW_UINT, map, it);
-      if (it == map.end()) {
-	LOG(ERROR) << "Element " << mAliasesUints[i] << " not found " << std::endl;
-	continue;
-      }
-      foundUInts++;
-      auto& val = it->second;
-      auto flags = val.get_flags();
-      if (processFlag(flags, mAliasesUints[i].get_alias()) == 0) {
-        auto etime = val.get_epoch_time();
-        // fill only if new value has a timestamp different from the timestamp of the previous one
-        LOG(DEBUG) << "mDpsUintsmap[mAliasesUints[i]].size() = " << mDpsUintsmap[mAliasesUints[i]].size();
-        if (mDpsUintsmap[mAliasesUints[i]].size() == 0 || (etime != mLatestTimestampUints[i])) {
-          mDpsUintsmap[mAliasesUints[i]].push_back(val.payload_pt1);
-          mLatestTimestampUints[i] = etime;
-        }
-      }
-    }
-    processUInts();
-  }
+  foundUInts = processArrayType(mAliasesUints, DeliveryType::RAW_UINT, map, mLatestTimestampUints, mDpsUintsmap);
+  if (foundUInts > 0) processUInts();
 
   // Bool type
-  s = mAliasesbools.size();
-  if (s > 0) {
-    for (size_t i = 0; i != mAliasesbools.size(); ++i) {
-      std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesbools[i], DeliveryType::RAW_BOOL, map, it);
-      if (it == map.end()) {
-	LOG(ERROR) << "Element " << mAliasesbools[i] << " not found " << std::endl;
-	continue;
-      }
-      foundBools++;
-      auto& val = it->second;
-      auto flags = val.get_flags();
-      if (processFlag(flags, mAliasesbools[i].get_alias()) == 0) {
-        auto etime = val.get_epoch_time();
-        // fill only if new value has a timestamp different from the timestamp of the previous one
-        LOG(DEBUG) << "mDpsboolmap[mAliasesbools[i]].size() = " << mDpsboolsmap[mAliasesbools[i]].size();
-        if (mDpsboolsmap[mAliasesbools[i]].size() == 0 || (etime != mLatestTimestampbools[i])) {
-          mDpsboolsmap[mAliasesbools[i]].push_back(val.payload_pt1);
-          mLatestTimestampbools[i] = etime;
-        }
-      }
-    }
-    processBools();
-  }
+  foundBools = processArrayType(mAliasesbools, DeliveryType::RAW_BOOL, map, mLatestTimestampbools, mDpsboolsmap);
+  if (foundBools > 0) processBools();
 
   // String type
-  s = mAliasesstrings.size();
-  if (s > 0) {
-    for (size_t i = 0; i != mAliasesstrings.size(); ++i) {
-      std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesstrings[i], DeliveryType::RAW_STRING, map, it);
-      if (it == map.end()) {
-	LOG(ERROR) << "Element " << mAliasesstrings[i] << " not found " << std::endl;
-	continue;
-      }
-      foundStrings++;
-      auto& val = it->second;
-      auto flags = val.get_flags();
-      if (processFlag(flags, mAliasesstrings[i].get_alias()) == 0) {
-        auto etime = val.get_epoch_time();
-        // fill only if new value has a timestamp different from the timestamp of the previous one
-        LOG(DEBUG) << "mDpsstringmap[mAliasesstrings[i]].size() = " << mDpsstringsmap[mAliasesstrings[i]].size();
-        if (mDpsstringsmap[mAliasesstrings[i]].size() == 0 || (etime != mLatestTimestampstrings[i])) {
-          auto& tmp = mDpsstringsmap[mAliasesstrings[i]].emplace_back();
-          std::strncpy(tmp.data(), (char*)&(val.payload_pt1), 56);
-          mLatestTimestampstrings[i] = etime;
-        }
-      }
-    }
-    processStrings();
-  }
+  foundStrings = processArrayType(mAliasesstrings, DeliveryType::RAW_STRING, map, mLatestTimestampstrings, mDpsstringsmap);
+  if (foundStrings > 0) processStrings();
 
+  /*
   // Time type
-  s = mAliasestimes.size();
-  if (s > 0) {
-    for (size_t i = 0; i != mAliasestimes.size(); ++i) {
-      std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasestimes[i], DeliveryType::RAW_TIME, map, it);
-      if (it == map.end()) {
-	LOG(ERROR) << "Element " << mAliasestimes[i] << " not found " << std::endl;
-	continue;
-      }
-      foundTimes++;
-      auto& val = it->second;
-      auto flags = val.get_flags();
-      if (processFlag(flags, mAliasestimes[i].get_alias()) == 0) {
-        auto etime = val.get_epoch_time();
-        // fill only if new value has a timestamp different from the timestamp of the previous one
-        LOG(DEBUG) << "mDpstimesmap[mAliasestimes[i]].size() = " << mDpstimesmap[mAliasestimes[i]].size();
-        if (mDpstimesmap[mAliasestimes[i]].size() == 0 || (etime != mLatestTimestamptimes[i])) {
-          mDpstimesmap[mAliasestimes[i]].push_back(val.payload_pt1);
-          mLatestTimestamptimes[i] = etime;
-        }
-      }
-    }
-    processTimes();
-  }
+  foundTimes = processArrayType(mAliasestimes, DeliveryType::RAW_TIME, map, mLatestTimestamptimes, mDpstimesmap);
+  if (foundTimes > 0) processTimes();
 
   // Binary type
-  s = mAliasesbinaries.size();
-  if (s > 0) {
-    for (size_t i = 0; i != mAliasesbinaries.size(); ++i) {
-      std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesbinaries[i], DeliveryType::RAW_BINARY, map, it);
-      if (it == map.end()) {
-	LOG(ERROR) << "Element " << mAliasesbinaries[i] << " not found " << std::endl;
-	continue;
-      }
-      foundBinaries++;
-      auto& val = it->second;
-      auto flags = val.get_flags();
-      if (processFlag(flags, mAliasesbinaries[i].get_alias()) == 0) {
-        auto etime = val.get_epoch_time();
-        // fill only if new value has a timestamp different from the timestamp of the previous one
-        LOG(DEBUG) << "mDpsstringmap[mAliasesbinaries[i]].size() = " << mDpsbinariesmap[mAliasesbinaries[i]].size();
-        if (mDpsbinariesmap[mAliasesbinaries[i]].size() == 0 || (etime != mLatestTimestampbinaries[i])) {
-          auto& tmp = mDpsbinariesmap[mAliasesbinaries[i]].emplace_back();
-          memcpy(tmp.data(), &(val.payload_pt1), 7);
-          mLatestTimestampbinaries[i] = etime;
-        }
-      }
-    }
-    processBinaries();
-  }
-
+  foundBinaries = processArrayType(mAliasesbinaries, DeliveryType::RAW_BINARY, map, mLatestTimestampbinaries, mDpsbinariesmap);
+  if (foundBinaries > 0) processBinaries();
+  */
   if (foundChars != mAliaseschars.size())
     LOG(INFO) << "Not all expected char-typed DPs found!";
   if (foundInts != mAliasesints.size())
@@ -400,18 +223,120 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
 
 //______________________________________________________________________
 
-void DCSProcessor::processAlias(DPID& alias, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::unordered_map<DPID, DPVAL>::const_iterator& it)
+template<typename T>
+int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, T>& destmap) {
+
+  // processing the array of type T
+
+  int found = 0;
+  auto s = array.size();
+  if (s > 0) {
+    for (size_t i = 0; i != s; ++i) {
+      auto it = processAlias(array[i], type, map);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
+	continue;
+      }
+      found++;
+      auto& val = it->second;
+      auto flags = val.get_flags();
+      if (processFlag(flags, array[i].get_alias()) == 0) {
+	auto etime = val.get_epoch_time();
+        // fill only if new value has a timestamp different from the timestamp of the previous one
+        LOG(INFO) << "destmap[array[" << i << "]].size() = " << destmap[array[i]].size();
+        if (destmap[array[i]].size() == 0 || etime != latestTimeStamp[i]) {
+	  LOG(INFO) << "adding new value";
+          destmap[array[i]].push_back(val.payload_pt1);
+          latestTimeStamp[i] = etime;
+        }
+      }
+    }
+  }
+  return found;
+}
+
+//______________________________________________________________________
+
+template<>
+int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQStrings>& destmap) {
+
+  // processing the array of type T
+
+  int found = 0;
+  auto s = array.size();
+  if (s > 0) {
+    for (size_t i = 0; i != s; ++i) {
+      auto it = processAlias(array[i], type, map);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
+	continue;
+      }
+      found++;
+      auto& val = it->second;
+      auto flags = val.get_flags();
+      if (processFlag(flags, array[i].get_alias()) == 0) {
+	auto etime = val.get_epoch_time();
+        // fill only if new value has a timestamp different from the timestamp of the previous one
+        LOG(INFO) << "destmap[array[" << i << "]].size() = " << destmap[array[i]].size();
+        if (destmap[array[i]].size() == 0 || etime != latestTimeStamp[i]) {
+	  auto& tmp = destmap[array[i]].emplace_back();
+          std::strncpy(tmp.data(), (char*)&(val.payload_pt1), 56);
+          latestTimeStamp[i] = etime;
+        }
+      }
+    }
+  }
+  return found;
+}
+
+//______________________________________________________________________
+
+template<>
+int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQBinaries>& destmap) {
+
+  // processing the array of type T
+
+  int found = 0;
+  auto s = array.size();
+  if (s > 0) {
+    for (size_t i = 0; i != s; ++i) {
+      auto it = processAlias(array[i], type, map);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
+	continue;
+      }
+      found++;
+      auto& val = it->second;
+      auto flags = val.get_flags();
+      if (processFlag(flags, array[i].get_alias()) == 0) {
+	auto etime = val.get_epoch_time();
+        // fill only if new value has a timestamp different from the timestamp of the previous one
+        LOG(INFO) << "destmap[array[" << i << "]].size() = " << destmap[array[i]].size();
+        if (destmap[array[i]].size() == 0 || etime != latestTimeStamp[i]) {
+	  auto& tmp = destmap[array[i]].emplace_back();
+          memcpy(tmp.data(), &(val.payload_pt1), 7);
+          latestTimeStamp[i] = etime;
+        }
+      }
+    }
+  }
+  return found;
+}
+
+//______________________________________________________________________
+
+std::unordered_map<DPID, DPVAL>::const_iterator DCSProcessor::processAlias(const DPID& alias, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map)
 {
 
   // processing basic checks for map: all needed aliases must be present
 
   LOG(INFO) << "Processing " << alias;
-  it = map.find(alias);
+  auto it = map.find(alias);
   DeliveryType tt = alias.get_type();
   if (tt != type) {
     LOG(FATAL) << "Delivery Type of alias " << alias.get_alias() << " does not match definition in DCSProcessor (" << type << ")! Please fix";
   }
-  return;
+  return it;
 }
 
 //______________________________________________________________________
@@ -424,7 +349,7 @@ void DCSProcessor::processChars()
   for (size_t i = 0; i != mAliaseschars.size(); ++i) {
     LOG(INFO) << "processChars: mAliaseschars[" << i << "] = " << mAliaseschars[i];
     auto& id = mAliaseschars[i];
-    auto& vchar = mDpscharsmap[id];
+    auto& vchar = getVectorForAliasChar(id);
     LOG(INFO) << "vchar size = " << vchar.size();
     for (size_t j = 0; j < vchar.size(); j++) {
       LOG(INFO) << "DP = " << mAliaseschars[i] << " , value[" << j << "] = " << vchar[j];

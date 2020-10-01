@@ -56,7 +56,7 @@ int processor_dpcom_o2()
   DeliveryType typestring = RAW_STRING;
   std::string dpAliasstring0 = "TestString0";
   DPID stringVar0(dpAliasstring0, typestring);
-  aliasDoubles.push_back(stringVar0);
+  aliasStrings.push_back(stringVar0);
 
   dcsproc.init(aliasChars, aliasInts, aliasDoubles, aliasUInts, aliasBools, aliasStrings, aliasTimes, aliasBinaries);
 
@@ -67,7 +67,7 @@ int processor_dpcom_o2()
   uint64_t* payload = new uint64_t[7];
 
   // loop that emulates the number of times the DCS DataPoints are sent
-  for (auto k = 0; k < 10; k++) {
+  for (auto k = 0; k < 2; k++) {
     payload[0] = (uint64_t)k + 33; // adding 33 to have visible chars and strings
 
     DPVAL valchar(flags, milliseconds + k * 10, seconds + k, payload, typechar);
@@ -108,7 +108,7 @@ int processor_dpcom_o2()
     std::cout << stringVar0 << std::endl
               << valstring << " --> " << tt << std::endl;
 
-    //dcsproc.process(dpmap);
+    dcsproc.process(dpmap);
   }
   std::cout << "The map has " << dpmap.size() << " entries" << std::endl;
   return 0;
