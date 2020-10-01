@@ -21,9 +21,9 @@ using DPVAL = o2::dcs::DataPointValue;
 
 //ClassImp(o2::dcs::DCSProcessor);
 
-void DCSProcessor::init(std::vector<DPID> aliaseschars, std::vector<DPID> aliasesints, std::vector<DPID> aliasesdoubles,
-                        std::vector<DPID> aliasesUints, std::vector<DPID> aliasesbools, std::vector<DPID> aliasesstrings,
-                        std::vector<DPID> aliasestimes, std::vector<DPID> aliasesbinaries)
+void DCSProcessor::init(const std::vector<DPID>& aliaseschars, const std::vector<DPID>& aliasesints, const std::vector<DPID>& aliasesdoubles,
+                        const std::vector<DPID>& aliasesUints, const std::vector<DPID>& aliasesbools, const std::vector<DPID>& aliasesstrings,
+                        const std::vector<DPID>& aliasestimes, const std::vector<DPID>& aliasesbinaries)
 {
 
   // init from separate vectors of aliases (one per data point type)
@@ -92,44 +92,20 @@ void DCSProcessor::init(std::vector<DPID> aliaseschars, std::vector<DPID> aliase
     mAliasesbinaries.emplace_back((*it).get_alias(), DeliveryType::RAW_BINARY);
   }
 
-  mLatestTimestampchars.resize(aliaseschars.size());
-  mLatestTimestampints.resize(aliasesints.size());
-  mLatestTimestampdoubles.resize(aliasesdoubles.size());
-  mLatestTimestampUints.resize(aliasesUints.size());
-  mLatestTimestampbools.resize(aliasesbools.size());
-  mLatestTimestampstrings.resize(aliasesstrings.size());
-  mLatestTimestamptimes.resize(aliasestimes.size());
-  mLatestTimestampbinaries.resize(aliasesbinaries.size());
+  mLatestTimestampchars.resize(aliaseschars.size(), 0);
+  mLatestTimestampints.resize(aliasesints.size(), 0);
+  mLatestTimestampdoubles.resize(aliasesdoubles.size(), 0);
+  mLatestTimestampUints.resize(aliasesUints.size(), 0);
+  mLatestTimestampbools.resize(aliasesbools.size(), 0);
+  mLatestTimestampstrings.resize(aliasesstrings.size(), 0);
+  mLatestTimestamptimes.resize(aliasestimes.size(), 0);
+  mLatestTimestampbinaries.resize(aliasesbinaries.size(), 0);
 
-  for (auto i = 0; i < aliaseschars.size(); i++) {
-    mLatestTimestampchars[i] = 0;
-  }
-  for (auto i = 0; i < aliasesints.size(); i++) {
-    mLatestTimestampints[i] = 0;
-  }
-  for (auto i = 0; i < aliasesdoubles.size(); i++) {
-    mLatestTimestampdoubles[i] = 0;
-  }
-  for (auto i = 0; i < aliasesUints.size(); i++) {
-    mLatestTimestampUints[i] = 0;
-  }
-  for (auto i = 0; i < aliasesbools.size(); i++) {
-    mLatestTimestampbools[i] = 0;
-  }
-  for (auto i = 0; i < aliasesstrings.size(); i++) {
-    mLatestTimestampstrings[i] = 0;
-  }
-  for (auto i = 0; i < aliasestimes.size(); i++) {
-    mLatestTimestamptimes[i] = 0;
-  }
-  for (auto i = 0; i < aliasesbinaries.size(); i++) {
-    mLatestTimestampbinaries[i] = 0;
-  }
 }
 
 //______________________________________________________________________
 
-void DCSProcessor::init(std::vector<DPID> aliases)
+void DCSProcessor::init(const std::vector<DPID>& aliases)
 {
 
   int nchars = 0, nints = 0, ndoubles = 0, nUints = 0,
@@ -169,39 +145,15 @@ void DCSProcessor::init(std::vector<DPID> aliases)
     }
   }
 
-  mLatestTimestampchars.resize(nchars);
-  mLatestTimestampints.resize(nints);
-  mLatestTimestampdoubles.resize(ndoubles);
-  mLatestTimestampUints.resize(nUints);
-  mLatestTimestampbools.resize(nbools);
-  mLatestTimestampstrings.resize(nstrings);
-  mLatestTimestamptimes.resize(ntimes);
-  mLatestTimestampbinaries.resize(nbinaries);
+  mLatestTimestampchars.resize(nchars, 0);
+  mLatestTimestampints.resize(nints, 0);
+  mLatestTimestampdoubles.resize(ndoubles, 0);
+  mLatestTimestampUints.resize(nUints, 0);
+  mLatestTimestampbools.resize(nbools, 0);
+  mLatestTimestampstrings.resize(nstrings, 0);
+  mLatestTimestamptimes.resize(ntimes, 0);
+  mLatestTimestampbinaries.resize(nbinaries, 0);
 
-  for (auto i = 0; i < nchars; i++) {
-    mLatestTimestampchars[i] = 0;
-  }
-  for (auto i = 0; i < nints; i++) {
-    mLatestTimestampints[i] = 0;
-  }
-  for (auto i = 0; i < ndoubles; i++) {
-    mLatestTimestampdoubles[i] = 0;
-  }
-  for (auto i = 0; i < nUints; i++) {
-    mLatestTimestampUints[i] = 0;
-  }
-  for (auto i = 0; i < nbools; i++) {
-    mLatestTimestampbools[i] = 0;
-  }
-  for (auto i = 0; i < nstrings; i++) {
-    mLatestTimestampstrings[i] = 0;
-  }
-  for (auto i = 0; i < ntimes; i++) {
-    mLatestTimestamptimes[i] = 0;
-  }
-  for (auto i = 0; i < nbinaries; i++) {
-    mLatestTimestampbinaries[i] = 0;
-  }
 }
 
 //__________________________________________________________________
@@ -213,18 +165,19 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
 
   // first, we need to check if there are the Data Points that we need
 
-  auto foundChars = 0, foundInts = 0, foundDoubles = 0, foundUInts = 0,
-       foundBools = 0, foundStrings = 0, foundTimes = 0, foundBinaries = 0;
+  int foundChars = 0, foundInts = 0, foundDoubles = 0, foundUInts = 0,
+      foundBools = 0, foundStrings = 0, foundTimes = 0, foundBinaries = 0;
 
   // char type
   auto s = mAliaseschars.size();
   if (s > 0) {
-    for (size_t i = 0; i != mAliaseschars.size(); ++i) {
-      int count = 0;
+    for (size_t i = 0; i != s; ++i) {
       std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliaseschars[i], DeliveryType::RAW_CHAR, map, count, it);
-      if (count == 0)
-        continue; // the alias was not found in the map
+      processAlias(mAliaseschars[i], DeliveryType::RAW_CHAR, map, it);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << mAliaseschars[i] << " not found " << std::endl;
+	continue;
+      }
       foundChars++;
       auto& val = it->second;
       auto flags = val.get_flags();
@@ -245,11 +198,12 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
   s = mAliasesints.size();
   if (s > 0) {
     for (size_t i = 0; i != mAliasesints.size(); ++i) {
-      int count = 0;
       std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesints[i], DeliveryType::RAW_INT, map, count, it);
-      if (count == 0)
-        continue; // the alias was not found in the map
+      processAlias(mAliasesints[i], DeliveryType::RAW_INT, map, it);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << mAliasesints[i] << " not found " << std::endl;
+	continue;
+      }
       foundInts++;
       auto& val = it->second;
       auto flags = val.get_flags();
@@ -270,11 +224,12 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
   s = mAliasesdoubles.size();
   if (s > 0) {
     for (size_t i = 0; i != mAliasesdoubles.size(); ++i) {
-      int count = 0;
       std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesdoubles[i], DeliveryType::RAW_DOUBLE, map, count, it);
-      if (count == 0)
-        continue; // the alias was not found in the map
+      processAlias(mAliasesdoubles[i], DeliveryType::RAW_DOUBLE, map, it);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << mAliasesdoubles[i] << " not found " << std::endl;
+	continue;
+      }
       foundDoubles++;
       auto& val = it->second;
       auto flags = val.get_flags();
@@ -295,11 +250,12 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
   s = mAliasesUints.size();
   if (s > 0) {
     for (size_t i = 0; i != mAliasesUints.size(); ++i) {
-      int count = 0;
       std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesUints[i], DeliveryType::RAW_UINT, map, count, it);
-      if (count == 0)
-        continue; // the alias was not found in the map
+      processAlias(mAliasesUints[i], DeliveryType::RAW_UINT, map, it);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << mAliasesUints[i] << " not found " << std::endl;
+	continue;
+      }
       foundUInts++;
       auto& val = it->second;
       auto flags = val.get_flags();
@@ -320,11 +276,12 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
   s = mAliasesbools.size();
   if (s > 0) {
     for (size_t i = 0; i != mAliasesbools.size(); ++i) {
-      int count = 0;
       std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesbools[i], DeliveryType::RAW_BOOL, map, count, it);
-      if (count == 0)
-        continue; // the alias was not found in the map
+      processAlias(mAliasesbools[i], DeliveryType::RAW_BOOL, map, it);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << mAliasesbools[i] << " not found " << std::endl;
+	continue;
+      }
       foundBools++;
       auto& val = it->second;
       auto flags = val.get_flags();
@@ -345,11 +302,12 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
   s = mAliasesstrings.size();
   if (s > 0) {
     for (size_t i = 0; i != mAliasesstrings.size(); ++i) {
-      int count = 0;
       std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesstrings[i], DeliveryType::RAW_STRING, map, count, it);
-      if (count == 0)
-        continue; // the alias was not found in the map
+      processAlias(mAliasesstrings[i], DeliveryType::RAW_STRING, map, it);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << mAliasesstrings[i] << " not found " << std::endl;
+	continue;
+      }
       foundStrings++;
       auto& val = it->second;
       auto flags = val.get_flags();
@@ -371,11 +329,12 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
   s = mAliasestimes.size();
   if (s > 0) {
     for (size_t i = 0; i != mAliasestimes.size(); ++i) {
-      int count = 0;
       std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasestimes[i], DeliveryType::RAW_TIME, map, count, it);
-      if (count == 0)
-        continue; // the alias was not found in the map
+      processAlias(mAliasestimes[i], DeliveryType::RAW_TIME, map, it);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << mAliasestimes[i] << " not found " << std::endl;
+	continue;
+      }
       foundTimes++;
       auto& val = it->second;
       auto flags = val.get_flags();
@@ -396,11 +355,12 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
   s = mAliasesbinaries.size();
   if (s > 0) {
     for (size_t i = 0; i != mAliasesbinaries.size(); ++i) {
-      int count = 0;
       std::unordered_map<DPID, DPVAL>::const_iterator it;
-      processAlias(mAliasesbinaries[i], DeliveryType::RAW_BINARY, map, count, it);
-      if (count == 0)
-        continue; // the alias was not found in the map
+      processAlias(mAliasesbinaries[i], DeliveryType::RAW_BINARY, map, it);
+      if (it == map.end()) {
+	LOG(ERROR) << "Element " << mAliasesbinaries[i] << " not found " << std::endl;
+	continue;
+      }
       foundBinaries++;
       auto& val = it->second;
       auto flags = val.get_flags();
@@ -440,22 +400,17 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
 
 //______________________________________________________________________
 
-void DCSProcessor::processAlias(DPID& alias, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, int& count, std::unordered_map<DPID, DPVAL>::const_iterator& it)
+void DCSProcessor::processAlias(DPID& alias, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::unordered_map<DPID, DPVAL>::const_iterator& it)
 {
 
   // processing basic checks for map: all needed aliases must be present
 
   LOG(INFO) << "Processing " << alias;
   it = map.find(alias);
-  if (it == map.end()) {
-    LOG(ERROR) << "Element " << alias << " not found " << std::endl;
-    count = 0;
-  }
   DeliveryType tt = alias.get_type();
   if (tt != type) {
     LOG(FATAL) << "Delivery Type of alias " << alias.get_alias() << " does not match definition in DCSProcessor (" << type << ")! Please fix";
   }
-  count = 1;
   return;
 }
 

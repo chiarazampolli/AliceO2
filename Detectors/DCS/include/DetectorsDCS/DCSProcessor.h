@@ -54,16 +54,16 @@ class DCSProcessor
   DCSProcessor() = default;
   ~DCSProcessor() = default;
 
-  void init(std::vector<DPID> aliaseschars, std::vector<DPID> aliasesints,
-            std::vector<DPID> aliasesdoubles, std::vector<DPID> aliasesUints,
-            std::vector<DPID> aliasesbools, std::vector<DPID> aliasesstrings,
-            std::vector<DPID> aliasestimes, std::vector<DPID> aliasesbinaries);
+  void init(const std::vector<DPID>& aliaseschars, const std::vector<DPID>& aliasesints,
+            const std::vector<DPID>& aliasesdoubles, const std::vector<DPID>& aliasesUints,
+            const std::vector<DPID>& aliasesbools, const std::vector<DPID>& aliasesstrings,
+            const std::vector<DPID>& aliasestimes, const std::vector<DPID>& aliasesbinaries);
 
-  void init(std::vector<DPID> aliases);
+  void init(const std::vector<DPID>& aliases);
 
   int process(const std::unordered_map<DPID, DPVAL>& map);
 
-  void processAlias(DPID& alias, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, int& count, std::unordered_map<DPID, DPVAL>::const_iterator& it);
+  void processAlias(DPID& alias, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::unordered_map<DPID, DPVAL>::const_iterator& it);
 
   void processChars();
   void processInts();
