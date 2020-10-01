@@ -100,7 +100,6 @@ void DCSProcessor::init(const std::vector<DPID>& aliaseschars, const std::vector
   mLatestTimestampstrings.resize(aliasesstrings.size(), 0);
   mLatestTimestamptimes.resize(aliasestimes.size(), 0);
   mLatestTimestampbinaries.resize(aliasesbinaries.size(), 0);
-
 }
 
 //______________________________________________________________________
@@ -153,7 +152,6 @@ void DCSProcessor::init(const std::vector<DPID>& aliases)
   mLatestTimestampstrings.resize(nstrings, 0);
   mLatestTimestamptimes.resize(ntimes, 0);
   mLatestTimestampbinaries.resize(nbinaries, 0);
-
 }
 
 //__________________________________________________________________
@@ -170,27 +168,33 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
 
   // char type
   foundChars = processArrayType(mAliaseschars, DeliveryType::RAW_CHAR, map, mLatestTimestampchars, mDpscharsmap);
-  if (foundChars > 0) processChars();
+  if (foundChars > 0)
+    processChars();
 
   // int type
   foundInts = processArrayType(mAliasesints, DeliveryType::RAW_INT, map, mLatestTimestampints, mDpsintsmap);
-  if (foundInts > 0) processInts();
+  if (foundInts > 0)
+    processInts();
 
   // double type
   foundDoubles = processArrayType(mAliasesdoubles, DeliveryType::RAW_DOUBLE, map, mLatestTimestampdoubles, mDpsdoublesmap);
-  if (foundDoubles > 0) processDoubles();
+  if (foundDoubles > 0)
+    processDoubles();
 
   // UInt type
   foundUInts = processArrayType(mAliasesUints, DeliveryType::RAW_UINT, map, mLatestTimestampUints, mDpsUintsmap);
-  if (foundUInts > 0) processUInts();
+  if (foundUInts > 0)
+    processUInts();
 
   // Bool type
   foundBools = processArrayType(mAliasesbools, DeliveryType::RAW_BOOL, map, mLatestTimestampbools, mDpsboolsmap);
-  if (foundBools > 0) processBools();
+  if (foundBools > 0)
+    processBools();
 
   // String type
   foundStrings = processArrayType(mAliasesstrings, DeliveryType::RAW_STRING, map, mLatestTimestampstrings, mDpsstringsmap);
-  if (foundStrings > 0) processStrings();
+  if (foundStrings > 0)
+    processStrings();
 
   /*
   // Time type
@@ -223,8 +227,9 @@ int DCSProcessor::process(const std::unordered_map<DPID, DPVAL>& map)
 
 //______________________________________________________________________
 
-template<typename T>
-int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, T>& destmap) {
+template <typename T>
+int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, T>& destmap)
+{
 
   // processing the array of type T
 
@@ -234,18 +239,18 @@ int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType 
     for (size_t i = 0; i != s; ++i) {
       auto it = processAlias(array[i], type, map);
       if (it == map.end()) {
-	LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
-	continue;
+        LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
+        continue;
       }
       found++;
       auto& val = it->second;
       auto flags = val.get_flags();
       if (processFlag(flags, array[i].get_alias()) == 0) {
-	auto etime = val.get_epoch_time();
+        auto etime = val.get_epoch_time();
         // fill only if new value has a timestamp different from the timestamp of the previous one
         LOG(INFO) << "destmap[array[" << i << "]].size() = " << destmap[array[i]].size();
         if (destmap[array[i]].size() == 0 || etime != latestTimeStamp[i]) {
-	  LOG(INFO) << "adding new value";
+          LOG(INFO) << "adding new value";
           destmap[array[i]].push_back(val.payload_pt1);
           latestTimeStamp[i] = etime;
         }
@@ -257,8 +262,9 @@ int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType 
 
 //______________________________________________________________________
 
-template<>
-int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQStrings>& destmap) {
+template <>
+int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQStrings>& destmap)
+{
 
   // processing the array of type T
 
@@ -268,18 +274,18 @@ int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType 
     for (size_t i = 0; i != s; ++i) {
       auto it = processAlias(array[i], type, map);
       if (it == map.end()) {
-	LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
-	continue;
+        LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
+        continue;
       }
       found++;
       auto& val = it->second;
       auto flags = val.get_flags();
       if (processFlag(flags, array[i].get_alias()) == 0) {
-	auto etime = val.get_epoch_time();
+        auto etime = val.get_epoch_time();
         // fill only if new value has a timestamp different from the timestamp of the previous one
         LOG(INFO) << "destmap[array[" << i << "]].size() = " << destmap[array[i]].size();
         if (destmap[array[i]].size() == 0 || etime != latestTimeStamp[i]) {
-	  auto& tmp = destmap[array[i]].emplace_back();
+          auto& tmp = destmap[array[i]].emplace_back();
           std::strncpy(tmp.data(), (char*)&(val.payload_pt1), 56);
           latestTimeStamp[i] = etime;
         }
@@ -291,8 +297,9 @@ int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType 
 
 //______________________________________________________________________
 
-template<>
-int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQBinaries>& destmap) {
+template <>
+int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQBinaries>& destmap)
+{
 
   // processing the array of type T
 
@@ -302,18 +309,18 @@ int DCSProcessor::processArrayType(const std::vector<DPID>& array, DeliveryType 
     for (size_t i = 0; i != s; ++i) {
       auto it = processAlias(array[i], type, map);
       if (it == map.end()) {
-	LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
-	continue;
+        LOG(ERROR) << "Element " << array[i] << " not found " << std::endl;
+        continue;
       }
       found++;
       auto& val = it->second;
       auto flags = val.get_flags();
       if (processFlag(flags, array[i].get_alias()) == 0) {
-	auto etime = val.get_epoch_time();
+        auto etime = val.get_epoch_time();
         // fill only if new value has a timestamp different from the timestamp of the previous one
         LOG(INFO) << "destmap[array[" << i << "]].size() = " << destmap[array[i]].size();
         if (destmap[array[i]].size() == 0 || etime != latestTimeStamp[i]) {
-	  auto& tmp = destmap[array[i]].emplace_back();
+          auto& tmp = destmap[array[i]].emplace_back();
           memcpy(tmp.data(), &(val.payload_pt1), 7);
           latestTimeStamp[i] = etime;
         }

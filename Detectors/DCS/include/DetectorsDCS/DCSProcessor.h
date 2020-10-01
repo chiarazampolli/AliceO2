@@ -63,7 +63,7 @@ class DCSProcessor
 
   int process(const std::unordered_map<DPID, DPVAL>& map);
 
-  template<typename T>
+  template <typename T>
   int processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, T>& destmap);
 
   std::unordered_map<DPID, DPVAL>::const_iterator processAlias(const DPID& alias, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map);
@@ -119,24 +119,24 @@ class DCSProcessor
   ClassDefNV(DCSProcessor, 0);
 };
 
-  using Ints = std::vector<int>;
-  using Chars = std::vector<char>;
-  using Doubles = std::vector<double>;
-  using Binaries = std::array<uint64_t, 7>;
-  using Strings = std::array<char, 56>;
+using Ints = std::vector<int>;
+using Chars = std::vector<char>;
+using Doubles = std::vector<double>;
+using Binaries = std::array<uint64_t, 7>;
+using Strings = std::array<char, 56>;
 
-  using DQStrings = std::deque<Strings>;
-  using DQBinaries = std::deque<Binaries>;
+using DQStrings = std::deque<Strings>;
+using DQBinaries = std::deque<Binaries>;
 
-  using DPID = o2::dcs::DataPointIdentifier;
-  using DPVAL = o2::dcs::DataPointValue;
+using DPID = o2::dcs::DataPointIdentifier;
+using DPVAL = o2::dcs::DataPointValue;
 
-  //template<>
-  int processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQStrings>& destmap);
+//template<>
+int processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQStrings>& destmap);
 
-  //template<>
-  int processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQBinaries>& destmap);
-  
+//template<>
+int processArrayType(const std::vector<DPID>& array, DeliveryType type, const std::unordered_map<DPID, DPVAL>& map, std::vector<uint64_t>& latestTimeStamp, std::unordered_map<DPID, DQBinaries>& destmap);
+
 } // namespace dcs
 } // namespace o2
 
