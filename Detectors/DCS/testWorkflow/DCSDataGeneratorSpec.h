@@ -125,29 +125,29 @@ class DCSDataGenerator : public o2::framework::Task
     LOG(INFO) << valstring << " --> " << tt;
 
     std::vector<DPCOM> dpcomVect;
-    for (int i = 0 ; i < mNumDPschar; i++){
+    for (int i = 0; i < mNumDPschar; i++) {
       dpcomVect.emplace_back(mDPIDvect[i], valchar);
     }
-    for (int i = 0 ; i < mNumDPsint; i++){
+    for (int i = 0; i < mNumDPsint; i++) {
       dpcomVect.emplace_back(mDPIDvect[mNumDPschar + i], valint);
     }
-    for (int i = 0 ; i < mNumDPsdouble; i++){
+    for (int i = 0; i < mNumDPsdouble; i++) {
       dpcomVect.emplace_back(mDPIDvect[mNumDPschar + mNumDPsint + i], valdouble);
     }
-    for (int i = 0 ; i < mNumDPsstring; i++){
+    for (int i = 0; i < mNumDPsstring; i++) {
       dpcomVect.emplace_back(mDPIDvect[mNumDPschar + mNumDPsint + mNumDPsdouble + i], valstring);
     }
 
     auto svect = dpcomVect.size();
     LOG(INFO) << "dpcomVect has size " << svect;
-    for (int i = 0 ; i < svect; i++) {
+    for (int i = 0; i < svect; i++) {
       LOG(INFO) << "i = " << i << ", DPCOM = " << dpcomVect[i];
     }
-    std::vector<char> buff(mNumDPs*sizeof(DPCOM));
+    std::vector<char> buff(mNumDPs * sizeof(DPCOM));
     char* dptr = buff.data();
     for (int i = 0; i < svect; i++) {
-      memcpy(dptr + i * sizeof(DPCOM), &dpcomVect[i], sizeof(DPCOM));      
-    } 
+      memcpy(dptr + i * sizeof(DPCOM), &dpcomVect[i], sizeof(DPCOM));
+    }
     auto sbuff = buff.size();
     LOG(INFO) << "size of output buffer = " << sbuff;
     pc.outputs().snapshot(Output{"DCS", "DATAPOINTS", 0, Lifetime::Timeframe}, buff.data(), sbuff);
@@ -155,7 +155,7 @@ class DCSDataGenerator : public o2::framework::Task
     LOG(INFO) << "Reading back";
     DPCOM dptmp;
     for (int i = 0; i < svect; i++) {
-      memcpy(&dptmp, dptr + i *sizeof(DPCOM), sizeof(DPCOM));
+      memcpy(&dptmp, dptr + i * sizeof(DPCOM), sizeof(DPCOM));
       LOG(INFO) << "Check: Reading from generator: i = " << i << ", DPCOM = " << dptmp;
     }
     /*
@@ -209,7 +209,7 @@ DataProcessorSpec getDCSDataGeneratorSpec()
   return DataProcessorSpec{
     "dcs-data-generator",
     Inputs{},
-      Outputs{{{"outputDCS"}, "DCS", "DATAPOINTS"}},
+    Outputs{{{"outputDCS"}, "DCS", "DATAPOINTS"}},
     AlgorithmSpec{adaptFromTask<o2::dcs::DCSDataGenerator>()},
     Options{{"max-timeframes", VariantType::Int64, 99999999999ll, {"max TimeFrames to generate"}}}};
 }

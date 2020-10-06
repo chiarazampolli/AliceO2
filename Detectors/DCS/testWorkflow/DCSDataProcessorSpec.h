@@ -37,7 +37,7 @@ using namespace o2::dcs;
 using DPID = o2::dcs::DataPointIdentifier;
 using DPVAL = o2::dcs::DataPointValue;
 using DPCOM = o2::dcs::DataPointCompositeObject;
-  
+
 class DCSDataProcessor : public o2::framework::Task
 {
  public:
@@ -57,14 +57,14 @@ class DCSDataProcessor : public o2::framework::Task
       DPID::FILL(dpidtmp, dpAliasint, typeint);
       aliasVect.push_back(dpidtmp);
     }
-    
+
     DeliveryType typedouble = RAW_DOUBLE;
     for (int i = 0; i < 4; i++) {
       std::string dpAliasdouble = "TestDouble_" + std::to_string(i);
       DPID::FILL(dpidtmp, dpAliasdouble, typedouble);
       aliasVect.push_back(dpidtmp);
     }
-    
+
     DeliveryType typestring = RAW_STRING;
     std::string dpAliasstring0 = "TestString_0";
     DPID::FILL(dpidtmp, dpAliasstring0, typestring);
@@ -84,7 +84,7 @@ class DCSDataProcessor : public o2::framework::Task
     std::unordered_map<DPID, DPVAL> dcsmap;
     DPCOM dptmp;
     for (int i = 0; i < nDPs; i++) {
-      memcpy(&dptmp, dh + i *sizeof(DPCOM), sizeof(DPCOM));
+      memcpy(&dptmp, dh + i * sizeof(DPCOM), sizeof(DPCOM));
       dcsmap[dptmp.id] = dptmp.data;
       LOG(INFO) << "Reading from generator: i = " << i << ", DPCOM = " << dptmp;
       LOG(INFO) << "Reading from generator: i = " << i << ", DPID = " << dptmp.id;
