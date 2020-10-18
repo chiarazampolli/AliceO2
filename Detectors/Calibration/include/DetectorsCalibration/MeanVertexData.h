@@ -54,10 +54,43 @@ MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, floa
       v2BinZ = nbinsZ / (2 * rangeZ);
       histoX.resize(nbinsX, 0.);
       histoY.resize(nbinsY, 0.);
-      histoZ.resize(nbinsZ, 0.);
+      histoZ.resize(nbinsZ, 0.);                           
     }
   }
+  
+  /*
+  MeanVertexData(MeanVertexData&& other) {
 
+    // move constructor
+    
+    useFit = other.useFit;
+    nbinsX = other.nbinsX;
+    rangeX = other.rangeX;
+    nbinsY = other.nbinsY;
+    rangeY = other.rangeY;
+    nbinsZ = other.nbinsZ;
+    rangeZ = other.rangeZ;
+    v2BinX = other.v2BinX;
+    v2BinY = other.v2BinY;
+    v2BinZ = other.v2BinZ;
+    histoX = other.histoX;
+    histoY = other.histoY;
+    histoZ = other.histoZ;
+    other.useFit = false;
+    other.nbinsX = 1000;
+    other.rangeX = 10.f;
+    other.nbinsY = 1000;
+    other.rangeY = 10.f;
+    other.nbinsZ = 1000;
+    other.rangeZ = 10.f;
+    other.v2BinX = nbinsX / (2 * rangeX);
+    other.v2BinY = nbinsY / (2 * rangeY);
+    other.v2BinZ = nbinsZ / (2 * rangeZ);
+    other.histoX.clear();
+    other.histoY.clear();
+    other.histoZ.clear();
+  }
+  */    
   size_t getEntries() const { return entries; }
   void print() const;
   void fill(const gsl::span<const PVertex> data);

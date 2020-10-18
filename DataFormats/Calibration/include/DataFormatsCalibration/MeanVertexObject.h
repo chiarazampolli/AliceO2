@@ -12,6 +12,7 @@
 #define MEAN_VERTEX_OBJECT_H_
 
 #include <array>
+#include "Rtypes.h"
 
 namespace o2
 {
@@ -32,6 +33,10 @@ namespace dataformats
     }
     MeanVertexObject() = default;
     ~MeanVertexObject() = default;
+    MeanVertexObject(const MeanVertexObject& other);
+    MeanVertexObject(const MeanVertexObject&& other);
+    MeanVertexObject& operator = (const MeanVertexObject& other);
+    MeanVertexObject& operator = (const MeanVertexObject&& other);
 
     void setX(float val) { mPos[0] = val; }
     void setY(float val) { mPos[1] = val; }
@@ -58,6 +63,8 @@ namespace dataformats
     std::array<float, 3> mPos; // position of mean vertex
     std::array<float, 3> mSigma; // sigma of mean vertex
 
+    ClassDefNV(MeanVertexObject, 1);
+    
   };
 } // dataformats
 } // o2

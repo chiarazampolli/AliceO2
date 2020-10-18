@@ -38,7 +38,7 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
  MeanVertexCalibrator(int minEnt = 500, bool useFit = false, int nBinsX = 1000, float rangeX = 10.f,
 		      int nBinsY = 1000, float rangeY = 10.f, int nBinsZ = 1000, float rangeZ = 10.f) :
   mMinEntries(minEnt), mUseFit(useFit), mNBinsX(nBinsX), mRangeX(rangeX), mNBinsY(nBinsY), mRangeY(rangeY),
-    mNBinsZ(nBinsZ), mRangeZ(rangeZ){}
+    mNBinsZ(nBinsZ), mRangeZ(rangeZ){ mTmpMVVector.reserve(99999999999999); mTmpMVData.reserve(99999999999999); }
   ~MeanVertexCalibrator() final = default;
   bool hasEnoughData(const Slot& slot) const final { return slot.getContainer()->entries >= mMinEntries; }
   void initOutput() final;
@@ -63,8 +63,14 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
   MVObjectVector mMeanVertexVector;   // vector of Mean Vertex Objects, each element is filled in "process"
                                       // when we finalize one slot (multiple can be finalized during the same
                                       // "process", which is why we have a vector. Each element is to be considered
-                                      // the output of the device, and will go to the CCDB
+                                      // the output of the device, and will go to the CCDB. It is the simple
+                                      // moving average
+  MVObjectVector mTmpMVVector;        // This is the vector of MeanVertex objecs that will be used for the
+                                      // simple moving average
+  std::vector<MeanVertexData> mTmpMVData;  // This is the vector of Mean Vertex data to be used for the simple
+                                           // moving average
 
+  
   ClassDefOverride(MeanVertexCalibrator, 1);
 };
 
