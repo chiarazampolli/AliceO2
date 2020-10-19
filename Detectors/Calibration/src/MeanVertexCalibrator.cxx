@@ -80,7 +80,8 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
   else {
     // for now I do nothing
     //LOG(FATAL) << "For now, only fit is allowed";
-    mTmpMVData.emplace(mTmpMVData.begin() + slot.getTFStart(), std::move(c));
+    //mTmpMVData.emplace(mTmpMVData.begin() + slot.getTFStart(), *c);
+    mTmpMVData.emplace(mTmpMVData.begin() + slot.getTFStart(), std::move(*c));
   }
 
   // TODO: the timestamp is now given with the TF index, but it will have

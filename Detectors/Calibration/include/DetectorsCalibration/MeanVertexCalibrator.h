@@ -36,14 +36,18 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
 
  public:
  MeanVertexCalibrator(int minEnt = 500, bool useFit = false, int nBinsX = 1000, float rangeX = 10.f,
-		      int nBinsY = 1000, float rangeY = 10.f, int nBinsZ = 1000, float rangeZ = 10.f) :
+		      int nBinsY = 1000, float rangeY = 10.f, int nBinsZ = 1000, float rangeZ = 10.f,
+		      int nSlotsSMA = 5) :
   mMinEntries(minEnt), mUseFit(useFit), mNBinsX(nBinsX), mRangeX(rangeX), mNBinsY(nBinsY), mRangeY(rangeY),
-    mNBinsZ(nBinsZ), mRangeZ(rangeZ){ mTmpMVVector.reserve(99999999999999); mTmpMVData.reserve(99999999999999); }
+    mNBinsZ(nBinsZ), mRangeZ(rangeZ), mSMAslots(nSlotsSMA) { mTmpMVVector.reserve(99999999999999); mTmpMVData.reserve(99999999999999); }
   ~MeanVertexCalibrator() final = default;
   bool hasEnoughData(const Slot& slot) const final { return slot.getContainer()->entries >= mMinEntries; }
   void initOutput() final;
   void finalizeSlot(Slot& slot) final;
   Slot& emplaceNewSlot(bool front, TFType tstart, TFType tend) final;
+
+  uint64_t getNSlotsSMA() const { return mSMAslots; }
+  void setNSlotsSMA(uint64_t nslots) { mSMAslots = nslots; }
 
   const MVObjectVector& getMeanVertexObjectVector() const { return mMeanVertexVector; }
   const CcdbObjectInfoVector& getMeanVertexObjectInfoVector() const { return mInfoVector; }
@@ -58,6 +62,7 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
   int mNBinsZ = 0;
   float mRangeZ = 0.;
   bool mUseFit = false;
+  uint64_t mSMVslots = 5; 
   CcdbObjectInfoVector mInfoVector; // vector of CCDB Infos , each element is filled with the CCDB description
                                     // of the accompanying LHCPhase
   MVObjectVector mMeanVertexVector;   // vector of Mean Vertex Objects, each element is filled in "process"

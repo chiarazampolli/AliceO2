@@ -41,6 +41,22 @@ struct MeanVertexData {
   
   MeanVertexData();
 
+  ~MeanVertexData() {
+    useFit = false;
+    nbinsX = 1000;
+    rangeX = 10.f;
+    nbinsY = 1000;
+    rangeY = 10.f;
+    nbinsZ = 1000;
+    rangeZ = 10.f;
+    v2BinX = 0.f;
+    v2BinY = 0.f;
+    v2BinZ = 0.f;
+    histoX.clear();
+    histoY.clear();
+    histoZ.clear();
+  }
+
 MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, float rZ) :
   useFit(buseFit), nbinsX(nbX), rangeX(rX), v2BinX(0), nbinsY(nbY), rangeY(rY), v2BinY(0),
     nbinsZ(nbZ), rangeZ(rZ), v2BinZ(0) 
@@ -57,9 +73,9 @@ MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, floa
       histoZ.resize(nbinsZ, 0.);                           
     }
   }
-  
-  /*
-  MeanVertexData(MeanVertexData&& other) {
+
+//_____________________________________________
+MeanVertexData(MeanVertexData&& other) {
 
     // move constructor
     
@@ -89,8 +105,96 @@ MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, floa
     other.histoX.clear();
     other.histoY.clear();
     other.histoZ.clear();
-  }
-  */    
+}
+
+//_____________________________________________
+MeanVertexData(const MeanVertexData& other) {
+
+    // copy constructor
+    
+    useFit = other.useFit;
+    nbinsX = other.nbinsX;
+    rangeX = other.rangeX;
+    nbinsY = other.nbinsY;
+    rangeY = other.rangeY;
+    nbinsZ = other.nbinsZ;
+    rangeZ = other.rangeZ;
+    v2BinX = other.v2BinX;
+    v2BinY = other.v2BinY;
+    v2BinZ = other.v2BinZ;
+    histoX = other.histoX;
+    histoY = other.histoY;
+    histoZ = other.histoZ;
+}
+
+//_____________________________________________
+MeanVertexData& operator = (MeanVertexData& other) {
+
+    // assignment operator
+    
+    useFit = other.useFit;
+    nbinsX = other.nbinsX;
+    rangeX = other.rangeX;
+    nbinsY = other.nbinsY;
+    rangeY = other.rangeY;
+    nbinsZ = other.nbinsZ;
+    rangeZ = other.rangeZ;
+    v2BinX = other.v2BinX;
+    v2BinY = other.v2BinY;
+    v2BinZ = other.v2BinZ;
+    histoX = other.histoX;
+    histoY = other.histoY;
+    histoZ = other.histoZ;
+    other.useFit = false;
+    other.nbinsX = 1000;
+    other.rangeX = 10.f;
+    other.nbinsY = 1000;
+    other.rangeY = 10.f;
+    other.nbinsZ = 1000;
+    other.rangeZ = 10.f;
+    other.v2BinX = nbinsX / (2 * rangeX);
+    other.v2BinY = nbinsY / (2 * rangeY);
+    other.v2BinZ = nbinsZ / (2 * rangeZ);
+    other.histoX.clear();
+    other.histoY.clear();
+    other.histoZ.clear();
+    return *this;
+}
+
+//_____________________________________________
+MeanVertexData& operator = (MeanVertexData&& other) {
+
+    // move assignment operator
+    
+    useFit = other.useFit;
+    nbinsX = other.nbinsX;
+    rangeX = other.rangeX;
+    nbinsY = other.nbinsY;
+    rangeY = other.rangeY;
+    nbinsZ = other.nbinsZ;
+    rangeZ = other.rangeZ;
+    v2BinX = other.v2BinX;
+    v2BinY = other.v2BinY;
+    v2BinZ = other.v2BinZ;
+    histoX = other.histoX;
+    histoY = other.histoY;
+    histoZ = other.histoZ;
+    other.useFit = false;
+    other.nbinsX = 1000;
+    other.rangeX = 10.f;
+    other.nbinsY = 1000;
+    other.rangeY = 10.f;
+    other.nbinsZ = 1000;
+    other.rangeZ = 10.f;
+    other.v2BinX = nbinsX / (2 * rangeX);
+    other.v2BinY = nbinsY / (2 * rangeY);
+    other.v2BinZ = nbinsZ / (2 * rangeZ);
+    other.histoX.clear();
+    other.histoY.clear();
+    other.histoZ.clear();
+    return *this;
+}
+
   size_t getEntries() const { return entries; }
   void print() const;
   void fill(const gsl::span<const PVertex> data);
