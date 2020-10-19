@@ -94,11 +94,11 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
   if (mUseFit) {
     
     doSimpleMovingAverage(mTmpMVobjDqX, mSMAx);
-    doSimpleMovingAverage(mTmpMVobjDqX, mSMAy);
-    doSimpleMovingAverage(mTmpMVobjDqX, mSMAz);
-    doSimpleMovingAverage(mTmpMVobjDqX, mSMAsigmax);
-    doSimpleMovingAverage(mTmpMVobjDqY, mSMAsigmay);
-    doSimpleMovingAverage(mTmpMVobjDqZ, mSMAsigmaz);
+    doSimpleMovingAverage(mTmpMVobjDqY, mSMAy);
+    doSimpleMovingAverage(mTmpMVobjDqZ, mSMAz);
+    doSimpleMovingAverage(mTmpMVobjDqSigmaX, mSMAsigmax);
+    doSimpleMovingAverage(mTmpMVobjDqSigmaY, mSMAsigmay);
+    doSimpleMovingAverage(mTmpMVobjDqSigmaZ, mSMAsigmaz);
     
     mvo.setX(mSMAx);
     mvo.setSigmaX(mSMAsigmax);
