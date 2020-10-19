@@ -17,6 +17,7 @@
 #include "DataFormatsCalibration/MeanVertexObject.h"
 #include "CCDB/CcdbObjectInfo.h"
 #include <array>
+#include <deque>
 
 namespace o2
 {
@@ -39,8 +40,10 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
 		      int nBinsY = 1000, float rangeY = 10.f, int nBinsZ = 1000, float rangeZ = 10.f,
 		      int nSlotsSMA = 5) :
   mMinEntries(minEnt), mUseFit(useFit), mNBinsX(nBinsX), mRangeX(rangeX), mNBinsY(nBinsY), mRangeY(rangeY),
-    mNBinsZ(nBinsZ), mRangeZ(rangeZ), mSMAslots(nSlotsSMA) { mTmpMVVector.reserve(99999999999999); mTmpMVData.reserve(99999999999999); }
+    mNBinsZ(nBinsZ), mRangeZ(rangeZ), mSMAslots(nSlotsSMA) {}
+
   ~MeanVertexCalibrator() final = default;
+
   bool hasEnoughData(const Slot& slot) const final { return slot.getContainer()->entries >= mMinEntries; }
   void initOutput() final;
   void finalizeSlot(Slot& slot) final;
@@ -48,6 +51,8 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
 
   uint64_t getNSlotsSMA() const { return mSMAslots; }
   void setNSlotsSMA(uint64_t nslots) { mSMAslots = nslots; }
+
+  void doSimpleMovingAverage(std::deque<float>& dq, float& sma);
 
   const MVObjectVector& getMeanVertexObjectVector() const { return mMeanVertexVector; }
   const CcdbObjectInfoVector& getMeanVertexObjectInfoVector() const { return mInfoVector; }
@@ -62,7 +67,7 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
   int mNBinsZ = 0;
   float mRangeZ = 0.;
   bool mUseFit = false;
-  uint64_t mSMVslots = 5; 
+  uint64_t mSMAslots = 5; 
   CcdbObjectInfoVector mInfoVector; // vector of CCDB Infos , each element is filled with the CCDB description
                                     // of the accompanying LHCPhase
   MVObjectVector mMeanVertexVector;   // vector of Mean Vertex Objects, each element is filled in "process"
@@ -70,11 +75,31 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
                                       // "process", which is why we have a vector. Each element is to be considered
                                       // the output of the device, and will go to the CCDB. It is the simple
                                       // moving average
-  MVObjectVector mTmpMVVector;        // This is the vector of MeanVertex objecs that will be used for the
-                                      // simple moving average
-  std::vector<MeanVertexData> mTmpMVData;  // This is the vector of Mean Vertex data to be used for the simple
-                                           // moving average
-
+  std::deque<float> mTmpMVobjDqX;            // This is the deque of MeanVertex objecs that will be used for the
+                                             // simple moving average, X
+  std::deque<float> mTmpMVobjDqY;            // This is the deque of MeanVertex objecs that will be used for the
+                                             // simple moving average, Y
+  std::deque<float> mTmpMVobjDqZ;            // This is the deque of MeanVertex objecs that will be used for the
+                                             // simple moving average, Z
+  std::deque<float> mTmpMVobjDqSigmaX;       // This is the deque of MeanVertex objecs that will be used for the
+                                             // simple moving average, SigmaX
+  std::deque<float> mTmpMVobjDqSigmaY;       // This is the deque of MeanVertex objecs that will be used for the
+                                             // simple moving average, SigmaY
+  std::deque<float> mTmpMVobjDqSigmaZ;       // This is the deque of MeanVertex objecs that will be used for the
+                                             // simple moving average, SigmaZ
+  float mSMAx;                               // simple moving average, X
+  float mSMAy;                               // simple moving average, Y
+  float mSMAz;                               // simple moving average, Z
+  float mSMAsigmax;                          // simple moving average, sigmaX
+  float mSMAsigmay;                          // simple moving average, sigmaY
+  float mSMAsigmaz;                          // simple moving average, sigmaZ
+  std::deque<TFType> mTmpMVobjDqTimeStart;   // This is the deque of MeanVertex objecs that will be used for the
+                                             // simple moving average, start time of used TFs
+  std::deque<TFType> mTmpMVobjDqTimeEnd;     // This is the deque of MeanVertex objecs that will be used for the
+                                             // simple moving average, end time of used TFs
+  std::deque<MeanVertexData> mTmpMVdataDq;   // This is the vector of Mean Vertex data to be used for the simple
+                                             // moving average
+  MeanVertexData mSMAdata;                   // This is to do the SMA when we keep the histos
   
   ClassDefOverride(MeanVertexCalibrator, 1);
 };

@@ -14,6 +14,7 @@
 #include "DetectorsCalibration/TimeSlot.h"
 #include "ReconstructionDataFormats/PrimaryVertex.h"
 #include <array>
+#include <deque>
 #include <gsl/span>
 
 namespace o2
@@ -34,9 +35,9 @@ struct MeanVertexData {
   float v2BinY = nbinsY / (2 * rangeY);
   float v2BinZ = nbinsZ / (2 * rangeZ);
   int entries = 0;
-  std::vector<float> histoX{0};
-  std::vector<float> histoY{0};
-  std::vector<float> histoZ{0};
+  std::deque<float> histoX{0};
+  std::deque<float> histoY{0};
+  std::deque<float> histoZ{0};
   bool useFit = false;
   
   MeanVertexData();
@@ -199,6 +200,7 @@ MeanVertexData& operator = (MeanVertexData&& other) {
   void print() const;
   void fill(const gsl::span<const PVertex> data);
   void merge(const MeanVertexData* prev);
+  void subtract(const MeanVertexData* prev);
 
   ClassDefNV(MeanVertexData, 1);
 };

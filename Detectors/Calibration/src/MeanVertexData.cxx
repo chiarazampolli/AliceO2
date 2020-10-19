@@ -44,7 +44,7 @@ void MeanVertexData::fill(const gsl::span<const PVertex> data)
 {
   // fill container
   for (int i = data.size(); i--;) {
-    if (useFit) {
+    //if (useFit) {
       // filling the histogram in binned mode
       auto x = data[i].getX();
       x += rangeX;
@@ -58,14 +58,31 @@ void MeanVertexData::fill(const gsl::span<const PVertex> data)
 	histoZ[int(z * v2BinZ)]++;
 	entries++;
       }
-    }
+      /*    }
     else {
       histoX[entries] = data[i].getX();
       histoY[entries] = data[i].getY();
       histoZ[entries] = data[i].getZ();
       entries++;
     }
+      */
   }
+}
+
+//_____________________________________________
+void MeanVertexData::subtract(const MeanVertexData* prev)
+{
+  // remove entries from prev
+  assert(histoX.size() == histoY.size());
+  assert(histoX.size() == histoZ.size());
+  assert(prev->histoX.size() == prev->histoY.size());
+  assert(prev->histoX.size() == prev->histoZ.size());
+  for (int i = histoX.size(); i--;) {
+    histoX[i] -= prev->histoX[i];
+    histoY[i] -= prev->histoY[i];
+    histoZ[i] -= prev->histoZ[i];
+  }
+  entries -= prev->entries;
 }
 
 //_____________________________________________
@@ -77,13 +94,14 @@ void MeanVertexData::merge(const MeanVertexData* prev)
   assert(prev->histoX.size() == prev->histoY.size());
   assert(prev->histoX.size() == prev->histoZ.size());
 
-  if (useFit) {
+  //  if (useFit) {
     for (int i = histoX.size(); i--;) {
       histoX[i] += prev->histoX[i];
       histoY[i] += prev->histoY[i];
       histoZ[i] += prev->histoZ[i];
     }
-  }
+    //}
+    /*
   else {
     histoX.reserve(histoX.size() + distance(prev->histoX.begin(), prev->histoX.end()));
     histoX.insert(histoX.end(), prev->histoX.begin(), prev->histoX.end());
@@ -92,6 +110,7 @@ void MeanVertexData::merge(const MeanVertexData* prev)
     histoZ.reserve(histoZ.size() + distance(prev->histoZ.begin(), prev->histoZ.end()));
     histoZ.insert(histoZ.end(), prev->histoZ.begin(), prev->histoZ.end());
   }
+    */
   entries += prev->entries;
 }
 
