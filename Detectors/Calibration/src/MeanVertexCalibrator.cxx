@@ -23,13 +23,13 @@ namespace calibration
 using Slot = o2::calibration::TimeSlot<o2::calibration::MeanVertexData>;
 using o2::math_utils::math_base::fitGaus;
 using clbUtils = o2::calibration::Utils;
-  using MeanVertexObject = o2::dataformats::MeanVertexObject;
+using MeanVertexObject = o2::dataformats::MeanVertexObject;
 
 void MeanVertexCalibrator::initOutput()
 {
   // Here we initialize the vector of our output objects
-  mInfoVector.clear();
   mMeanVertexVector.clear();
+  mInfoVector.clear();
   return;
 }
 
@@ -45,9 +45,9 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
     // x coordinate
     std::vector<float> fitValues;
     float* array = &c->histoX[0];
-    int fitres = fitGaus(c->nbinsX, array, -(c->rangeX), c->rangeX, fitValues);
+    double fitres = fitGaus(c->nbinsX, array, -(c->rangeX), c->rangeX, fitValues);
     if (fitres >= 0) {
-      LOG(INFO) << "X: Fit result " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
+      LOG(INFO) << "X: Fit result (of single Slot) => " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
     } else {
       LOG(ERROR) << "X: Fit failed with result = " << fitres;
     }
@@ -58,7 +58,7 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
     array = &c->histoY[0];
     fitres = fitGaus(c->nbinsY, array, -(c->rangeY), c->rangeY, fitValues);
     if (fitres >= 0) {
-      LOG(INFO) << "Y: Fit result " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
+      LOG(INFO) << "Y: Fit result (of single Slot) => " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
     } else {
       LOG(ERROR) << "Y: Fit failed with result = " << fitres;
     }
@@ -69,7 +69,7 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
     array = &c->histoZ[0];
     fitres = fitGaus(c->nbinsZ, array, -(c->rangeZ), c->rangeZ, fitValues);
     if (fitres >= 0) {
-      LOG(INFO) << "Z: Fit result " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
+      LOG(INFO) << "Z: Fit result (of single Slot) => " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
     } else {
       LOG(ERROR) << "Z: Fit failed with result = " << fitres;
     }
@@ -110,11 +110,15 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
   }  
   else {
     // now we need to fit, on the merged data
+    LOG(DEBUG) << "**** Printing content of SMA MVData object for x coordinate";
+    for (int i = 0 ; i < mSMAdata.nbinsX; i++) {
+      LOG(DEBUG) << "i = " << i << ", content of histogram = " << mSMAdata.histoX[i];
+    }
     std::vector<float> fitValues;
     float* array = &mSMAdata.histoX[0];
-    int fitres = fitGaus(mSMAdata.nbinsX, array, -(mSMAdata.rangeX), mSMAdata.rangeX, fitValues);
+    double fitres = fitGaus(mSMAdata.nbinsX, array, -(mSMAdata.rangeX), mSMAdata.rangeX, fitValues);
     if (fitres >= 0) {
-      LOG(INFO) << "X: Fit result " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
+      LOG(INFO) << "X: Fit result (of merged Slots) => " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
     } else {
       LOG(ERROR) << "X: Fit failed with result = " << fitres;
     }
@@ -125,7 +129,7 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
     array = &mSMAdata.histoY[0];
     fitres = fitGaus(mSMAdata.nbinsY, array, -(mSMAdata.rangeY), mSMAdata.rangeY, fitValues);
     if (fitres >= 0) {
-      LOG(INFO) << "Y: Fit result " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
+      LOG(INFO) << "Y: Fit result (of merged Slots) => " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
     } else {
       LOG(ERROR) << "Y: Fit failed with result = " << fitres;
     }
@@ -136,7 +140,7 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
     array = &mSMAdata.histoZ[0];
     fitres = fitGaus(mSMAdata.nbinsZ, array, -(mSMAdata.rangeZ), mSMAdata.rangeZ, fitValues);
     if (fitres >= 0) {
-      LOG(INFO) << "Z: Fit result " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
+      LOG(INFO) << "Z: Fit result (of merged Slots) => " << fitres << " Mean = " << fitValues[1] << " Sigma = " << fitValues[2];
     } else {
       LOG(ERROR) << "Z: Fit failed with result = " << fitres;
     }

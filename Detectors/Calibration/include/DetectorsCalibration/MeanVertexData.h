@@ -62,7 +62,7 @@ MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, floa
   useFit(buseFit), nbinsX(nbX), rangeX(rX), v2BinX(0), nbinsY(nbY), rangeY(rY), v2BinY(0),
     nbinsZ(nbZ), rangeZ(rZ), v2BinZ(0) 
   {
-    if (useFit) {
+    //    if (useFit) {
       if (rX <= 0. || nbX < 1 || rY <= 0. || nbY < 1 || rZ <= 0. || nbZ < 1) {
 	throw std::runtime_error("Wrong initialization of the histogram");
       }
@@ -73,7 +73,7 @@ MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, floa
       histoY.resize(nbinsY, 0.);
       histoZ.resize(nbinsZ, 0.);                           
     }
-  }
+  //}
 
 //_____________________________________________
 MeanVertexData(MeanVertexData&& other) {
@@ -195,6 +195,26 @@ MeanVertexData& operator = (MeanVertexData&& other) {
     other.histoZ.clear();
     return *this;
 }
+
+//_____________________________________________
+void init(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, float rZ) {
+
+  useFit = buseFit;
+  nbinsX = nbX;
+  rangeX = rX;
+  nbinsY = nbY;
+  rangeY = rY; 
+  nbinsZ = nbZ;
+  rangeZ = rZ;
+  v2BinX = nbinsX / (2 * rangeX);
+  v2BinY = nbinsY / (2 * rangeY);
+  v2BinZ = nbinsZ / (2 * rangeZ);
+  histoX.resize(nbinsX, 0.);
+  histoY.resize(nbinsY, 0.);
+  histoZ.resize(nbinsZ, 0.);  
+}
+
+//_____________________________________________
 
   size_t getEntries() const { return entries; }
   void print() const;

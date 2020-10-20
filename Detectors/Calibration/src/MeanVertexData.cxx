@@ -43,10 +43,12 @@ void MeanVertexData::print() const
 void MeanVertexData::fill(const gsl::span<const PVertex> data)
 {
   // fill container
+  LOG(INFO) << "input size = " << data.size();
   for (int i = data.size(); i--;) {
     //if (useFit) {
       // filling the histogram in binned mode
-      auto x = data[i].getX();
+    LOG(INFO) << "i = " << i << " --> x = " << data[i].getX() << ", y = " << data[i].getY() << ", z = " << data[i].getZ();
+    auto x = data[i].getX();
       x += rangeX;
       auto y = data[i].getY();
       y += rangeY;
@@ -66,6 +68,10 @@ void MeanVertexData::fill(const gsl::span<const PVertex> data)
       entries++;
     }
       */
+  }
+
+  for (int i = 0; i < histoX.size(); i++){
+    LOG(INFO) << "histoX, bin " << i << ": entries = " << histoX[i];
   }
 }
 

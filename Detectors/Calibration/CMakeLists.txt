@@ -44,3 +44,5 @@ o2_add_executable(ccdb-populator-workflow
 	                                O2::DetectorsCalibration
 					O2::DataFormatsTOF
 					O2::CCDB)
+
+add_subdirectory(workflow)

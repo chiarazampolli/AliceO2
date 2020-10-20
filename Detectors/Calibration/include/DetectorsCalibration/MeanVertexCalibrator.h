@@ -40,11 +40,13 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
 		      int nBinsY = 1000, float rangeY = 10.f, int nBinsZ = 1000, float rangeZ = 10.f,
 		      int nSlotsSMA = 5) :
   mMinEntries(minEnt), mUseFit(useFit), mNBinsX(nBinsX), mRangeX(rangeX), mNBinsY(nBinsY), mRangeY(rangeY),
-    mNBinsZ(nBinsZ), mRangeZ(rangeZ), mSMAslots(nSlotsSMA) {}
+    mNBinsZ(nBinsZ), mRangeZ(rangeZ), mSMAslots(nSlotsSMA) {
+    mSMAdata.init(useFit, nBinsX, rangeX, nBinsY, rangeY, nBinsZ, rangeZ);
+  }
 
   ~MeanVertexCalibrator() final = default;
 
-  bool hasEnoughData(const Slot& slot) const final { return slot.getContainer()->entries >= mMinEntries; }
+  bool hasEnoughData(const Slot& slot) const final { LOG(INFO) << "container entries = " << slot.getContainer()->entries << ", minEntries = " << mMinEntries; return slot.getContainer()->entries >= mMinEntries; }
   void initOutput() final;
   void finalizeSlot(Slot& slot) final;
   Slot& emplaceNewSlot(bool front, TFType tstart, TFType tend) final;

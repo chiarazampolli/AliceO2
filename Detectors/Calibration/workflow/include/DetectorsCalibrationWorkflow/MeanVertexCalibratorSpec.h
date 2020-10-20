@@ -8,11 +8,15 @@
 // granted to it by virtue of its status as an Intergovernmental Organization
 // or submit itself to any jurisdiction.
 
-#ifndef O2_MEANVERTEX_CALIBRATOR_H
-#define O2_MEANVERTEX_CALIBRATOR_H
+#ifndef O2_MEANVERTEX_CALIB_DEVICE_H
+#define O2_MEANVERTEX_CALIB_DEVICE_H
 
 /// @file   MeanVertexCalibratorSpec.h
 /// @brief  Device to calibrate MeanVertex
+
+#include "Framework/DataProcessorSpec.h"
+#include "Framework/Task.h"
+#include "DetectorsCalibration/MeanVertexCalibrator.h"
 
 using namespace o2::framework;
 
@@ -21,10 +25,9 @@ namespace o2
 namespace calibration
 {
 
-class MeanVertexCalibDevice : public o2::framework::Task
+class MeanVertexCalibDevice : public Task
 {
  public:
-  MeanVertexCalibDevice() override = default;
   void init(o2::framework::InitContext& ic) final;
   void run(o2::framework::ProcessingContext& pc) final;
   void endOfStream(o2::framework::EndOfStreamContext& ec) final;
