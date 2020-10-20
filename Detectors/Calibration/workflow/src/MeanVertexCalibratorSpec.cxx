@@ -115,11 +115,11 @@ DataProcessorSpec getMeanVertexCalibDeviceSpec() {
         {"max-delay", VariantType::Int, 3, {"number of slots in past to consider"}},
         {"min-entries", VariantType::Int, 100, {"minimum number of entries to fit single time slot"}},
         {"nbinsX", VariantType::Int, 100, {"number of bins for the X coordinate"}},
-	{"rangeX", VariantType::Float, 0.1f, {"range for histo for X coordinate"}},
+	{"rangeX", VariantType::Float, 1.f, {"range for histo for X coordinate"}},
 	{"nbinsY", VariantType::Int, 100, {"number of bins for the Y coordinate"}},
-	{"rangeY", VariantType::Float, 0.1f, {"range for histo for Y coordinate"}},
+	{"rangeY", VariantType::Float, 1.f, {"range for histo for Y coordinate"}},
 	{"nbinsZ", VariantType::Int, 100, {"number of bins for the Z coordinate"}},
-	{"rangeZ", VariantType::Float, 10.f, {"range for histo for Z coordinate"}},
+	{"rangeZ", VariantType::Float, 20.f, {"range for histo for Z coordinate"}},
         {"nSlots4SMA", VariantType::Int, 5, {"number of slots to be used for the Simple Moving Average"}},
 	{"useFit", VariantType::Bool, false, {"whether to fit time slot per time slot and then do the SMA, instead of summing the histograms and fit only once"}}
       }

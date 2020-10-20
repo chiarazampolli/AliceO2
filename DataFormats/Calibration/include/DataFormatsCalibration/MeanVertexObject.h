@@ -33,10 +33,10 @@ namespace dataformats
     }
     MeanVertexObject() = default;
     ~MeanVertexObject() = default;
-    MeanVertexObject(const MeanVertexObject& other);
-    MeanVertexObject(const MeanVertexObject&& other);
-    MeanVertexObject& operator = (const MeanVertexObject& other);
-    MeanVertexObject& operator = (const MeanVertexObject&& other);
+    MeanVertexObject(const MeanVertexObject& other) = default;
+    MeanVertexObject(MeanVertexObject&& other) = default;
+    MeanVertexObject& operator = (MeanVertexObject& other) = default;
+    MeanVertexObject& operator = (MeanVertexObject&& other) = default;
 
     void setX(float val) { mPos[0] = val; }
     void setY(float val) { mPos[1] = val; }

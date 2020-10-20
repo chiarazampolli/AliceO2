@@ -36,8 +36,8 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
   using CcdbObjectInfoVector = std::vector<CcdbObjectInfo>;
 
  public:
- MeanVertexCalibrator(int minEnt = 500, bool useFit = false, int nBinsX = 1000, float rangeX = 10.f,
-		      int nBinsY = 1000, float rangeY = 10.f, int nBinsZ = 1000, float rangeZ = 10.f,
+ MeanVertexCalibrator(int minEnt = 500, bool useFit = false, int nBinsX = 100, float rangeX = 1.f,
+		      int nBinsY = 100, float rangeY = 1.f, int nBinsZ = 100, float rangeZ = 20.f,
 		      int nSlotsSMA = 5) :
   mMinEntries(minEnt), mUseFit(useFit), mNBinsX(nBinsX), mRangeX(rangeX), mNBinsY(nBinsY), mRangeY(rangeY),
     mNBinsZ(nBinsZ), mRangeZ(rangeZ), mSMAslots(nSlotsSMA) {
