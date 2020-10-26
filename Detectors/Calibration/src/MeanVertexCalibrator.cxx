@@ -76,8 +76,7 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
     mTmpMVobjDqZ.push_back(fitValues[1]);
     mTmpMVobjDqSigmaZ.push_back(fitValues[2]);
 
-  }
-  else {
+  } else {
     mTmpMVdataDq.push_back(std::move(*c));
     mSMAdata.merge(&mTmpMVdataDq.back());
     if (mTmpMVobjDqTimeStart.size() > mSMAslots) {
@@ -88,18 +87,18 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
 
   // output object
   MeanVertexObject mvo;
-  
+
   // now we need to check if we can do some moving averages
   TFType startValidity = std::accumulate(mTmpMVobjDqTimeStart.begin(), mTmpMVobjDqTimeStart.end(), 0.0) / mTmpMVobjDqTimeStart.size();
   if (mUseFit) {
-    
+
     doSimpleMovingAverage(mTmpMVobjDqX, mSMAx);
     doSimpleMovingAverage(mTmpMVobjDqY, mSMAy);
     doSimpleMovingAverage(mTmpMVobjDqZ, mSMAz);
     doSimpleMovingAverage(mTmpMVobjDqSigmaX, mSMAsigmax);
     doSimpleMovingAverage(mTmpMVobjDqSigmaY, mSMAsigmay);
     doSimpleMovingAverage(mTmpMVobjDqSigmaZ, mSMAsigmaz);
-    
+
     mvo.setX(mSMAx);
     mvo.setSigmaX(mSMAsigmax);
     mvo.setY(mSMAy);
@@ -107,11 +106,10 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
     mvo.setZ(mSMAz);
     mvo.setSigmaZ(mSMAsigmaz);
 
-  }  
-  else {
+  } else {
     // now we need to fit, on the merged data
     LOG(DEBUG) << "**** Printing content of SMA MVData object for x coordinate";
-    for (int i = 0 ; i < mSMAdata.nbinsX; i++) {
+    for (int i = 0; i < mSMAdata.nbinsX; i++) {
       LOG(DEBUG) << "i = " << i << ", content of histogram = " << mSMAdata.histoX[i];
     }
     std::vector<float> fitValues;
@@ -147,7 +145,7 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
     mvo.setZ(fitValues[1]);
     mvo.setSigmaZ(fitValues[2]);
   }
-  
+
   // TODO: the timestamp is now given with the TF index, but it will have
   // to become an absolute time. This is true both for the lhc phase object itself
   // and the CCDB entry
@@ -161,10 +159,11 @@ void MeanVertexCalibrator::finalizeSlot(Slot& slot)
 }
 
 //_____________________________________________
-void MeanVertexCalibrator::doSimpleMovingAverage(std::deque<float>& dq, float& sma) {
+void MeanVertexCalibrator::doSimpleMovingAverage(std::deque<float>& dq, float& sma)
+{
 
   // doing simple moving average
-  
+
   if (dq.size() <= mSMAslots) {
     sma = std::accumulate(dq.begin(), dq.end(), 0.0) / dq.size();
     //avg = (avg * (vect.size() - 1) + vect.back()) / vect.size();

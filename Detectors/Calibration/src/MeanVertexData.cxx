@@ -62,13 +62,13 @@ void MeanVertexData::fill(const gsl::span<const PVertex> data)
     }
   }
 
-  for (int i = 0; i < histoX.size(); i++){
+  for (int i = 0; i < histoX.size(); i++) {
     LOG(DEBUG) << "histoX, bin " << i << ": entries = " << histoX[i];
   }
-  for (int i = 0; i < histoY.size(); i++){
+  for (int i = 0; i < histoY.size(); i++) {
     LOG(DEBUG) << "histoY, bin " << i << ": entries = " << histoY[i];
   }
-  for (int i = 0; i < histoZ.size(); i++){
+  for (int i = 0; i < histoZ.size(); i++) {
     LOG(DEBUG) << "histoZ, bin " << i << ": entries = " << histoZ[i];
   }
 }
@@ -102,15 +102,13 @@ void MeanVertexData::merge(const MeanVertexData* prev)
   assert(histoY.size() == prev->histoY.size());
   assert(histoZ.size() == prev->histoZ.size());
 
-    for (int i = histoX.size(); i--;) {
-      histoX[i] += prev->histoX[i];
-      histoY[i] += prev->histoY[i];
-      histoZ[i] += prev->histoZ[i];
-    }
+  for (int i = histoX.size(); i--;) {
+    histoX[i] += prev->histoX[i];
+    histoY[i] += prev->histoY[i];
+    histoZ[i] += prev->histoZ[i];
+  }
   entries += prev->entries;
 }
-
-
 
 } // end namespace calibration
 } // end namespace o2

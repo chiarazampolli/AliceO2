@@ -39,10 +39,11 @@ struct MeanVertexData {
   std::vector<float> histoY{0};
   std::vector<float> histoZ{0};
   bool useFit = false;
-  
+
   MeanVertexData();
 
-  ~MeanVertexData() {
+  ~MeanVertexData()
+  {
     useFit = false;
     nbinsX = 1000;
     rangeX = 10.f;
@@ -58,9 +59,7 @@ struct MeanVertexData {
     histoZ.clear();
   }
 
-MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, float rZ) :
-  useFit(buseFit), nbinsX(nbX), rangeX(rX), v2BinX(0), nbinsY(nbY), rangeY(rY), v2BinY(0),
-    nbinsZ(nbZ), rangeZ(rZ), v2BinZ(0) 
+  MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, float rZ) : useFit(buseFit), nbinsX(nbX), rangeX(rX), v2BinX(0), nbinsY(nbY), rangeY(rY), v2BinY(0), nbinsZ(nbZ), rangeZ(rZ), v2BinZ(0)
   {
     if (rX <= 0. || nbX < 1 || rY <= 0. || nbY < 1 || rZ <= 0. || nbZ < 1) {
       throw std::runtime_error("Wrong initialization of the histogram");
@@ -70,33 +69,34 @@ MeanVertexData(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, floa
     v2BinZ = nbinsZ / (2 * rangeZ);
     histoX.resize(nbinsX, 0.);
     histoY.resize(nbinsY, 0.);
-    histoZ.resize(nbinsZ, 0.);                           
+    histoZ.resize(nbinsZ, 0.);
   }
 
-MeanVertexData(MeanVertexData&& other) = default;
-MeanVertexData(const MeanVertexData& other) = default;
-MeanVertexData& operator = (MeanVertexData& other) = default;
-MeanVertexData& operator = (MeanVertexData&& other) = default;
+  MeanVertexData(MeanVertexData&& other) = default;
+  MeanVertexData(const MeanVertexData& other) = default;
+  MeanVertexData& operator=(MeanVertexData& other) = default;
+  MeanVertexData& operator=(MeanVertexData&& other) = default;
 
-//_____________________________________________
-void init(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, float rZ) {
+  //_____________________________________________
+  void init(bool buseFit, int nbX, float rX, int nbY, float rY, int nbZ, float rZ)
+  {
 
-  useFit = buseFit;
-  nbinsX = nbX;
-  rangeX = rX;
-  nbinsY = nbY;
-  rangeY = rY; 
-  nbinsZ = nbZ;
-  rangeZ = rZ;
-  v2BinX = nbinsX / (2 * rangeX);
-  v2BinY = nbinsY / (2 * rangeY);
-  v2BinZ = nbinsZ / (2 * rangeZ);
-  histoX.resize(nbinsX, 0.);
-  histoY.resize(nbinsY, 0.);
-  histoZ.resize(nbinsZ, 0.);  
-}
+    useFit = buseFit;
+    nbinsX = nbX;
+    rangeX = rX;
+    nbinsY = nbY;
+    rangeY = rY;
+    nbinsZ = nbZ;
+    rangeZ = rZ;
+    v2BinX = nbinsX / (2 * rangeX);
+    v2BinY = nbinsY / (2 * rangeY);
+    v2BinZ = nbinsZ / (2 * rangeZ);
+    histoX.resize(nbinsX, 0.);
+    histoY.resize(nbinsY, 0.);
+    histoZ.resize(nbinsZ, 0.);
+  }
 
-//_____________________________________________
+  //_____________________________________________
 
   size_t getEntries() const { return entries; }
   void print() const;
