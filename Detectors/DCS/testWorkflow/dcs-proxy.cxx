@@ -56,7 +56,7 @@ WorkflowSpec defineDataProcessing(ConfigContext const& config)
   DPID dpidtmp;
   std::string dpAlias = "ADAPOS_LG/TEST_000260";
   DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_DOUBLE);
-  dp2OutputSpec[dpidtmp] = &osTestDouble;
+  dp2OutputSpec[dpidtmp] = osTestDouble;
 
   dpAlias = "ADAPOS_LG/TEST_000261";
   DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_DOUBLE);
