@@ -34,11 +34,6 @@ o2_add_executable(output-proxy
                   SOURCES src/dpl-output-proxy.cxx
                   PUBLIC_LINK_LIBRARIES O2::Framework O2::DPLUtils)
 
-o2_add_executable(dcs-proxy
-                  COMPONENT_NAME dpl
-                  SOURCES src/dcs-proxy.cxx
-                  PUBLIC_LINK_LIBRARIES O2::Framework O2::DPLUtils)
-
 o2_add_test(DPLBroadcasterMerger
             SOURCES test/test_DPLBroadcasterMerger.cxx src/Utils.cxx
                     test/DPLBroadcasterMerger.cxx src/DPLMerger.cxx

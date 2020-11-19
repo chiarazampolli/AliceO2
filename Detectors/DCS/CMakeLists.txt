@@ -34,7 +34,12 @@ o2_add_executable(dcs-data-workflow
 		  COMPONENT_NAME dcs
 		  SOURCES testWorkflow/dcs-data-workflow.cxx
 		  PUBLIC_LINK_LIBRARIES O2::Framework
-					O2::DetectorsDCS)
+		  O2::DetectorsDCS)
+
+o2_add_executable(dcs-proxy
+                  COMPONENT_NAME dpl
+                  SOURCES testWorkflow/dcs-proxy.cxx
+                  PUBLIC_LINK_LIBRARIES O2::Framework O2::DPLUtils O2::DetectorsDCS)
 
 if (OpenMP_CXX_FOUND)
     target_compile_definitions(${targetName} PRIVATE WITH_OPENMP)
