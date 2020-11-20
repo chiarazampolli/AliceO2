@@ -37,23 +37,53 @@ InjectorFunction dcs2dpl(std::vector<OutputSpec> specs, std::unordered_map<DPID,
 
   return [specs, dpid2group, timesliceId, step](FairMQDevice& device, FairMQParts& parts, ChannelRetriever channelRetriever) { // why do we capture by copy?
     
-    // We first iterate over the parts of the received message
-    for (size_t i = 0; i < parts.Size(); ++i) {
-      std::unordered_map<std::string, FairMQParts> outPart; // if we want to add each DP as a FairMQPart
-      // now I have to build the message that goes to each OutputSpec
-      // I need to select what I am interested in from the DCS data
-      // I look in the DCS data, and I associate each DP to the message for the corresponding group
-      DPCOM dpcom;
-      auto nDPCOM = (parts.At(i)->GetSize()) / sizeof(DPCOM); // number of DPCOM in current part
-      for (int i = 0; i < nDPCOM; i++) {
-	memcpy(&dpcom, parts.At(i)->GetData() + i * sizeof(DPCOM), sizeof(DPCOM));
-	LOG(DEBUG) << "Reading from DCS: i = " << i << ", DPCOM = " << dptmp;
-	DPID dpid = dpcom.id;
-	auto group = dpid2group[dpid]; // group to which this DP belongs
-	// how to I create the message of the group, that will then go to the correct outputSpec?
-	outPart[group].AddPart(std::move(...)); // ?  
-	memcpy(...); // ?	  
+    static std::unordered_map<std::string, FairMQParts> outParts;
+    static std::unordered_map<std::string, vector<DPCOM>> outputs;
+    static std::unordered_map<DPID, DPCOM> cache;  // will keep only the latest measurement in the 1-second wide window for each DPID
+    static auto timer = std::chrono::high_resolution_clock::now(); 
 
+    // do we need to reserve the size of each element of outputs, according to how many DPs we expect at maximum per group?
+    
+    // We first iterate over the parts of the received message
+    for (size_t i = 0; i < parts.Size(); ++i) { // DCS sends only 1 part, but we should be able to receive more
+      std::unordered_map<std::string, FairMQParts> outParts; // if we want to add each group as a FairMQPart
+
+      auto nDPCOM = (parts.At(i)->GetSize()) / sizeof(DPCOM); // number of DPCOM in current part
+      for (size_t j = 0; j < nDPCOM; j++) { 
+	const auto* src = reinterpret_cast<DPCOM*>(parts.At(i)->GetData() + id * sizeof(DPCOM));
+	auto dst = cache[src->id]; // this is needed in case in the 1s window we get a new value for the same DP
+	memcpy(&dst, src, sizeof(DPCOM));
+
+	LOG(DEBUG) << "Reading from DCS: i = " << i << ", DPCOM = " << dst;
+
+      }
+    }
+
+    auto timerNow = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::ratio<1>> duration = timerNow - timer;
+    if (duration.count()>1) { //did we accumulate for 1 sec?
+      *timesliceId += step; // we increment only if we send something     
+      // do we need to set the time?
+      // resetting timerNow to the moment when we send the output
+	timerNow = timer;
+      	for (auto& it : cache) {
+	  // in the cache we have the final values of the DPs that we should put in the output
+	  DPID dpid = it.first;
+	  auto group = dpid2group[dpid]; // group to which this DP belongs
+	  auto& groupOutput = outputs[group];
+	  groupOutput.push_back(it.second);
+	}
+	for (auto& it : outputs) {
+	  o2h::DataHeader hdr(it.first, "DCS", 0);
+	  hdr.payloadSerializationMethod = o2h::gSerializationMethodNone;
+	  hdr.splitPayloadParts = 1;
+	  hdr.splitPayloadIndex = 1;
+	  o2::header::Stack headerStack{hdr, o2::framework::DataProcessingHeader{*timesliceId, 0}};
+	  memcpy(hdMessage->GetData(), headerStack.data(), headerStack.size());
+
+	}
+      }
+    }
 
 
 		 
@@ -81,6 +111,8 @@ InjectorFunction dcs2dpl(std::vector<OutputSpec> specs, std::unordered_map<DPID,
       
   }
 }
+
+
 	     
 } // namespace dcs
 } // namespace o2

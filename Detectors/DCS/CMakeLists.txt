@@ -37,7 +37,7 @@ o2_add_executable(dcs-data-workflow
 		  O2::DetectorsDCS)
 
 o2_add_executable(dcs-proxy
-                  COMPONENT_NAME dpl
+                  COMPONENT_NAME dcs
                   SOURCES testWorkflow/dcs-proxy.cxx
                   PUBLIC_LINK_LIBRARIES O2::Framework O2::DPLUtils O2::DetectorsDCS)
 
