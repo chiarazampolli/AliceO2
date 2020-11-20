@@ -9,7 +9,7 @@
 // or submit itself to any jurisdiction.
 
 // example to run:
-// o2-dpl-dcs-proxy --dcs-proxy '--channel-config "name=dcs-proxy,type=pull,method=connect,address=tcp://10.11.28.22:60000,rateLogging=1,transport=zeromq"' -b
+// o2-dcs-dcs-proxy --dcs-proxy '--channel-config "name=dcs-proxy,type=pull,method=connect,address=tcp://10.11.28.22:60000,rateLogging=1,transport=zeromq"' -b
 
 #include "Framework/WorkflowSpec.h"
 #include "Framework/DataProcessorSpec.h"
@@ -48,6 +48,7 @@ void customize(std::vector<ConfigParamSpec>& workflowOptions)
 WorkflowSpec defineDataProcessing(ConfigContext const& config)
 {
 
+  /*
   std::unordered_map<DPID, OutputSpec> dp2OutputSpec;
   OutputSpec osTestDouble(ConcreteDataTypeMatcher{"DCS", "TESTDOUBLES"});
   OutputSpec osTestBool(ConcreteDataTypeMatcher{"DCS", "TESTBOOLS"});
@@ -69,11 +70,12 @@ WorkflowSpec defineDataProcessing(ConfigContext const& config)
   dpAlias = "ADAPOS_LG/TEST_000275";
   DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_BOOL);
   dp2OutputSpec[dpidtmp] = osTestBool;
- 
+  */ 
   Outputs dcsOutput;
-  //dcsOutput.emplace_back(ConcreteDataTypeMatcher{"DCS", "DATAPOINTS"});
-  dcsOutput.push_back(osTestDouble);
-  dcsOutput.push_back(osTestBool);
+  //  dcsOutput.emplace_back(ConcreteDataTypeMatcher{"DCS", "DATAPOINTS"});
+  dcsOutput.emplace_back("DCS", "DATAPOINTS", 0, Lifetime::Timeframe);
+  //dcsOutput.push_back(osTestDouble);
+  //dcsOutput.push_back(osTestBool);
   
   DataProcessorSpec dcsProxy = specifyExternalFairMQDeviceProxy(
     "dcs-proxy",
