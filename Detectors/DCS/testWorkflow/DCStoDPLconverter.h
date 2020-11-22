@@ -52,13 +52,13 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
 {
 
   auto timesliceId = std::make_shared<size_t>(startTime);
-
-  return [&dpid2group, timesliceId, step](FairMQDevice& device, FairMQParts& parts, o2f::ChannelRetriever channelRetriever) { // why do we capture by copy?
+  return [dpid2group, timesliceId, step](FairMQDevice& device, FairMQParts& parts, o2f::ChannelRetriever channelRetriever) { // why do we capture by copy? otherwise dpid2group is not used properly
     static std::unordered_map<o2h::DataDescription, FairMQParts, std::hash<o2h::DataDescription>> outParts;
     static std::unordered_map<o2h::DataDescription, vector<DPCOM>, std::hash<o2h::DataDescription>> outputs;
     static std::unordered_map<DPID, DPCOM> cache; // will keep only the latest measurement in the 1-second wide window for each DPID
     static auto timer = std::chrono::high_resolution_clock::now();
 
+    LOG(DEBUG) << "In lambda function: ********* Size of unordered_map = " << dpid2group.size();
     // We first iterate over the parts of the received message
     for (size_t i = 0; i < parts.Size(); ++i) {             // DCS sends only 1 part, but we should be able to receive more
       auto nDPCOM = parts.At(i)->GetSize() / sizeof(DPCOM); // number of DPCOM in current part
@@ -82,7 +82,10 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
       // in the cache we have the final values of the DPs that we should put in the output
       // distribute DPs over the vectors for each requested output
       for (auto& it : cache) {
-        outputs[dpid2group[it.first]].push_back(it.second);
+	auto mapEl = dpid2group.find(it.first);
+	if (mapEl != dpid2group.end()) {
+	}
+        outputs[mapEl->second].push_back(it.second);
       }
 
       // create and send output messages
