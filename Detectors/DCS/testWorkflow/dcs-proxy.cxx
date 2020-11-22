@@ -22,6 +22,7 @@
 #include "DetectorsDCS/DataPointIdentifier.h"
 #include "DetectorsDCS/DataPointValue.h"
 #include "DetectorsDCS/DeliveryType.h"
+#include "DCStoDPLconverter.h"
 #include <vector>
 #include <unordered_map>
 
@@ -70,18 +71,34 @@ WorkflowSpec defineDataProcessing(ConfigContext const& config)
   dpAlias = "ADAPOS_LG/TEST_000275";
   DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_BOOL);
   dp2OutputSpec[dpidtmp] = osTestBool;
-  */ 
-  Outputs dcsOutput;
-  //  dcsOutput.emplace_back(ConcreteDataTypeMatcher{"DCS", "DATAPOINTS"});
-  dcsOutput.emplace_back("DCS", "DATAPOINTS", 0, Lifetime::Timeframe);
-  //dcsOutput.push_back(osTestDouble);
-  //dcsOutput.push_back(osTestBool);
-  
+  */
+
+  DPID dpidtmp;
+
+  std::unordered_map<DPID, o2h::DataDescription> dpid2DataDesc;
+  std::string dpAlias = "ADAPOS_LG/TEST_000261";
+  DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_DOUBLE);
+  dpid2DataDesc[dpidtmp] = "COMMON"; // i.e. this will go to {DCS/COMMON/0} OutputSpec
+
+  // RS: here we should complete the attribution of different DPs to different outputs
+  // ...
+
+  // now collect all required outputs to define OutputSpecs for specifyExternalFairMQDeviceProxy
+  std::unordered_map<o2h::DataDescription, int, std::hash<o2h::DataDescription>> outMap;
+  for (auto itdp : dpid2DataDesc) {
+    outMap[itdp.second]++;
+  }
+
+  Outputs dcsOutputs;
+  for (auto itout : outMap) {
+    dcsOutputs.emplace_back("DCS", itout.first, 0, Lifetime::Timeframe);
+  }
+
   DataProcessorSpec dcsProxy = specifyExternalFairMQDeviceProxy(
     "dcs-proxy",
-    std::move(dcsOutput),
+    std::move(dcsOutputs),
     "type=pull,method=connect,address=tcp://aldcsadaposactor:60000,rateLogging=1,transport=zeromq",
-    incrementalConverter(dcsOutput[0], 0, 1));
+    dcs2dpl(dpid2DataDesc, 0, 1));
 
   WorkflowSpec workflow;
   workflow.emplace_back(dcsProxy);
