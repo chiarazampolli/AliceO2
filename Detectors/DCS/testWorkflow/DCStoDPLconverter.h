@@ -52,9 +52,7 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
 {
 
   auto timesliceId = std::make_shared<size_t>(startTime);
-  return [dpid2group, timesliceId, step, verbose](FairMQDevice& device, FairMQParts& parts, o2f::ChannelRetriever channelRetriever) { // why do we capture by copy? otherwise dpid2group is not used properly
-    static std::unordered_map<o2h::DataDescription, FairMQParts, std::hash<o2h::DataDescription>> outParts;
-    static std::unordered_map<o2h::DataDescription, vector<DPCOM>, std::hash<o2h::DataDescription>> outputs;
+  return [dpid2group, timesliceId, step, verbose](FairMQDevice& device, FairMQParts& parts, o2f::ChannelRetriever channelRetriever) {
     static std::unordered_map<DPID, DPCOM> cache; // will keep only the latest measurement in the 1-second wide window for each DPID
     static auto timer = std::chrono::high_resolution_clock::now();
 
@@ -69,12 +67,10 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
         if (verbose) {
           LOG(INFO) << "Recieved DP " << src->id << " matched to output-> " << (mapEl == dpid2group.end() ? "none" : mapEl->second.as<std::string>());
         }
-        if (mapEl == dpid2group.end()) {
-          continue;
+        if (mapEl != dpid2group.end()) {
+          auto& dst = cache[src->id]; // this is needed in case in the 1s window we get a new value for the same DP
+          memcpy(&dst, src, sizeof(DPCOM));
         }
-        auto& dst = cache[src->id]; // this is needed in case in the 1s window we get a new value for the same DP
-        memcpy(&dst, src, sizeof(DPCOM));
-        LOG(DEBUG) << "Reading from DCS: i = " << i << ", DPCOM = " << dst;
       }
     }
 
@@ -82,7 +78,7 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
     std::chrono::duration<double, std::ratio<1>> duration = timerNow - timer;
     if (duration.count() > 1) { //did we accumulate for 1 sec?
       *timesliceId += step;     // we increment only if we send something
-
+      std::unordered_map<o2h::DataDescription, vector<DPCOM>, std::hash<o2h::DataDescription>> outputs;
       // in the cache we have the final values of the DPs that we should put in the output
       // distribute DPs over the vectors for each requested output
       for (auto& it : cache) {
@@ -129,7 +125,7 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
         o2f::sendOnChannel(device, outParts, channel);
       }
 
-      timerNow = timer;
+      timer = timerNow;
       cache.clear();
     }
   };
