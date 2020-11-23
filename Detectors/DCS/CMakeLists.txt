@@ -30,13 +30,13 @@ o2_target_root_dictionary(DetectorsDCS
 				  include/DetectorsDCS/DataPointValue.h
 				  include/DetectorsDCS/DCSProcessor.h)
 
-o2_add_executable(dcs-data-workflow
+o2_add_executable(data-workflow
 		  COMPONENT_NAME dcs
 		  SOURCES testWorkflow/dcs-data-workflow.cxx
 		  PUBLIC_LINK_LIBRARIES O2::Framework
 		  O2::DetectorsDCS)
 
-o2_add_executable(dcs-proxy
+o2_add_executable(proxy
                   COMPONENT_NAME dcs
                   SOURCES testWorkflow/dcs-proxy.cxx
                   PUBLIC_LINK_LIBRARIES O2::Framework O2::DPLUtils O2::DetectorsDCS)
