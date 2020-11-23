@@ -65,7 +65,7 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
         // do we want to check if this DP was requested ?
         auto mapEl = dpid2group.find(src->id);
         if (verbose) {
-          LOG(INFO) << "Recieved DP " << src->id << " matched to output-> " << (mapEl == dpid2group.end() ? "none" : mapEl->second.as<std::string>());
+          LOG(INFO) << "Received DP " << src->id << " matched to output-> " << (mapEl == dpid2group.end() ? "none" : mapEl->second.as<std::string>());
         }
         if (mapEl != dpid2group.end()) {
           auto& dst = cache[src->id]; // this is needed in case in the 1s window we get a new value for the same DP
@@ -117,6 +117,7 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
         memcpy(plMessage->GetData(), it.second.data(), hdr.payloadSize);
         if (verbose) {
           LOG(INFO) << "Pushing " << it.second.size() << " DPs to output " << it.first.as<std::string>() << " for TimeSlice " << *timesliceId;
+	  hdr.print();
         }
         it.second.clear();
         FairMQParts outParts;

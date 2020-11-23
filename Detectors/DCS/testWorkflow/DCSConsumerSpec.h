@@ -86,7 +86,7 @@ DataProcessorSpec getDCSConsumerSpec()
 {
   return DataProcessorSpec{
     "dcs-consumer",
-      Inputs{{"COMMONDPs", "DCS", "COMMON"}},
+      Inputs{{"COMMONDPs", "DCS", "COMMON", 0, Lifetime::Timeframe}},
     Outputs{},
     AlgorithmSpec{adaptFromTask<o2::dcs::DCSConsumer>()},
     Options{}};
