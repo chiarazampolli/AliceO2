@@ -48,11 +48,11 @@ using DPCOM = o2::dcs::DataPointCompositeObject;
 /// A callback function to retrieve the FairMQChannel name to be used for sending
 /// messages of the specified OutputSpec
 
-o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dpid2group, uint64_t startTime, uint64_t step)
+o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dpid2group, uint64_t startTime, uint64_t step, bool verbose = false)
 {
 
   auto timesliceId = std::make_shared<size_t>(startTime);
-  return [dpid2group, timesliceId, step](FairMQDevice& device, FairMQParts& parts, o2f::ChannelRetriever channelRetriever) { // why do we capture by copy? otherwise dpid2group is not used properly
+  return [dpid2group, timesliceId, step, verbose](FairMQDevice& device, FairMQParts& parts, o2f::ChannelRetriever channelRetriever) { // why do we capture by copy? otherwise dpid2group is not used properly
     static std::unordered_map<o2h::DataDescription, FairMQParts, std::hash<o2h::DataDescription>> outParts;
     static std::unordered_map<o2h::DataDescription, vector<DPCOM>, std::hash<o2h::DataDescription>> outputs;
     static std::unordered_map<DPID, DPCOM> cache; // will keep only the latest measurement in the 1-second wide window for each DPID
@@ -65,10 +65,14 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
       for (size_t j = 0; j < nDPCOM; j++) {
         const auto* src = reinterpret_cast<const DPCOM*>(parts.At(i)->GetData()) + j;
         // do we want to check if this DP was requested ?
-        if (dpid2group.find(src->id) == dpid2group.end()) {
+        auto mapEl = dpid2group.find(src->id);
+        if (verbose) {
+          LOG(INFO) << "Recieved DP " << src->id << " matched to output-> " << (mapEl == dpid2group.end() ? "none" : mapEl->second.as<std::string>());
+        }
+        if (mapEl == dpid2group.end()) {
           continue;
         }
-        auto dst = cache[src->id]; // this is needed in case in the 1s window we get a new value for the same DP
+        auto& dst = cache[src->id]; // this is needed in case in the 1s window we get a new value for the same DP
         memcpy(&dst, src, sizeof(DPCOM));
         LOG(DEBUG) << "Reading from DCS: i = " << i << ", DPCOM = " << dst;
       }
@@ -82,10 +86,10 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
       // in the cache we have the final values of the DPs that we should put in the output
       // distribute DPs over the vectors for each requested output
       for (auto& it : cache) {
-	auto mapEl = dpid2group.find(it.first);
-	if (mapEl != dpid2group.end()) {
-	}
-        outputs[mapEl->second].push_back(it.second);
+        auto mapEl = dpid2group.find(it.first);
+        if (mapEl != dpid2group.end()) {
+          outputs[mapEl->second].push_back(it.second);
+        }
       }
 
       // create and send output messages
@@ -115,6 +119,9 @@ o2f::InjectorFunction dcs2dpl(std::unordered_map<DPID, o2h::DataDescription>& dp
         auto plMessage = fmqFactory->CreateMessage(hdr.payloadSize, fair::mq::Alignment{64});
         memcpy(hdMessage->GetData(), headerStack.data(), headerStack.size());
         memcpy(plMessage->GetData(), it.second.data(), hdr.payloadSize);
+        if (verbose) {
+          LOG(INFO) << "Pushing " << it.second.size() << " DPs to output " << it.first.as<std::string>() << " for TimeSlice " << *timesliceId;
+        }
         it.second.clear();
         FairMQParts outParts;
         outParts.AddPart(std::move(hdMessage));
