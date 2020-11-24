@@ -36,7 +36,6 @@ void customize(std::vector<ConfigParamSpec>& workflowOptions)
 {
   workflowOptions.push_back(
     ConfigParamSpec{"verbose", VariantType::Bool, false, {"verbose output"}});
-
 }
 
 #include "Framework/runDataProcessing.h"
