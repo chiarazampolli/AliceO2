@@ -55,14 +55,12 @@ class DCSConsumer : public o2::framework::Task
     mTFs++;
     auto vect = pc.inputs().get<gsl::span<DPCOM>>("COMMONDPs");
     LOG(INFO) << "vector has " << vect.size() << " Data Points inside";
-    
   }
 
   void endOfStream(o2::framework::EndOfStreamContext& ec) final
   {
 
     LOG(INFO) << "Number of processed TFs = " << mTFs;
-
   }
 
  private:
@@ -78,7 +76,7 @@ DataProcessorSpec getDCSConsumerSpec()
 {
   return DataProcessorSpec{
     "dcs-consumer",
-      Inputs{{"COMMONDPs", "DCS", "COMMON", 0, Lifetime::Timeframe}},
+    Inputs{{"COMMONDPs", "DCS", "COMMON", 0, Lifetime::Timeframe}},
     Outputs{},
     AlgorithmSpec{adaptFromTask<o2::dcs::DCSConsumer>()},
     Options{}};
