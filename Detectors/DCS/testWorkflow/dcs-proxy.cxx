@@ -36,11 +36,7 @@ void customize(std::vector<ConfigParamSpec>& workflowOptions)
 {
   workflowOptions.push_back(
     ConfigParamSpec{"verbose", VariantType::Bool, false, {"verbose output"}});
-  /*
-  workflowOptions.push_back(
-    ConfigParamSpec{
-      "throwOnUnmatched", VariantType::Bool, false, {"throw if unmatched input data is found"}});
-  */
+
 }
 
 #include "Framework/runDataProcessing.h"
@@ -48,29 +44,6 @@ void customize(std::vector<ConfigParamSpec>& workflowOptions)
 WorkflowSpec defineDataProcessing(ConfigContext const& config)
 {
 
-  /*
-  std::unordered_map<DPID, OutputSpec> dp2OutputSpec;
-  OutputSpec osTestDouble(ConcreteDataTypeMatcher{"DCS", "TESTDOUBLES"});
-  OutputSpec osTestBool(ConcreteDataTypeMatcher{"DCS", "TESTBOOLS"});
-
-  // this should be filled e.g. reading from CCDB. now for tests I hardcode it
-  DPID dpidtmp;
-  std::string dpAlias = "ADAPOS_LG/TEST_000260";
-  DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_DOUBLE);
-  dp2OutputSpec[dpidtmp] = osTestDouble;
-
-  dpAlias = "ADAPOS_LG/TEST_000261";
-  DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_DOUBLE);
-  dp2OutputSpec[dpidtmp] = osTestDouble;
-
-  dpAlias = "ADAPOS_LG/TEST_000274";
-  DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_BOOL);
-  dp2OutputSpec[dpidtmp] = osTestBool;
-
-  dpAlias = "ADAPOS_LG/TEST_000275";
-  DPID::FILL(dpidtmp, dpAlias, DeliveryType::RAW_BOOL);
-  dp2OutputSpec[dpidtmp] = osTestBool;
-  */
   bool verbose = config.options().get<bool>("verbose");
   DPID dpidtmp;
 

@@ -12,16 +12,10 @@
 #define O2_DCS_CONSUMER_H
 
 /// @file   DCSConsumerSpec.h
-/// @brief  Consumer of DPs coming from DCS server
+/// @brief  Consumer of DPs coming from DCS server; it is just
+/// to check that we receive and pack the data correctly
 
-#include <unistd.h>
-#include <TRandom.h>
-#include <TDatime.h>
-#include <TStopwatch.h>
-#include "DetectorsDCS/DataPointIdentifier.h"
-#include "DetectorsDCS/DataPointValue.h"
 #include "DetectorsDCS/DataPointCompositeObject.h"
-#include "DetectorsDCS/DeliveryType.h"
 #include "Framework/DeviceSpec.h"
 #include "Framework/ConfigParamRegistry.h"
 #include "Framework/ControlService.h"
@@ -40,8 +34,6 @@ namespace dcs
 class DCSConsumer : public o2::framework::Task
 {
 
-  using DPID = o2::dcs::DataPointIdentifier;
-  using DPVAL = o2::dcs::DataPointValue;
   using DPCOM = o2::dcs::DataPointCompositeObject;
 
  public:
