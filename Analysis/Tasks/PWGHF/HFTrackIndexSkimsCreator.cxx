@@ -15,7 +15,6 @@
 /// \author Vít Kučera <vit.kucera@cern.ch>, CERN
 /// \author Nima Zardoshti <nima.zardoshti@cern.ch>, CERN
 
-#include "Framework/runDataProcessing.h"
 #include "Framework/AnalysisTask.h"
 #include "DetectorsVertexing/DCAFitterN.h"
 #include "AnalysisDataModel/HFSecondaryVertex.h"
@@ -32,6 +31,14 @@ using namespace o2::framework;
 using namespace o2::framework::expressions;
 using namespace o2::aod::hf_cand_prong2;
 using namespace o2::aod::hf_cand_prong3;
+
+void customize(std::vector<o2::framework::ConfigParamSpec>& workflowOptions)
+{
+  ConfigParamSpec optionDoMC{"doMC-for-V0", VariantType::Bool, false, {"Perform MC matching for V0s."}};
+  workflowOptions.push_back(optionDoMC);
+}
+
+#include "Framework/runDataProcessing.h"
 
 /// Track selection
 struct SelectTracks {
@@ -1104,12 +1111,34 @@ struct HFTrackIndexSkimsCreatorCascades {
   }   // process
 };
 
+struct HFTrackIndexTestMCCasc {
+  void process(aod::BigTracksMC const& tracks,
+               aod::V0DataExt const& V0s,
+               aod::McParticles const& particlesMC)
+
+  {
+    int8_t sign = 0;
+    for (const auto& v0 : V0s) {
+      // selections on the V0 daughters
+      auto arrayDaughtersV0 = array{v0.posTrack_as<aod::BigTracksMC>(), v0.negTrack_as<aod::BigTracksMC>()};
+      LOG(INFO) << "Looking for K0s ";
+      RecoDecay::getMatchedMCRec(particlesMC, arrayDaughtersV0, 310, array{+kPiPlus, -kPiPlus}, true, &sign, 1); // does it matter the "acceptAntiParticle" in the K0s case? In principle, there is no anti-K0s
+    }
+    return;
+  }
+};
+
 //________________________________________________________________________________________________________________________
 
 WorkflowSpec defineDataProcessing(ConfigContext const& cfgc)
 {
-  return WorkflowSpec{
+  WorkflowSpec workflow{
     adaptAnalysisTask<SelectTracks>(cfgc, "hf-produce-sel-track"),
     adaptAnalysisTask<HFTrackIndexSkimsCreator>(cfgc, "hf-track-index-skims-creator"),
     adaptAnalysisTask<HFTrackIndexSkimsCreatorCascades>(cfgc, "hf-track-index-skims-cascades-creator")};
+  const bool doMCforV0 = cfgc.options().get<bool>("doMC-for-V0");
+  if (doMCforV0) {
+    workflow.push_back(adaptAnalysisTask<HFTrackIndexTestMCCasc>(cfgc, "hf-track-index-skims-creator-MC"));
+  }
+  return workflow;
 }
