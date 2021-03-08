@@ -60,7 +60,7 @@ o2_add_dpl_workflow(nuclei-spectra
 
 o2_add_dpl_workflow(lambdakzerobuilder
                     SOURCES lambdakzerobuilder
-                    PUBLIC_LINK_LIBRARIES O2::Framework O2::DetectorsBase O2::AnalysisDataModel O2::AnalysisCore O2::DetectorsVertexing
+                    PUBLIC_LINK_LIBRARIES O2::Framework O2::DetectorsBase O2::AnalysisDataModel O2::AnalysisCore O2::DetectorsVertexing O2::AnalysisTasksUtils
                     COMPONENT_NAME Analysis)
 
 o2_add_dpl_workflow(lambdakzeroanalysis
