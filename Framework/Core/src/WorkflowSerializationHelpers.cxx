@@ -253,23 +253,19 @@ struct WorkflowImporter : public rapidjson::BaseReaderHandler<rapidjson::UTF8<>,
     if (in(State::IN_INPUT)) {
       if (!inputHasDescription && !inputHasSubSpec) {
 
-	DataDescriptorMatcher expectedMatcher00{
-						DataDescriptorMatcher::Op::And,
-						OriginValueMatcher{origin.str},
-						std::make_unique<DataDescriptorMatcher>(
-											DataDescriptorMatcher::Op::And,
-											DescriptionValueMatcher{ContextRef{1}},
-											std::make_unique<DataDescriptorMatcher>(
-																DataDescriptorMatcher::Op::And,
-																SubSpecificationTypeValueMatcher{ContextRef{2}},
-																std::make_unique<DataDescriptorMatcher>(DataDescriptorMatcher::Op::Just,
-																					StartTimeValueMatcher{ContextRef{0}}
-																					)
-																)
-											)
-	};
-	
-	dataProcessors.back().inputs.push_back(InputSpec({binding}, std::move(expectedMatcher00)));
+        DataDescriptorMatcher expectedMatcher00{
+          DataDescriptorMatcher::Op::And,
+          OriginValueMatcher{origin.str},
+          std::make_unique<DataDescriptorMatcher>(
+            DataDescriptorMatcher::Op::And,
+            DescriptionValueMatcher{ContextRef{1}},
+            std::make_unique<DataDescriptorMatcher>(
+              DataDescriptorMatcher::Op::And,
+              SubSpecificationTypeValueMatcher{ContextRef{2}},
+              std::make_unique<DataDescriptorMatcher>(DataDescriptorMatcher::Op::Just,
+                                                      StartTimeValueMatcher{ContextRef{0}})))};
+
+        dataProcessors.back().inputs.push_back(InputSpec({binding}, std::move(expectedMatcher00)));
       }
       if (inputHasSubSpec) {
         dataProcessors.back().inputs.push_back(InputSpec(binding, origin, description, subspec, lifetime, inputOptions));
@@ -676,13 +672,13 @@ void WorkflowSerializationHelpers::dump(std::ostream& out,
       w.String(input.binding.c_str());
       auto origin = DataSpecUtils::getOptionalOrigin(input);
       if (origin.has_value()) {
-	w.Key("origin");
-	w.String(origin->str, strnlen(origin->str, 16));
+        w.Key("origin");
+        w.String(origin->str, strnlen(origin->str, 16));
       }
       auto description = DataSpecUtils::getOptionalDescription(input);
       if (description.has_value()) {
-	w.Key("description");
-	w.String(description->str, strnlen(description->str, 16));
+        w.Key("description");
+        w.String(description->str, strnlen(description->str, 16));
       }
       auto subSpec = DataSpecUtils::getOptionalSubSpec(input);
       if (subSpec.has_value()) {
