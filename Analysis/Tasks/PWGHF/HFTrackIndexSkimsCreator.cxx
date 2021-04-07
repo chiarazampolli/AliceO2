@@ -88,7 +88,7 @@ struct SelectTracks {
   Configurable<std::vector<int>> v_labelK0Sneg{"v_labelK0Sneg", {730, 2867, 4755}, "labels of K0S positive daughters, for debug"};
   Configurable<std::vector<int>> v_labelProton{"v_labelProton", {729, 2810, 4393}, "labels of K0S positive daughters, for debug"};
 #endif
-  
+
   HistogramRegistry registry{
     "registry",
     {{"hpt_nocuts", "all tracks;#it{p}_{T}^{track} (GeV/#it{c});entries", {HistType::kTH1F, {{100, 0., 10.}}}},

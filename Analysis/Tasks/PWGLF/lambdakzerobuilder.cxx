@@ -102,7 +102,7 @@ struct lambdakzeroprefilterpairs {
   Configurable<std::vector<int>> v_labelK0Spos{"v_labelK0Spos", {729, 2866, 4754}, "labels of K0S positive daughters, for debug"};
   Configurable<std::vector<int>> v_labelK0Sneg{"v_labelK0Sneg", {730, 2867, 4755}, "labels of K0S positive daughters, for debug"};
 #endif
-  
+
   HistogramRegistry registry{
     "registry",
     {

@@ -43,7 +43,6 @@ inline bool isProtonFromLcFunc(int labelProton, std::vector<int> listLabelsProto
     }
   }
   return false;
-  
 }
 
 //---------------------------------
@@ -59,5 +58,4 @@ inline bool isLcK0SpFunc(int labelProton, int labelK0SPos, int labelK0SNeg, std:
     }
   }
   return false;
-  
 }
