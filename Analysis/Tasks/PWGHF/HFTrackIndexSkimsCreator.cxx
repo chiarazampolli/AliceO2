@@ -112,19 +112,30 @@ struct SelectTracks {
      {"hpt_cuts_3prong", "tracks selected for 3-prong vertexing;#it{p}_{T}^{track} (GeV/#it{c});entries", {HistType::kTH1F, {{100, 0., 10.}}}},
      {"hdcatoprimxy_cuts_3prong", "tracks selected for 3-prong vertexing;DCAxy to prim. vtx. (cm);entries", {HistType::kTH1F, {{400, -2., 2.}}}},
      {"heta_cuts_3prong", "tracks selected for 3-prong vertexing;#it{#eta};entries", {HistType::kTH1F, {{static_cast<int>(1.2 * etamax_3prong * 100), -1.2 * etamax_3prong, 1.2 * etamax_3prong}}}}}};
-     // bachelor (for cascades) histograms
-     {"hpt_cuts_bach", "bachelor tracks selected for cascade vertexing;#it{p}_{T}^{track} (GeV/#it{c});entries", {HistType::kTH1F, {{100, 0., 10.}}}},
-     {"hdcatoprimxy_cuts_bach", "bachelor tracks selected for cascade vertexing;DCAxy to prim. vtx. (cm);entries", {HistType::kTH1F, {{100, -1., 1.}}}},
-     {"heta_cuts_bach", "bachelortracks selected for cascade vertexing;#it{#eta};entries", {HistType::kTH1F, {{100, -1., 1.}}}}
-
-    }};
-
-  // array of 2-prong and 3-prong single-track cuts
-  std::array<LabeledArray<double>, 2> cutsSingleTrack;
-
-  void init(InitContext const&)
+  // bachelor (for cascades) histograms
+  {"hpt_cuts_bach", "bachelor tracks selected for cascade vertexing;#it{p}_{T}^{track} (GeV/#it{c});entries", {HistType::kTH1F, {{100, 0., 10.}}}},
+    {"hdcatoprimxy_cuts_bach", "bachelor tracks selected for cascade vertexing;DCAxy to prim. vtx. (cm);entries", {HistType::kTH1F, {{100, -1., 1.}}}},
   {
-    cutsSingleTrack = {cutsTrack2Prong, cutsTrack3Prong};
+    "heta_cuts_bach", "bachelortracks selected for cascade vertexing;#it{#eta};entries",
+    {
+      HistType::kTH1F,
+      {
+        {
+          100, -1., 1.
+        }
+      }
+    }
+  }
+}
+}
+;
+
+// array of 2-prong and 3-prong single-track cuts
+std::array<LabeledArray<double>, 2> cutsSingleTrack;
+
+void init(InitContext const&)
+{
+  cutsSingleTrack = {cutsTrack2Prong, cutsTrack3Prong};
   }
 
   /// Single-track cuts for 2-prongs or 3-prongs

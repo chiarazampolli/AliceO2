@@ -71,12 +71,12 @@ DECLARE_SOA_TABLE(HfTrackIndexProng2, "AOD", "HFTRACKIDXP2", //!
                   hf_track_index::Index1Id,
                   hf_track_index::HFflag);
 
-		    DECLARE_SOA_TABLE(HfTrackIndexCasc, "AOD", "HFTRACKIDXCASC", //!
+DECLARE_SOA_TABLE(HfTrackIndexCasc, "AOD", "HFTRACKIDXCASC", //!
                   hf_track_index::Index0Id,
                   hf_track_index::IndexV0Id,
                   hf_track_index::HFflag);
 
-  DECLARE_SOA_TABLE(HfCutStatusProng2, "AOD", "HFCUTSTATUSP2", //!
+DECLARE_SOA_TABLE(HfCutStatusProng2, "AOD", "HFCUTSTATUSP2", //!
                   hf_track_index::D0ToKPiFlag,
                   hf_track_index::JpsiToEEFlag);
 
