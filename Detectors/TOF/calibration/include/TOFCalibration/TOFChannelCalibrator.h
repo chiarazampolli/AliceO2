@@ -26,6 +26,10 @@
 #include "TGraphErrors.h"
 #include "TF1.h"
 #include "MathUtils/fit.h"
+#include "TLinearFitter.h"
+#include "Fit/Fitter.h"
+
+
 #include "DetectorsCalibration/Utils.h"
 #include <boost/histogram.hpp>
 #include <boost/histogram/ostream.hpp>
@@ -141,8 +145,16 @@ class TOFChannelCalibrator final : public o2::calibration::TimeSlotCalibration<T
   }
 
   static constexpr int NCOMBINSTRIP = o2::tof::Geo::NPADX + o2::tof::Geo::NPADS;
+  static constexpr int NMAXTHREADS = 20; // number of max threads that we allow OpenMP to use
 
-  TOFChannelCalibrator(int minEnt = 500, int nb = 1000, float r = 24400) : mMinEntries(minEnt), mNBins(nb), mRange(r){};
+  TOFChannelCalibrator(int minEnt = 500, int nb = 1000, float r = 24400) : mMinEntries(minEnt), mNBins(nb), mRange(r){
+
+    for (int i = 0; i < NMAXTHREADS; ++i) {
+      mLinFitters[i] = new TLinearFitter(3, "pol2");
+      mFitters[i] = new ROOT::Fit::Fitter();
+    }
+
+  };
 
   ~TOFChannelCalibrator() final = default;
 
@@ -198,8 +210,8 @@ class TOFChannelCalibrator final : public o2::calibration::TimeSlotCalibration<T
   void setDoCalibWithCosmics(bool doCalibWithCosmics = true) { mCalibWithCosmics = doCalibWithCosmics; }
   bool doCalibWithCosmics() const { return mCalibWithCosmics; }
 
-  void setNThreads(int n) { mNThreads = n; }
-  int getNThreads() const {return mNThreads; }
+  void setNThreads(int n) { mNThreads = std::min(n, NMAXTHREADS); }
+  int getNThreads() const { return mNThreads; }
 
  private:
   int mMinEntries = 0; // min number of entries to calibrate the TimeSlot
@@ -222,6 +234,9 @@ class TOFChannelCalibrator final : public o2::calibration::TimeSlotCalibration<T
   bool mCalibWithCosmics = false; // flag to indicate whether we are calibrating with cosmics
 
   int mNThreads = 0; // number of threads from OpenMP
+
+  TLinearFitter* mLinFitters[NMAXTHREADS]; // fitters for OpenMP for fitGaus
+  ROOT::Fit::Fitter* mFitters[NMAXTHREADS]; // fitters for OpenMP to fit TGraphErrors;
 
   ClassDefOverride(TOFChannelCalibrator, 1);
 };
