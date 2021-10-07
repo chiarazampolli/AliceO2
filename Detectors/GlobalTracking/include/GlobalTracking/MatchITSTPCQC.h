@@ -55,7 +55,7 @@ class MatchITSTPCQC
   void setGRPFileName(std::string fn) { mGRPFileName = fn; }
   void setGeomFileName(std::string fn) { mGeomFileName = fn; }
   void setBz(float bz) { mBz = bz; }
-  
+
   // track selection
   bool selectTrack(o2::tpc::TrackTPC const& track);
   void setPtCut(float v) { mPtCut = v; }
@@ -79,8 +79,8 @@ class MatchITSTPCQC
   // ITS-TPC
   gsl::span<const o2::dataformats::TrackTPCITS> mITSTPCTracks;
   bool mUseMC = false;
-  std::string mGRPFileName = "o2sim_grp.root"; 
-  std::string mGeomFileName = "o2sim_geometry.root"; 
+  std::string mGRPFileName = "o2sim_grp.root";
+  std::string mGeomFileName = "o2sim_geometry.root";
   float mBz = 0; ///< nominal Bz
 
   TH1F* mPtTPC = nullptr;
