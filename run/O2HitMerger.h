@@ -690,21 +690,21 @@ class O2HitMerger : public FairMQDevice
             const auto eta = tr.GetEta();
             if (eta < 1.2) {
               eta1Point2Counter++;
-	      if (std::abs(tr.GetPdgCode()) == 211) {
-		eta1Point2CounterPi++;
-	      }
+              if (std::abs(tr.GetPdgCode()) == 211) {
+                eta1Point2CounterPi++;
+              }
             }
             if (eta < 1.0) {
               eta1Point0Counter++;
-	      if (std::abs(tr.GetPdgCode()) == 211) {
-		eta1Point0CounterPi++;
-	      }
+              if (std::abs(tr.GetPdgCode()) == 211) {
+                eta1Point0CounterPi++;
+              }
             }
             if (eta < 0.8) {
               eta0Point8Counter++;
-	      if (std::abs(tr.GetPdgCode()) == 211) {
-		eta0Point8CounterPi++;
-	      }
+              if (std::abs(tr.GetPdgCode()) == 211) {
+                eta0Point8CounterPi++;
+              }
             }
           } else {
             break; // track layout is such that all prims are first anyway
