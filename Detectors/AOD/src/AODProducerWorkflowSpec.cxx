@@ -978,7 +978,7 @@ void AODProducerWorkflowDPL::run(ProcessingContext& pc)
   if (mUseMC) {
     mcReader = std::make_unique<o2::steer::MCKinematicsReader>("collisioncontext.root");
     LOG(DEBUG) << "FOUND " << mcReader->getDigitizationContext()->getEventRecords().size()
-	       << " records" << mcReader->getDigitizationContext()->getEventParts().size() << " parts";
+               << " records" << mcReader->getDigitizationContext()->getEventParts().size() << " parts";
   }
 
   std::map<uint64_t, int> bcsMap;
