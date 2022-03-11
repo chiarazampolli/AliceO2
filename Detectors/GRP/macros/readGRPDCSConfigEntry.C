@@ -31,7 +31,7 @@ int readGRPDCSConfigEntry(const char* fileName)
   TFile* f = new TFile(fileName);
   auto* dcsConfig = (std::unordered_map<DPID, std::string>*)f->Get("ccdb_object");
   std::cout << "DCS config for GRP is " << std::endl;
-  for (auto const &el : *dcsConfig) {
+  for (auto const& el : *dcsConfig) {
     std::cout << el.first << ", " << el.second << std::endl;
   }
 

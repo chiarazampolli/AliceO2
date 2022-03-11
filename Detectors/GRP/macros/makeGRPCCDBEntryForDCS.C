@@ -33,14 +33,14 @@ int makeGRPCCDBEntryForDCS(const std::string url = "http://localhost:8080")
   std::vector<std::string> aliasesBFieldBool = {"L3Polarity", "DipolePolarity"};
   std::vector<std::string> aliasesEnvVar = {"CavernTemperature", "CavernAtmosPressure", "SurfaceAtmosPressure", "CavernAtmosPressure2"};
   std::vector<std::string> compactAliasesLHCIFDouble = {"LHC_IntensityBeam[1..2]_totalIntensity", "ALI_Background[1..3]",
-              "ALI_Lumi_Total_Inst",
-              "BPTX_deltaT_B1_B2", "BPTX_deltaTRMS_B1_B2",
-              "BPTX_Phase_B[1..2]", "BPTX_PhaseRMS_B[1..2]", "BPTX_Phase_Shift_B[1..2]"};
+                                                        "ALI_Lumi_Total_Inst",
+                                                        "BPTX_deltaT_B1_B2", "BPTX_deltaTRMS_B1_B2",
+                                                        "BPTX_Phase_B[1..2]", "BPTX_PhaseRMS_B[1..2]", "BPTX_Phase_Shift_B[1..2]"};
   std::vector<std::string> aliasesLHCIFDouble = o2::dcs::expandAliases(compactAliasesLHCIFDouble);
   std::vector<std::string> aliasesLHCIFString = {"ALI_Lumi_Source_Name", "MACHINE_MODE", "BEAM_MODE"};
   std::vector<std::string> aliasesLHCIFCollimators = {"LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_upstream",
-                  "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_upstream",
-                  "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_upstream"};
+                                                      "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_upstream",
+                                                      "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_upstream"};
 
   DPID dpidtmp;
   for (size_t i = 0; i < aliasesBFieldDouble.size(); ++i) {
