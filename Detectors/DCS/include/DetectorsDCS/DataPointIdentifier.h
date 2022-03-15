@@ -140,7 +140,7 @@ class alignas(64) DataPointIdentifier final
     constexpr char mask = 0x7F;
 
     return (memcmp((char*)this, (char*)&other, 63) == 0) &&
-      (((DeliveryType)this->get_type() & mask) == ((DeliveryType)other.get_type() & mask));
+           (((DeliveryType)this->get_type() & mask) == ((DeliveryType)other.get_type() & mask));
   }
 
   /**

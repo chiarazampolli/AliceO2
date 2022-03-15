@@ -31,7 +31,7 @@
 
 void readGRPCCDB(long ts = 9999999999000, const char* ccdb = "http://localhost:8080")
 {
-    o2::ccdb::CcdbApi api;
+  o2::ccdb::CcdbApi api;
   api.init(ccdb); // or http://ccdb-test.cern.ch:8080
   std::map<std::string, std::string> metadata;
   if (ts == 9999999999000) {
