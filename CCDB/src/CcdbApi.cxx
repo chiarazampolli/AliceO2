@@ -1664,7 +1664,8 @@ void CcdbApi::loadFileToMemory(o2::pmr::vector<char>& dest, const std::string& p
   return;
 }
 
-std::map<std::string, std::string> CcdbApi::sanitizeMetaData(std::map<std::string, std::string> const & metadata) const {
+std::map<std::string, std::string> CcdbApi::sanitizeMetaData(std::map<std::string, std::string> const& metadata) const
+{
 
   // function to remove forbitten characters from metadata keys
 

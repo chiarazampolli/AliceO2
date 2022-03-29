@@ -507,7 +507,7 @@ class CcdbApi //: public DatabaseInterface
    * Function to sanitize the keys for metadata
    * see https://developers.cloudflare.com/rules/transform/request-header-modification/reference/header-format/
    */
-  std::map<std::string, std::string> sanitizeMetaData(std::map<std::string, std::string> const & metadata) const;
+  std::map<std::string, std::string> sanitizeMetaData(std::map<std::string, std::string> const& metadata) const;
 
   /// Base URL of the CCDB (with port)
   std::string mUrl{};
