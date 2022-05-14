@@ -18,7 +18,8 @@ using namespace o2::framework;
 void customize(std::vector<o2::framework::ConfigParamSpec>& workflowOptions)
 {
   // option allowing to set parameters
-  workflowOptions.push_back(ConfigParamSpec{"use-ccdb", o2::framework::VariantType::Bool, false, {"enable access to ccdb tof calibration objects"}});}
+  workflowOptions.push_back(ConfigParamSpec{"use-ccdb", o2::framework::VariantType::Bool, false, {"enable access to ccdb tof calibration objects"}});
+}
 
 // ------------------------------------------------------------------
 

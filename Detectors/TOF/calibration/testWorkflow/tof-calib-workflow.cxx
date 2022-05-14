@@ -63,7 +63,7 @@ WorkflowSpec defineDataProcessing(ConfigContext const& configcontext)
   LOG(info) << "useCCDB = " << useCCDB;
   LOG(info) << "attachChannelOffsetToLHCphase = " << attachChannelOffsetToLHCphase;
   LOG(info) << "followCCDBUpdates = " << followCCDBUpdates;
-  
+
   if (doLHCcalib) {
     specs.emplace_back(getLHCClockCalibDeviceSpec(useCCDB, followCCDBUpdates));
   }

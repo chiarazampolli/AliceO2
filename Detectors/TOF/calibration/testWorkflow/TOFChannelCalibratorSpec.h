@@ -92,17 +92,16 @@ class TOFChannelCalibDevice : public o2::framework::Task
     if (gSystem->AccessPathName("localTimeSlewing.root") == false) {
       TFile* fsleewing = TFile::Open("localTimeSlewing.root");
       if (fsleewing) {
-	TimeSlewing* ob = (TimeSlewing*)fsleewing->Get("ccdb_object");
-	mTimeSlewing = *ob;
-	return;
+        TimeSlewing* ob = (TimeSlewing*)fsleewing->Get("ccdb_object");
+        mTimeSlewing = *ob;
+        return;
       }
-    }
-    else {
+    } else {
       for (int ich = 0; ich < TimeSlewing::NCHANNELS; ich++) {
-	mTimeSlewing.addTimeSlewingInfo(ich, 0, 0);
-	int sector = ich / TimeSlewing::NCHANNELXSECTOR;
-	int channelInSector = ich % TimeSlewing::NCHANNELXSECTOR;
-	mTimeSlewing.setFractionUnderPeak(sector, channelInSector, 1);
+        mTimeSlewing.addTimeSlewingInfo(ich, 0, 0);
+        int sector = ich / TimeSlewing::NCHANNELXSECTOR;
+        int channelInSector = ich % TimeSlewing::NCHANNELXSECTOR;
+        mTimeSlewing.setFractionUnderPeak(sector, channelInSector, 1);
       }
     }
   }
@@ -114,12 +113,12 @@ class TOFChannelCalibDevice : public o2::framework::Task
     mUpdateCCDB = false;
     if (mFollowCCDBUpdates) {
       if (matcher == ConcreteDataMatcher("TOF", "LHCphaseCal", 0)) {
-	mUpdateCCDB = true;
-	return;
+        mUpdateCCDB = true;
+        return;
       }
       if (matcher == ConcreteDataMatcher("TOF", "ChannelCalibCal", 0)) {
-	mUpdateCCDB = true;
-	return;
+        mUpdateCCDB = true;
+        return;
       }
     }
   }
@@ -150,14 +149,13 @@ class TOFChannelCalibDevice : public o2::framework::Task
 
     if (!mcalibTOFapi) {
       mcalibTOFapi = new o2::tof::CalibTOFapi(long(0), &mPhase, &mTimeSlewing); // TODO: should we replace long(0) with tfcounter defined at the beginning of the method? we need the timestamp of the TF
-    }
-    else {
+    } else {
       if (mUseCCDB && mUpdateCCDB) {
-	delete mcalibTOFapi;
-	mcalibTOFapi = new o2::tof::CalibTOFapi(long(0), &mPhase, &mTimeSlewing);
+        delete mcalibTOFapi;
+        mcalibTOFapi = new o2::tof::CalibTOFapi(long(0), &mPhase, &mTimeSlewing);
       }
     }
-    
+
     mCalibrator->setCalibTOFapi(mcalibTOFapi);
 
     if ((tfcounter - startTimeChCalib) > 60480000) { // number of TF in 1 week: 7*24*3600/10e-3 - with TF = 10 ms
