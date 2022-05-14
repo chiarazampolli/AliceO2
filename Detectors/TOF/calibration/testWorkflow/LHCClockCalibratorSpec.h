@@ -107,10 +107,10 @@ class LHCClockCalibDevice : public o2::framework::Task
     else { // we use "fake" initial calibrations
       if (!mcalibTOFapi) {
 	mcalibTOFapi = new o2::tof::CalibTOFapi(long(0), &mPhase, &mTimeSlewing); // TODO: should we replace long(0) with tfcounter defined at the beginning of the method? we need the timestamp of the TF
-	mCalibrator->setCalibTOFapi(mcalibTOFapi);
       }
     }
-      
+
+    mCalibrator->setCalibTOFapi(mcalibTOFapi);
     if (data.size() == 0) {
       return;
     }

@@ -25,6 +25,7 @@
 #include "Framework/ConfigParamRegistry.h"
 #include "Framework/ControlService.h"
 #include "Framework/WorkflowSpec.h"
+#include "Framework/CCDBParamSpec.h"
 #include "CCDB/CcdbApi.h"
 #include "CCDB/CcdbObjectInfo.h"
 #include <limits>
@@ -126,8 +127,8 @@ class TOFChannelCalibDevice : public o2::framework::Task
   void run(o2::framework::ProcessingContext& pc) final
   {
     o2::base::GRPGeomHelper::instance().checkUpdates(pc);
-    long startTimeLHCphase;
-    long startTimeChCalib;
+    long startTimeLHCphase = 0;
+    long startTimeChCalib = 0;
     o2::base::TFIDInfoHelper::fillTFIDInfo(pc, mCalibrator->getCurrentTFInfo());
     auto tfcounter = mCalibrator->getCurrentTFInfo().tfCounter;
 
@@ -141,11 +142,8 @@ class TOFChannelCalibDevice : public o2::framework::Task
       mPhase = lhcPhaseObjTmp;
       mTimeSlewing = channelCalibObjTmp;
 
-      startTimeLHCphase = pc.inputs().get<long>("startTimeLHCphase");
-      startTimeChCalib = pc.inputs().get<long>("startTimeChCalib");
-    } else {
-      startTimeLHCphase = 0;
-      startTimeChCalib = 0;
+      //startTimeLHCphase = pc.inputs().get<long>("startTimeLHCphase");
+      //startTimeChCalib = pc.inputs().get<long>("startTimeChCalib");
     }
 
     LOG(debug) << "startTimeLHCphase = " << startTimeLHCphase << ",  startTimeChCalib = " << startTimeChCalib;
@@ -254,10 +252,10 @@ DataProcessorSpec getTOFChannelCalibDeviceSpec(bool useCCDB, bool followCCDBUpda
                                                                 o2::base::GRPGeomRequest::None, // geometry
                                                                 inputs);
   if (useCCDB) {
-    inputs.emplace_back("tofccdbLHCphase", o2::header::gDataOriginTOF, "LHCphase");
-    inputs.emplace_back("tofccdbChannelCalib", o2::header::gDataOriginTOF, "ChannelCalib");
-    inputs.emplace_back("startTimeLHCphase", o2::header::gDataOriginTOF, "StartLHCphase");
-    inputs.emplace_back("startTimeChCalib", o2::header::gDataOriginTOF, "StartChCalib");
+    inputs.emplace_back("tofccdbLHCphase", o2::header::gDataOriginTOF, "LHCphase", 0, Lifetime::Condition, ccdbParamSpec("TOF/Calib/LHCphase"));
+    inputs.emplace_back("tofccdbChannelCalib", o2::header::gDataOriginTOF, "ChannelCalib", 0, Lifetime::Condition, ccdbParamSpec("TOF/Calib/ChannelCalib"));
+    //inputs.emplace_back("startTimeLHCphase", o2::header::gDataOriginTOF, "StartLHCphase");
+    //inputs.emplace_back("startTimeChCalib", o2::header::gDataOriginTOF, "StartChCalib");
   }
 
   return DataProcessorSpec{
