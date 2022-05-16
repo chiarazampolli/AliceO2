@@ -154,8 +154,8 @@ class TOFChannelCalibDevice : public o2::framework::Task
       // checking if the existing object is too old. This check we can do only once, because any other update will be from the same run (--> not too old)
       long timeNow = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
       if ((timeNow - startTimeChCalib) > o2::ccdb::CcdbObjectInfo::DAY * 7) {
-	LOG(info) << "Enlarging the range of the booked histogram since the latest CCDB entry is too old";
-	mCalibrator->setRange(mCalibrator->getRange() * 10); // we enlarge the range for the calibration in case the last valid object is too old (older than 1 week)
+        LOG(info) << "Enlarging the range of the booked histogram since the latest CCDB entry is too old";
+        mCalibrator->setRange(mCalibrator->getRange() * 10); // we enlarge the range for the calibration in case the last valid object is too old (older than 1 week)
       }
     } else {
       if (mUseCCDB && mUpdateCCDB) {
@@ -176,7 +176,7 @@ class TOFChannelCalibDevice : public o2::framework::Task
       const long tPrec = orbitReset + tfOrbitFirst * o2::constants::lhc::LHCOrbitMUS; // microsecond-precise time stamp
       mcalibTOFapi->setTimeStamp(tPrec);
     }
-    
+
     mCalibrator->process(data);
 
     sendOutput(pc.outputs());
