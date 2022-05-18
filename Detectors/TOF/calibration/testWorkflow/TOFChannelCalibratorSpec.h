@@ -161,8 +161,8 @@ class TOFChannelCalibDevice : public o2::framework::Task
       if (mUseCCDB && mUpdateCCDB) {
         mcalibTOFapi->setLhcPhase(&mPhase);
         mcalibTOFapi->setSlewParam(&mTimeSlewing);
-	mCalibrator->setRange(mRange); // let's restrict the range since we received an updated calibration
-	mCalibrator->getSlot(mCalibrator->getNSlots() - 1).getContainer()->resetAndReRange(mCalibrator->getRange()); // we also empty the existing slot to update its range; the loss in statistics will be minimal
+        mCalibrator->setRange(mRange);                                                                               // let's restrict the range since we received an updated calibration
+        mCalibrator->getSlot(mCalibrator->getNSlots() - 1).getContainer()->resetAndReRange(mCalibrator->getRange()); // we also empty the existing slot to update its range; the loss in statistics will be minimal
       }
     }
 
