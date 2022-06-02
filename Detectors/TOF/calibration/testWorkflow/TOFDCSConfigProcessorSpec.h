@@ -65,7 +65,6 @@ class TOFDCSConfigProcessor : public o2::framework::Task
   }
 
  private:
-
   void sendOutput(DataAllocator& output, std::string fileName)
   {
     // sending output to CCDB
@@ -96,21 +95,20 @@ class TOFDCSConfigProcessor : public o2::framework::Task
       auto idxInStringSOV = stoken.find(timeStampLabel);
       auto idxInStringRUN = stoken.find(runNumberLabel);
       if (idxInStringSOV != std::string::npos) {
-	foundSOV = true;
-	stoken.erase(idxInStringSOV, timeStampLabel.length());
-	startOfValidityStr = stoken;
+        foundSOV = true;
+        stoken.erase(idxInStringSOV, timeStampLabel.length());
+        startOfValidityStr = stoken;
       }
       if (idxInStringRUN != std::string::npos) {
-	foundRUN = true;
-	stoken.erase(idxInStringRUN, runNumberLabel.length());
-	runNumberStr = stoken;
+        foundRUN = true;
+        stoken.erase(idxInStringRUN, runNumberLabel.length());
+        runNumberStr = stoken;
       }
       token = std::strtok(nullptr, delimiters);
     }
     if (!foundSOV) {
       LOG(fatal) << "SOV not found but needed!";
-    }
-    else {
+    } else {
     }
     if (!foundRUN) {
       LOG(warning) << "RUN not found, will be left empty!";
