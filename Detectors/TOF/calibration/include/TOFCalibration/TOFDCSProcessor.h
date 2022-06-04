@@ -115,10 +115,17 @@ class TOFDCSProcessor
     mTOFDCS.clear();
   }
 
-  bool areAllDPsFilled() { if (!it.second) { return false; } } return true; }
+  bool areAllDPsFilled()
+  {
+    if (!it.second) {
+      return false;
+    }
+  }
+  return true;
+}
 
- private:
-  std::unordered_map<DPID, TOFDCSinfo> mTOFDCS;                // this is the object that will go to the CCDB
+private : std::unordered_map<DPID, TOFDCSinfo>
+            mTOFDCS;                                           // this is the object that will go to the CCDB
   std::unordered_map<DPID, bool> mPids;                        // contains all PIDs for the processor, the bool
                                                                // will be true if the DP was processed at least once
   std::unordered_map<DPID, std::vector<DPVAL>> mDpsdoublesmap; // this is the map that will hold the DPs for the

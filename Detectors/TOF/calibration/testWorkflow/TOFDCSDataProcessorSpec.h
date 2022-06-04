@@ -116,11 +116,10 @@ class TOFDCSDataProcessor : public o2::framework::Task
     Duration elapsedTime = timeNow - mTimer; // in seconds
     if (elapsedTime.count() >= mDPsUpdateInterval) {
       if (mProcessor->areAllDPsFilled()) {
-	sendDPsoutput(pc.outputs());
-	mTimer = timeNow;
-      }
-      else {
-	LOG(debug) << "Not sending yet, not all DPs were filled";
+        sendDPsoutput(pc.outputs());
+        mTimer = timeNow;
+      } else {
+        LOG(debug) << "Not sending yet, not all DPs were filled";
       }
     }
     sendLVandHVoutput(pc.outputs());
