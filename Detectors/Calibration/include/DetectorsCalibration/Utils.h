@@ -35,10 +35,10 @@ namespace calibration
 struct Utils {
 
   enum ValueType { Invalid = 0,
-		   Interpolation,
-		   ClosestAvailableFromBelow,
-		   ClosestAvailableFromAbove,
-		   SameAsRequested };
+                   Interpolation,
+                   ClosestAvailableFromBelow,
+                   ClosestAvailableFromAbove,
+                   SameAsRequested };
 
   static constexpr o2::header::DataOrigin gDataOriginCDBPayload{"CLP"}; // generic DataOrigin for calibrations payload
   static constexpr o2::header::DataOrigin gDataOriginCDBWrapper{"CLW"}; // generic DataOrigin for calibrations wrapper
@@ -46,7 +46,8 @@ struct Utils {
   static void prepareCCDBobjectInfo(T& obj, o2::ccdb::CcdbObjectInfo& info, const std::string& path,
                                     const std::map<std::string, std::string>& md, long start, long end = -1);
 
-  static std::pair<int, double> findPair(std::vector<std::pair<uint64_t, double>> vect, uint64_t timestamp) {
+  static std::pair<int, double> findPair(std::vector<std::pair<uint64_t, double>> vect, uint64_t timestamp)
+  {
     // function to find the pair in the vector with the timestamp closest in the past to the one passed as argument
     // if two entries in the vector have the same timestamp, the first that is found is used
     std::vector<uint64_t> times;
@@ -57,16 +58,13 @@ struct Utils {
     if (*lower == timestamp) {
       LOG(info) << "We found the element for the exact timestamp";
       return std::make_pair(SameAsRequested, vect[std::distance(times.begin(), lower)].second);
-    }
-    else if (lower == times.end()) {
+    } else if (lower == times.end()) {
       LOG(info) << "All values are smaller than the queried one " << timestamp << ", we return the closest available from below: " << times.back();
       return std::make_pair(ClosestAvailableFromBelow, vect.back().second);
-    }
-    else if (lower == times.begin()) {
+    } else if (lower == times.begin()) {
       LOG(info) << "All values are greater that the queried one " << timestamp << ", we return the closest available from above: " << *times.begin();
       return std::make_pair(ClosestAvailableFromAbove, vect.begin()->second);
-    }
-    else {
+    } else {
       // doing interpolation
       const auto& p1 = vect[std::distance(times.begin(), lower) - 1];
       const auto& p2 = vect[std::distance(times.begin(), lower)];
@@ -75,8 +73,8 @@ struct Utils {
       auto val1 = p1.second;
       auto val2 = p2.second;
       if (t1 == t2) {
-	LOG(info) << "times are the same, cannot interpolate, returning closest from below";
-	return std::make_pair(ClosestAvailableFromBelow, val1);
+        LOG(info) << "times are the same, cannot interpolate, returning closest from below";
+        return std::make_pair(ClosestAvailableFromBelow, val1);
       }
       // in case values are not ordered in timestamp
       double val = t2 > t1 ? (timestamp - t1) * (val2 - val1) / (t2 - t1) + val1 : (timestamp - t1) * (val1 - val2) / (t1 - t2) + val1;
@@ -86,7 +84,6 @@ struct Utils {
     LOG(info) << "Something went wrong!";
     return std::make_pair(Invalid, 0);
   }
-
 };
 
 template <typename T>
