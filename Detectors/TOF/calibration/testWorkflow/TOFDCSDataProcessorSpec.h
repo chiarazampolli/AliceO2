@@ -122,7 +122,7 @@ class TOFDCSDataProcessor : public o2::framework::Task
       if (mStoreWhenAllDPs) {
 	sendToCCDB = mProcessor->areAllDPsFilled();
       }
-      if (sentToCCDB) {
+      if (sendToCCDB) {
         sendDPsoutput(pc.outputs());
         mTimer = timeNow;
       } else {
