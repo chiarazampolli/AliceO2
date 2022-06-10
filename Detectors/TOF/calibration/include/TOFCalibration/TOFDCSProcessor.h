@@ -112,7 +112,7 @@ class TOFDCSProcessor
   void clearDPsinfo()
   {
     mDpsdoublesmap.clear();
-    mTOFDCS.clear();
+    //    mTOFDCS.clear();
   }
 
   bool areAllDPsFilled()
