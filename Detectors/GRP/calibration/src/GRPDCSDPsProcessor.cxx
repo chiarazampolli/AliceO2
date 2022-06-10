@@ -381,11 +381,10 @@ void GRPDCSDPsProcessor::updateVector(const DPID& dpid, std::vector<std::pair<ui
     }
     vect.clear(); // won't hurt if the vector is empty as at the very beginning of the processing
     updateFlag = true;
-  }
-  else { // we are accumulating entries in the vector already
+  } else { // we are accumulating entries in the vector already
     updateFlag = compareToLatest(vect.back(), val);
   }
-      
+
   // add new value if needed
   if (updateFlag) {
     vect.emplace_back(timestamp, val);
