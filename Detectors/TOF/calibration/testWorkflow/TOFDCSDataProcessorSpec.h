@@ -125,7 +125,7 @@ class TOFDCSDataProcessor : public o2::framework::Task
     if (elapsedTime.count() >= mDPsUpdateInterval) {
       bool sendToCCDB = true;
       if (mStoreWhenAllDPs) {
-	sendToCCDB = mProcessor->areAllDPsFilled();
+        sendToCCDB = mProcessor->areAllDPsFilled();
       }
       if (sendToCCDB) {
         sendDPsoutput(pc.outputs());
@@ -229,8 +229,8 @@ DataProcessorSpec getTOFDCSDataProcessorSpec()
             {"use-verbose-mode-DP", VariantType::Bool, false, {"Use verbose mode for DPs"}},
             {"use-verbose-mode-HVLV", VariantType::Bool, false, {"Use verbose mode for HV and LV"}},
             {"report-timing", VariantType::Bool, false, {"Report timing for every slice"}},
-	    {"DPs-update-interval", VariantType::Int64, 600ll, {"Interval (in s) after which to update the DPs CCDB entry"}},
-	    {"store-when-all-DPs-filled", VariantType::Bool, false, {"Store CCDB entry only when all DPs have been filled (--> never re-use an old value)"}}}};
+            {"DPs-update-interval", VariantType::Int64, 600ll, {"Interval (in s) after which to update the DPs CCDB entry"}},
+            {"store-when-all-DPs-filled", VariantType::Bool, false, {"Store CCDB entry only when all DPs have been filled (--> never re-use an old value)"}}}};
 }
 
 } // namespace framework

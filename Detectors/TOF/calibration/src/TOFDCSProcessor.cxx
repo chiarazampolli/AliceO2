@@ -343,7 +343,7 @@ void TOFDCSProcessor::updateDPsCCDB()
       auto& tofdcs = mTOFDCS[it.first];
       if (it.second) {     // we processed the DP at least 1x
         it.second = false; // reset for the next period
-	tofdcs.updated = true;
+        tofdcs.updated = true;
         auto& dpvect = mDpsdoublesmap[it.first];
         tofdcs.firstValue.first = dpvect[0].get_epoch_time();
         converter0.raw_data = dpvect[0].payload_pt1;
@@ -391,9 +391,8 @@ void TOFDCSProcessor::updateDPsCCDB()
           converter0.raw_data = dpvect[0].payload_pt1;
           tofdcs.midValue.second = converter0.double_value;
         }
-      }
-      else {
-	tofdcs.updated = false;
+      } else {
+        tofdcs.updated = false;
       }
       if (mVerboseDP) {
         LOG(info) << "PID " << it.first.get_alias() << " was updated to:";
@@ -407,13 +406,13 @@ void TOFDCSProcessor::updateDPsCCDB()
       const auto& type = it.first.get_type();
       if (type == o2::dcs::DPVAL_DOUBLE) {
         LOG(info) << "PID = " << it.first.get_alias();
-	auto& tofdcs = mTOFDCS[it.first];
-	tofdcs.print();
+        auto& tofdcs = mTOFDCS[it.first];
+        tofdcs.print();
       }
     }
     LOG(info) << "done";
   }
-  
+
   std::map<std::string, std::string> md;
   md["responsible"] = "Chiara Zampolli";
   o2::calibration::Utils::prepareCCDBobjectInfo(mTOFDCS, mccdbDPsInfo, "TOF/Calib/DCSDPs", md, mStartValidity, mStartValidity + 3 * o2::ccdb::CcdbObjectInfo::DAY);
