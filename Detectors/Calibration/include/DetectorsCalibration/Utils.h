@@ -55,7 +55,7 @@ struct Utils {
     if (!std::is_sorted(vect.begin(), vect.end(), [](const std::pair<uint64_t, double>& lhs, const std::pair<uint64_t, double>& rhs) -> bool { return lhs.first < rhs.first; })) {
       LOG(fatal) << "Vector is not sorted, we cannot execute the findPair function";
     }
-    auto lower = std::lower_bound(vect.begin(), vect.end(), timestamp, [](const std::pair<uint64_t, double>& p, uint64_t value) { return p.first < value; } );
+    auto lower = std::lower_bound(vect.begin(), vect.end(), timestamp, [](const std::pair<uint64_t, double>& p, uint64_t value) { return p.first < value; });
     if ((*lower).first == timestamp) {
       LOG(debug) << "We found the element for the exact timestamp";
       return std::make_pair(SameAsRequested, vect[std::distance(vect.begin(), lower)].second);

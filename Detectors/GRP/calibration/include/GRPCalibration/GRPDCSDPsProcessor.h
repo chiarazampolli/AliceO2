@@ -147,7 +147,7 @@ struct GRPLHCInfo {
   {
     // always check that the size is > 0 (--> begin != end) for all vectors
     if (vect.begin() != vect.end()) {
-      vect.erase(vect.begin(), vect.end() -1);
+      vect.erase(vect.begin(), vect.end() - 1);
     }
   }
 
