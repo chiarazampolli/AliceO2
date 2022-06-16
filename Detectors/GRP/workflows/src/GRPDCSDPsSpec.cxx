@@ -132,12 +132,11 @@ void GRPDCSDPsDataProcessor::run(o2::framework::ProcessingContext& pc)
     // after enough time or after something changed, we store the LHCIF part of the DPs:
     if (elapsedTime.count() >= mDPsUpdateInterval) {
       if (mVerbose) {
-	LOG(info) << "enough time passed (" << elapsedTime.count() << " s), sending to CCDB LHCIFDPs";
+        LOG(info) << "enough time passed (" << elapsedTime.count() << " s), sending to CCDB LHCIFDPs";
       }
-    }
-    else {
+    } else {
       if (mVerbose) {
-	LOG(info) << "sending to CCDB LHCIFDPs since something changed";
+        LOG(info) << "sending to CCDB LHCIFDPs since something changed";
       }
     }
     mProcessor->updateLHCIFInfoCCDB();

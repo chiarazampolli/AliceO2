@@ -263,22 +263,22 @@ class GRPDCSDPsProcessor
 
   void resetPIDsLHCIF()
   {
-    std::vector<string> aliasLHCIFDPs= {"LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_upstream",
-			   "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_upstream",
-			   "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_upstream",
-			   "LHC_IntensityBeam1_totalIntensity", "LHC_IntensityBeam2_totalIntensity",
-			   "ALI_Background1", "ALI_Background2", "ALI_Background3",
-			   "ALI_Lumi_Total_Inst", "BPTX_deltaT_B1_B2", "BPTX_deltaTRMS_B1_B2",
-			   "BPTX_Phase_B1", "BPTX_Phase_B2",
-			   "BPTX_PhaseRMS_B1", "BPTX_PhaseRMS_B2",
-			   "BPTX_Phase_Shift_B1", "BPTX_Phase_Shift_B2",
-			   "ALI_Lumi_Source_Name", "BEAM_MODE", "MACHINE_MODE"};
+    std::vector<string> aliasLHCIFDPs = {"LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_upstream",
+                                         "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_upstream",
+                                         "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_upstream",
+                                         "LHC_IntensityBeam1_totalIntensity", "LHC_IntensityBeam2_totalIntensity",
+                                         "ALI_Background1", "ALI_Background2", "ALI_Background3",
+                                         "ALI_Lumi_Total_Inst", "BPTX_deltaT_B1_B2", "BPTX_deltaTRMS_B1_B2",
+                                         "BPTX_Phase_B1", "BPTX_Phase_B2",
+                                         "BPTX_PhaseRMS_B1", "BPTX_PhaseRMS_B2",
+                                         "BPTX_Phase_Shift_B1", "BPTX_Phase_Shift_B2",
+                                         "ALI_Lumi_Source_Name", "BEAM_MODE", "MACHINE_MODE"};
 
     for (auto& it : mPids) {
       for (const auto& ivect : aliasLHCIFDPs) {
-	if (it.first.get_alias() == ivect) {
-	  it.second = false;
-	}
+        if (it.first.get_alias() == ivect) {
+          it.second = false;
+        }
       }
     }
   }
