@@ -283,8 +283,8 @@ DataProcessorSpec getGRPDCSDPsDataProcessorSpec()
             {"use-ccdb-to-configure", VariantType::Bool, false, {"Use CCDB to configure"}},
             {"use-verbose-mode", VariantType::Bool, false, {"Use verbose mode"}},
             {"report-timing", VariantType::Bool, false, {"Report timing for every slice"}},
-	    {"DPs-update-interval", VariantType::Int64, 600ll, {"Interval (in s) after which to update the DPs CCDB entry"}},
-	    {"clear-vectors", VariantType::Bool, false, {"Clear vectors when starting processing for a new CCDB entry (latest value will not be kept)"}}}};
+            {"DPs-update-interval", VariantType::Int64, 600ll, {"Interval (in s) after which to update the DPs CCDB entry"}},
+            {"clear-vectors", VariantType::Bool, false, {"Clear vectors when starting processing for a new CCDB entry (latest value will not be kept)"}}}};
 }
 
 } // namespace framework

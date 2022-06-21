@@ -131,37 +131,49 @@ struct GRPCollimators {
 
 struct GRPLHCInfo {
 
-  enum CollimatorAliases { LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_downstream, LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_upstream,
-			   LHC_CollimatorPos_TCLIA_4R2_lvdt_left_downstream, LHC_CollimatorPos_TCLIA_4R2_lvdt_left_upstream,
-			   LHC_CollimatorPos_TCLIA_4R2_lvdt_right_downstream, LHC_CollimatorPos_TCLIA_4R2_lvdt_right_upstream,
-			   NCollimatorAliases };
-  enum BeamAliases { LHC_IntensityBeam1_totalIntensity, LHC_IntensityBeam2_totalIntensity,
-		     NBeamAliases };
-  enum BkgAliases { ALI_Background1, ALI_Background2, ALI_Background3,
-		    NBkgAliases };
-  enum BPTXAliases { BPTX_deltaT_B1_B2, BPTX_deltaTRMS_B1_B2,
-		     NBPTXAliases };
-  enum BPTXPhaseAliases { BPTX_Phase_B1, BPTX_Phase_B2,
-			  NBPTXPhaseAliases};
-  enum BPTXPhaseRMSAliases { BPTX_PhaseRMS_B1, BPTX_PhaseRMS_B2,
-			     NBPTXPhaseRMSAliases};
-  enum BPTXPhaseShiftAliases { BPTX_Phase_Shift_B1, BPTX_Phase_Shift_B2,
-			       NBPTXPhaseShiftAliases};
+  enum CollimatorAliases { LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_downstream,
+                           LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_upstream,
+                           LHC_CollimatorPos_TCLIA_4R2_lvdt_left_downstream,
+                           LHC_CollimatorPos_TCLIA_4R2_lvdt_left_upstream,
+                           LHC_CollimatorPos_TCLIA_4R2_lvdt_right_downstream,
+                           LHC_CollimatorPos_TCLIA_4R2_lvdt_right_upstream,
+                           NCollimatorAliases };
+  enum BeamAliases { LHC_IntensityBeam1_totalIntensity,
+                     LHC_IntensityBeam2_totalIntensity,
+                     NBeamAliases };
+  enum BkgAliases { ALI_Background1,
+                    ALI_Background2,
+                    ALI_Background3,
+                    NBkgAliases };
+  enum BPTXAliases { BPTX_deltaT_B1_B2,
+                     BPTX_deltaTRMS_B1_B2,
+                     NBPTXAliases };
+  enum BPTXPhaseAliases { BPTX_Phase_B1,
+                          BPTX_Phase_B2,
+                          NBPTXPhaseAliases };
+  enum BPTXPhaseRMSAliases { BPTX_PhaseRMS_B1,
+                             BPTX_PhaseRMS_B2,
+                             NBPTXPhaseRMSAliases };
+  enum BPTXPhaseShiftAliases { BPTX_Phase_Shift_B1,
+                               BPTX_Phase_Shift_B2,
+                               NBPTXPhaseShiftAliases };
   enum LumiAliases { ALI_Lumi_Total_Inst,
-		     NLumiAliases };
-  enum LHCStringAliases {ALI_Lumi_Source_Name, BEAM_MODE, MACHINE_MODE,
-			 NLHCStringAliases};
-  static constexpr std::string_view collimatorAliases[NCollimatorAliases] = { "LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_upstream",
-									      "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_upstream",
-									      "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_upstream"} ;
-  static constexpr std::string_view beamAliases[NBeamAliases] = { "LHC_IntensityBeam1_totalIntensity", "LHC_IntensityBeam2_totalIntensity" };
-  static constexpr std::string_view bkgAliases[NBkgAliases] = { "ALI_Background1", "ALI_Background2", "ALI_Background3" };
-  static constexpr std::string_view bptxAliases[NBPTXAliases] = { "BPTX_deltaT_B1_B2", "BPTX_deltaTRMS_B1_B2" };
-  static constexpr std::string_view bptxPhaseAliases[NBPTXPhaseAliases] = { "BPTX_Phase_B1", "BPTX_Phase_B2" };
-  static constexpr std::string_view bptxPhaseRMSAliases[NBPTXPhaseRMSAliases] = { "BPTX_PhaseRMS_B1", "BPTX_PhaseRMS_B2" };
-  static constexpr std::string_view bptxPhaseShiftAliases[NBPTXPhaseShiftAliases] = { "BPTX_Phase_Shift_B1", "BPTX_Phase_Shift_B2" };
-  static constexpr std::string_view lumiAliases[NLumiAliases] = { "ALI_Lumi_Total_Inst" };
-  static constexpr std::string_view lhcStringAliases[NLHCStringAliases] = { "ALI_Lumi_Source_Name", "BEAM_MODE", "MACHINE_MODE" };
+                     NLumiAliases };
+  enum LHCStringAliases { ALI_Lumi_Source_Name,
+                          BEAM_MODE,
+                          MACHINE_MODE,
+                          NLHCStringAliases };
+  static constexpr std::string_view collimatorAliases[NCollimatorAliases] = {"LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_gap_upstream",
+                                                                             "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_left_upstream",
+                                                                             "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_downstream", "LHC_CollimatorPos_TCLIA_4R2_lvdt_right_upstream"};
+  static constexpr std::string_view beamAliases[NBeamAliases] = {"LHC_IntensityBeam1_totalIntensity", "LHC_IntensityBeam2_totalIntensity"};
+  static constexpr std::string_view bkgAliases[NBkgAliases] = {"ALI_Background1", "ALI_Background2", "ALI_Background3"};
+  static constexpr std::string_view bptxAliases[NBPTXAliases] = {"BPTX_deltaT_B1_B2", "BPTX_deltaTRMS_B1_B2"};
+  static constexpr std::string_view bptxPhaseAliases[NBPTXPhaseAliases] = {"BPTX_Phase_B1", "BPTX_Phase_B2"};
+  static constexpr std::string_view bptxPhaseRMSAliases[NBPTXPhaseRMSAliases] = {"BPTX_PhaseRMS_B1", "BPTX_PhaseRMS_B2"};
+  static constexpr std::string_view bptxPhaseShiftAliases[NBPTXPhaseShiftAliases] = {"BPTX_Phase_Shift_B1", "BPTX_Phase_Shift_B2"};
+  static constexpr std::string_view lumiAliases[NLumiAliases] = {"ALI_Lumi_Total_Inst"};
+  static constexpr std::string_view lhcStringAliases[NLHCStringAliases] = {"ALI_Lumi_Source_Name", "BEAM_MODE", "MACHINE_MODE"};
   static constexpr int nAliasesLHC = NCollimatorAliases + NBeamAliases + NBkgAliases + NBPTXAliases + NBPTXPhaseAliases + NBPTXPhaseRMSAliases + NBPTXPhaseShiftAliases + NLumiAliases + NLHCStringAliases;
 
   std::array<std::vector<std::pair<uint64_t, double>>, 2> mIntensityBeam;
@@ -258,7 +270,6 @@ struct GRPLHCInfo {
 class GRPDCSDPsProcessor
 {
  public:
-
   GRPDCSDPsProcessor() = default;
   ~GRPDCSDPsProcessor() = default;
 
@@ -357,7 +368,7 @@ class GRPDCSDPsProcessor
 
   bool mClearVectors = false;
   std::array<std::string_view, GRPLHCInfo::nAliasesLHC> mArrLHCAliases;
-  
+
   ClassDefNV(GRPDCSDPsProcessor, 0);
 };
 } // namespace grp

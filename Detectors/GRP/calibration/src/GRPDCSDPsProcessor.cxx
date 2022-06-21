@@ -49,17 +49,17 @@ void GRPDCSDPsProcessor::init(const std::vector<DPID>& pids)
     mArrLHCAliases[i + lastFilledElement] = GRPLHCInfo::bkgAliases[i];
   }
   lastFilledElement += GRPLHCInfo::BkgAliases::NBkgAliases;
-  
+
   for (int i = 0; i < GRPLHCInfo::BPTXAliases::NBPTXAliases; ++i) {
     mArrLHCAliases[i + lastFilledElement] = GRPLHCInfo::bptxAliases[i];
   }
   lastFilledElement += GRPLHCInfo::BPTXAliases::NBPTXAliases;
-  
+
   for (int i = 0; i < GRPLHCInfo::BPTXPhaseAliases::NBPTXPhaseAliases; ++i) {
     mArrLHCAliases[i + lastFilledElement] = GRPLHCInfo::bptxPhaseAliases[i];
   }
   lastFilledElement += GRPLHCInfo::BPTXPhaseAliases::NBPTXPhaseAliases;
-  
+
   for (int i = 0; i < GRPLHCInfo::BPTXPhaseRMSAliases::NBPTXPhaseRMSAliases; ++i) {
     mArrLHCAliases[i + lastFilledElement] = GRPLHCInfo::bptxPhaseRMSAliases[i];
   }
@@ -83,7 +83,6 @@ void GRPDCSDPsProcessor::init(const std::vector<DPID>& pids)
   if (lastFilledElement != GRPLHCInfo::nAliasesLHC) {
     LOG(fatal) << "Something went wrong definining aliases, expected " << GRPLHCInfo::nAliasesLHC << ", found " << lastFilledElement;
   }
-
 }
 //__________________________________________________________________
 
@@ -312,9 +311,9 @@ bool GRPDCSDPsProcessor::processLHCIFDPs(const DPCOM& dpcom)
     }
     for (int ibeam = 0; ibeam < GRPLHCInfo::BPTXPhaseShiftAliases::NBPTXPhaseShiftAliases; ++ibeam) {
       if (aliasStr == static_cast<std::string>(GRPLHCInfo::bptxPhaseShiftAliases[ibeam])) {
-	LOG(info) << "aliasStr = " << aliasStr << " alias to check = " << static_cast<std::string>(GRPLHCInfo::bptxPhaseShiftAliases[ibeam]);
-	updateVector(dpid, mLHCInfo.mBPTXPhaseShift[ibeam], aliasStr, dpcomdata.get_epoch_time(), val);
-	return true;
+        LOG(info) << "aliasStr = " << aliasStr << " alias to check = " << static_cast<std::string>(GRPLHCInfo::bptxPhaseShiftAliases[ibeam]);
+        updateVector(dpid, mLHCInfo.mBPTXPhaseShift[ibeam], aliasStr, dpcomdata.get_epoch_time(), val);
+        return true;
       }
     }
   }
@@ -437,7 +436,7 @@ void GRPDCSDPsProcessor::updateVector(const DPID& dpid, std::vector<std::pair<ui
   if (!mClearVectors) {
     if (mPids[dpid] == false) { // let's remove the first value when it is the leftover from the previous processing, since we now have a newer one
       if (mVerbose) {
-	LOG(info) << "We will clear the existing vector, since it is the very first time we receive values for it and we have a dummy one, or the only value present is from the previous processing, so it is old";
+        LOG(info) << "We will clear the existing vector, since it is the very first time we receive values for it and we have a dummy one, or the only value present is from the previous processing, so it is old";
       }
       vect.clear(); // won't hurt if the vector is empty as at the very beginning of the processing
       updateFlag = true;
