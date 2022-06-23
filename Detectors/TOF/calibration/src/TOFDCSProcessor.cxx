@@ -169,9 +169,9 @@ int TOFDCSProcessor::processDP(const DPCOM& dpcom)
         if (mVerboseHVLV) {
           LOG(info) << "Something changed in LV for DDL " << iddl << ", we need to check what";
         }
-	if ((long)val.get_epoch_time() < mStartValidityLV) { // the validity will be set to the earliest that changed; 
-	  mStartValidityLV = (long)val.get_epoch_time();
-	}
+        if ((long)val.get_epoch_time() < mStartValidityLV) { // the validity will be set to the earliest that changed;
+          mStartValidityLV = (long)val.get_epoch_time();
+        }
         mUpdateFeacStatus = true;
         int plate = -1, strip = -1;
         int det[5] = {iddl / 4, -1, -1, -1, -1};
@@ -235,9 +235,9 @@ int TOFDCSProcessor::processDP(const DPCOM& dpcom)
           LOG(info) << "Something changed in HV for Sect " << isect << " and plate "
                     << iplat << ", we need to check what";
         }
-	if ((long)val.get_epoch_time() < mStartValidityHV) { // the validity will be set to the earliest that changed; 
-	  mStartValidityHV = (long)val.get_epoch_time();
-	}
+        if ((long)val.get_epoch_time() < mStartValidityHV) { // the validity will be set to the earliest that changed;
+          mStartValidityHV = (long)val.get_epoch_time();
+        }
         mUpdateHVStatus = true;
         int det[5] = {isect, iplat, -1, -1, -1};
         auto nStrips = (iplat == 2 ? Geo::NSTRIPA : (iplat == 0 || iplat == 4) ? Geo::NSTRIPC : Geo::NSTRIPB);
@@ -356,12 +356,12 @@ void TOFDCSProcessor::updateDPsCCDB()
         tofdcs.lastValue.first = dpvect.back().get_epoch_time();
         converter0.raw_data = dpvect.back().payload_pt1;
         tofdcs.lastValue.second = converter0.double_value;
-	// find min and max, and valisity start time
+        // find min and max, and valisity start time
         for (const auto& el : dpvect) {
-	  auto timeStamp = (long)(el.get_epoch_time());
-	  if (timeStamp < mStartValidityDPs) {
-	    mStartValidityDPs = timeStamp;
-	  }
+          auto timeStamp = (long)(el.get_epoch_time());
+          if (timeStamp < mStartValidityDPs) {
+            mStartValidityDPs = timeStamp;
+          }
           converter0.raw_data = el.payload_pt1;
           if (converter0.double_value < tofdcs.minValue.second) {
             tofdcs.minValue.first = el.get_epoch_time();

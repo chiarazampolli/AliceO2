@@ -154,8 +154,8 @@ class TOFDCSProcessor
   CcdbObjectInfo mccdbLVInfo;
   CcdbObjectInfo mccdbHVInfo;
   long mStartValidityDPs = o2::ccdb::CcdbObjectInfo::INFINITE_TIMESTAMP; // TF index for processing, used to store CCDB object for DPs
-  long mStartValidityLV = o2::ccdb::CcdbObjectInfo::INFINITE_TIMESTAMP; // TF index for processing, used to store CCDB object for LV
-  long mStartValidityHV = o2::ccdb::CcdbObjectInfo::INFINITE_TIMESTAMP; // TF index for processing, used to store CCDB object for HV
+  long mStartValidityLV = o2::ccdb::CcdbObjectInfo::INFINITE_TIMESTAMP;  // TF index for processing, used to store CCDB object for LV
+  long mStartValidityHV = o2::ccdb::CcdbObjectInfo::INFINITE_TIMESTAMP;  // TF index for processing, used to store CCDB object for HV
 
   bool mVerboseDP = false;
   bool mVerboseHVLV = false;
