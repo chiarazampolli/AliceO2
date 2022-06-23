@@ -69,11 +69,6 @@ int TOFDCSProcessor::process(const gsl::span<const DPCOM> dps)
   if (mVerboseDP || mVerboseHVLV) {
     LOG(info) << "\n\n\nProcessing new DCS DP map\n-----------------";
   }
-  if (!mFirstTimeSet) {
-    mFirstTime = mStartValidity;
-    mFirstTimeSet = true;
-  }
-
   if (false) {
     std::unordered_map<DPID, DPVAL> mapin;
     for (auto& it : dps) {
@@ -128,7 +123,7 @@ int TOFDCSProcessor::processDP(const DPCOM& dpcom)
   if (mVerboseDP || mVerboseHVLV) {
     if (type == DPVAL_DOUBLE) {
       LOG(info);
-      LOG(info) << "Processing DP = " << dpcom << ", with value = " << o2::dcs::getValue<double>(dpcom);
+      LOG(info) << "Processing DP = " << dpcom << ", with value = " << o2::dcs::getValue<double>(dpcom) << ", epoch time = " << val.get_epoch_time();
     } else if (type == DPVAL_INT) {
       LOG(info);
       LOG(info) << "Processing DP = " << dpcom << ", with value = " << o2::dcs::getValue<int32_t>(dpcom);
@@ -174,6 +169,9 @@ int TOFDCSProcessor::processDP(const DPCOM& dpcom)
         if (mVerboseHVLV) {
           LOG(info) << "Something changed in LV for DDL " << iddl << ", we need to check what";
         }
+	if ((long)val.get_epoch_time() < mStartValidityLV) { // the validity will be set to the earliest that changed; 
+	  mStartValidityLV = (long)val.get_epoch_time();
+	}
         mUpdateFeacStatus = true;
         int plate = -1, strip = -1;
         int det[5] = {iddl / 4, -1, -1, -1, -1};
@@ -237,6 +235,9 @@ int TOFDCSProcessor::processDP(const DPCOM& dpcom)
           LOG(info) << "Something changed in HV for Sect " << isect << " and plate "
                     << iplat << ", we need to check what";
         }
+	if ((long)val.get_epoch_time() < mStartValidityHV) { // the validity will be set to the earliest that changed; 
+	  mStartValidityHV = (long)val.get_epoch_time();
+	}
         mUpdateHVStatus = true;
         int det[5] = {isect, iplat, -1, -1, -1};
         auto nStrips = (iplat == 2 ? Geo::NSTRIPA : (iplat == 0 || iplat == 4) ? Geo::NSTRIPC : Geo::NSTRIPB);
@@ -355,7 +356,12 @@ void TOFDCSProcessor::updateDPsCCDB()
         tofdcs.lastValue.first = dpvect.back().get_epoch_time();
         converter0.raw_data = dpvect.back().payload_pt1;
         tofdcs.lastValue.second = converter0.double_value;
+	// find min and max, and valisity start time
         for (const auto& el : dpvect) {
+	  auto timeStamp = (long)(el.get_epoch_time());
+	  if (timeStamp < mStartValidityDPs) {
+	    mStartValidityDPs = timeStamp;
+	  }
           converter0.raw_data = el.payload_pt1;
           if (converter0.double_value < tofdcs.minValue.second) {
             tofdcs.minValue.first = el.get_epoch_time();
@@ -433,7 +439,7 @@ void TOFDCSProcessor::updateDPsCCDB()
 
   std::map<std::string, std::string> md;
   md["responsible"] = "Chiara Zampolli";
-  o2::calibration::Utils::prepareCCDBobjectInfo(mTOFDCS, mccdbDPsInfo, "TOF/Calib/DCSDPs", md, mStartValidity, mStartValidity + 3 * o2::ccdb::CcdbObjectInfo::DAY);
+  o2::calibration::Utils::prepareCCDBobjectInfo(mTOFDCS, mccdbDPsInfo, "TOF/Calib/DCSDPs", md, mStartValidityDPs, mStartValidityDPs + 3 * o2::ccdb::CcdbObjectInfo::DAY);
 
   return;
 }
@@ -450,7 +456,7 @@ void TOFDCSProcessor::updateFEACCCDB()
   }
   std::map<std::string, std::string> md;
   md["responsible"] = "Chiara Zampolli";
-  o2::calibration::Utils::prepareCCDBobjectInfo(mFeac, mccdbLVInfo, "TOF/Calib/LVStatus", md, mStartValidity, mStartValidity + o2::ccdb::CcdbObjectInfo::MONTH);
+  o2::calibration::Utils::prepareCCDBobjectInfo(mFeac, mccdbLVInfo, "TOF/Calib/LVStatus", md, mStartValidityLV, mStartValidityLV + o2::ccdb::CcdbObjectInfo::MONTH);
   return;
 }
 
@@ -466,7 +472,7 @@ void TOFDCSProcessor::updateHVCCDB()
   }
   std::map<std::string, std::string> md;
   md["responsible"] = "Chiara Zampolli";
-  o2::calibration::Utils::prepareCCDBobjectInfo(mHV, mccdbHVInfo, "TOF/Calib/HVStatus", md, mStartValidity, mStartValidity + o2::ccdb::CcdbObjectInfo::MONTH);
+  o2::calibration::Utils::prepareCCDBobjectInfo(mHV, mccdbHVInfo, "TOF/Calib/HVStatus", md, mStartValidityHV, mStartValidityHV + o2::ccdb::CcdbObjectInfo::MONTH);
   return;
 }
 

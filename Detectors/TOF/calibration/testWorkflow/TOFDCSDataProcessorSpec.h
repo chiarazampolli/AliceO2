@@ -112,14 +112,8 @@ class TOFDCSDataProcessor : public o2::framework::Task
   void run(o2::framework::ProcessingContext& pc) final
   {
     TStopwatch sw;
-    auto startValidity = DataRefUtils::getHeader<DataProcessingHeader*>(pc.inputs().getFirstValid(true))->creation;
-    LOG(debug) << "startValidity = " << startValidity;
     auto dps = pc.inputs().get<gsl::span<DPCOM>>("input");
     auto timeNow = HighResClock::now();
-    if (startValidity == 0xffffffffffffffff) {                                                                   // it means it is not set
-      startValidity = std::chrono::duration_cast<std::chrono::milliseconds>(timeNow.time_since_epoch()).count(); // in ms
-    }
-    mProcessor->setStartValidity(startValidity);
     mProcessor->process(dps);
     Duration elapsedTime = timeNow - mTimer; // in seconds
     if (elapsedTime.count() >= mDPsUpdateInterval) {
@@ -170,6 +164,7 @@ class TOFDCSDataProcessor : public o2::framework::Task
     output.snapshot(Output{o2::calibration::Utils::gDataOriginCDBPayload, "TOF_DCSDPs", 0}, *image.get());
     output.snapshot(Output{o2::calibration::Utils::gDataOriginCDBWrapper, "TOF_DCSDPs", 0}, info);
     mProcessor->clearDPsinfo();
+    mProcessor->resetStartValidityDPs();
   }
 
   //________________________________________________________________
@@ -186,6 +181,7 @@ class TOFDCSDataProcessor : public o2::framework::Task
 
       output.snapshot(Output{o2::calibration::Utils::gDataOriginCDBPayload, "TOF_LVStatus", 0}, *image.get());
       output.snapshot(Output{o2::calibration::Utils::gDataOriginCDBWrapper, "TOF_LVStatus", 0}, info);
+      mProcessor->resetStartValidityLV();
     }
     if (mProcessor->isHVUpdated()) {
       const auto& payload = mProcessor->getHVStatus();
@@ -195,6 +191,7 @@ class TOFDCSDataProcessor : public o2::framework::Task
                 << " bytes, valid for " << info.getStartValidityTimestamp() << " : " << info.getEndValidityTimestamp();
       output.snapshot(Output{o2::calibration::Utils::gDataOriginCDBPayload, "TOF_HVStatus", 0}, *image.get());
       output.snapshot(Output{o2::calibration::Utils::gDataOriginCDBWrapper, "TOF_HVStatus", 0}, info);
+      mProcessor->resetStartValidityHV();
     }
   }
 
