@@ -114,7 +114,7 @@ class MeanVertexObject : public VertexBase
   */
   void print() const;
   std::string asString() const;
-  
+
  private:
   float mSlopeX; // slope of x = f(z)
   float mSlopeY; // slope of y = f(z)
@@ -123,7 +123,7 @@ class MeanVertexObject : public VertexBase
 };
 
 std::ostream& operator<<(std::ostream& os, const o2::dataformats::MeanVertexObject& o);
-  
+
 } // namespace dataformats
 } // namespace o2
 
