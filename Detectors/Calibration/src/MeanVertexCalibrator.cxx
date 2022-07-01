@@ -45,7 +45,7 @@ void MeanVertexCalibrator::printVector(float* vect, int sizeVect, float minRange
   LOG(info) << "Printing to be used to fill a ROOT histogram";
   for (int i = 0; i < sizeVect; ++i) {
     if (vect[i] != 0) {
-      LOG(info) << "h->SetBinContent(" << i+1 << ", " << vect[i] << ");";
+      LOG(info) << "h->SetBinContent(" << i + 1 << ", " << vect[i] << ");";
     }
   }
 }
@@ -70,7 +70,7 @@ void MeanVertexCalibrator::binVector(std::vector<float>& vectOut, const std::vec
     vectOut[bin]++;
   }
 }
-    
+
 //_____________________________________________
 void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, MeanVertexObject& mvo)
 {
@@ -94,7 +94,7 @@ void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, Mea
       LOG(info) << "x = " << c->histoVtx[i][0] << ", y = " << c->histoVtx[i][1] << ", z = " << c->histoVtx[i][2];
     }
   }
-  
+
   std::vector<float> htmpX;
   std::vector<float> htmpY;
   std::vector<std::array<double, 3>> fitResSlicesX;
@@ -103,72 +103,71 @@ void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, Mea
   std::vector<CovMatrix> covMatrixY;
   std::vector<double> meanZvect;
   int startZ = 0;
-  int counter = 0; 
+  int counter = 0;
   while (startZ < c->histoVtx.size()) {
     double meanZ = 0;
     int counts = 0;
     for (int ii = startZ; ii < c->histoVtx.size(); ++ii) {
       if (htmpX.size() < mMinEntries) {
-	htmpX.push_back(c->histoVtx[ii][0]);
-	htmpY.push_back(c->histoVtx[ii][1]);
-	meanZ += c->histoVtx[ii][2];
-	++counts;
-      }
-      else {
-	// we can fit and restart filling
-	// X:
-	fitResSlicesX.push_back({});
-	covMatrixX.push_back({});
-	if (mVerbose) {
-	  LOG(info) << "Fitting X for counter " << counter << ", will use " << c->nbinsX << " bins, from " << -(c->rangeX) << " to " << c->rangeX;
-	  for (int i = 0; i < htmpX.size(); ++i) {
-	    LOG(info) << i << " : " << htmpX[i];
-	  }
-	}
-	std::vector<float> binnedVect;
-	binVector(binnedVect, htmpX, c->nbinsX, -(c->rangeX), c->rangeX);
-	if (mVerbose) {
-	  LOG(info) << " Printing output binned vector for X:";
-	  printVector(binnedVect, -(c->rangeX), c->rangeX);
-	}
-	fitres = fitGaus(c->nbinsX, &binnedVect[0], -(c->rangeX), c->rangeX, fitResSlicesX.back(), &covMatrixX.back());
-	if (fitres >= 0) {
-	  LOG(info) << "X, counter " << counter << ": Fit result (of single Slot, z slice [" << c->histoVtx[startZ][2] << ", " << c->histoVtx[ii][2] << "[) => " << fitres << ". Mean = " << fitResSlicesX[counter][1] << " Sigma = " << fitResSlicesX[counter][2] << ", covMatrix = " << covMatrixX[counter](2, 2);
-	} else {
-	  LOG(error) << "X, counter " << counter << ": Fit failed with result = " << fitres;
-	}
-	htmpX.clear();
-	// Y:
-	fitResSlicesY.push_back({});
-	covMatrixY.push_back({});
-	if (mVerbose) {
-	  LOG(info) << "Fitting Y for counter " << counter << ", will use " << c->nbinsY << " bins, from " << -(c->rangeY) << " to " << c->rangeY;
-	  for (int i = 0; i < htmpY.size(); ++i) {
-	    LOG(info) << i << " : " << htmpY[i];
-	  }
-	}
-	binnedVect.clear();
-	binVector(binnedVect, htmpY, c->nbinsY, -(c->rangeY), c->rangeY);
-	if (mVerbose) {
-	  LOG(info) << " Printing output binned vector for Y:";
-	  printVector(binnedVect, -(c->rangeY), c->rangeY);
-	}
-	fitres = fitGaus(c->nbinsY, &binnedVect[0], -(c->rangeY), c->rangeY, fitResSlicesY.back(), &covMatrixY.back());
-	if (fitres >= 0) {
-	  LOG(info) << "Y, counter " << counter << ": Fit result (of single Slot, z slice [" << c->histoVtx[startZ][2] << ", " << c->histoVtx[ii][2] << "[) => " << fitres << ". Mean = " << fitResSlicesY[counter][1] << " Sigma = " << fitResSlicesY[counter][2] << ", covMatrix = " << covMatrixY[counter](2, 2);
-	} else {
-	  LOG(error) << "Y, counter " << counter << ": Fit failed with result = " << fitres;
-	}
-	htmpY.clear();
-	if (mVerbose) {
-	  LOG(info) << "Z, counter " << counter << ": " << meanZ/counts;
-	}
-	++counter;
-	meanZvect.push_back(meanZ/counts);
-	break;
+        htmpX.push_back(c->histoVtx[ii][0]);
+        htmpY.push_back(c->histoVtx[ii][1]);
+        meanZ += c->histoVtx[ii][2];
+        ++counts;
+      } else {
+        // we can fit and restart filling
+        // X:
+        fitResSlicesX.push_back({});
+        covMatrixX.push_back({});
+        if (mVerbose) {
+          LOG(info) << "Fitting X for counter " << counter << ", will use " << c->nbinsX << " bins, from " << -(c->rangeX) << " to " << c->rangeX;
+          for (int i = 0; i < htmpX.size(); ++i) {
+            LOG(info) << i << " : " << htmpX[i];
+          }
+        }
+        std::vector<float> binnedVect;
+        binVector(binnedVect, htmpX, c->nbinsX, -(c->rangeX), c->rangeX);
+        if (mVerbose) {
+          LOG(info) << " Printing output binned vector for X:";
+          printVector(binnedVect, -(c->rangeX), c->rangeX);
+        }
+        fitres = fitGaus(c->nbinsX, &binnedVect[0], -(c->rangeX), c->rangeX, fitResSlicesX.back(), &covMatrixX.back());
+        if (fitres >= 0) {
+          LOG(info) << "X, counter " << counter << ": Fit result (of single Slot, z slice [" << c->histoVtx[startZ][2] << ", " << c->histoVtx[ii][2] << "[) => " << fitres << ". Mean = " << fitResSlicesX[counter][1] << " Sigma = " << fitResSlicesX[counter][2] << ", covMatrix = " << covMatrixX[counter](2, 2);
+        } else {
+          LOG(error) << "X, counter " << counter << ": Fit failed with result = " << fitres;
+        }
+        htmpX.clear();
+        // Y:
+        fitResSlicesY.push_back({});
+        covMatrixY.push_back({});
+        if (mVerbose) {
+          LOG(info) << "Fitting Y for counter " << counter << ", will use " << c->nbinsY << " bins, from " << -(c->rangeY) << " to " << c->rangeY;
+          for (int i = 0; i < htmpY.size(); ++i) {
+            LOG(info) << i << " : " << htmpY[i];
+          }
+        }
+        binnedVect.clear();
+        binVector(binnedVect, htmpY, c->nbinsY, -(c->rangeY), c->rangeY);
+        if (mVerbose) {
+          LOG(info) << " Printing output binned vector for Y:";
+          printVector(binnedVect, -(c->rangeY), c->rangeY);
+        }
+        fitres = fitGaus(c->nbinsY, &binnedVect[0], -(c->rangeY), c->rangeY, fitResSlicesY.back(), &covMatrixY.back());
+        if (fitres >= 0) {
+          LOG(info) << "Y, counter " << counter << ": Fit result (of single Slot, z slice [" << c->histoVtx[startZ][2] << ", " << c->histoVtx[ii][2] << "[) => " << fitres << ". Mean = " << fitResSlicesY[counter][1] << " Sigma = " << fitResSlicesY[counter][2] << ", covMatrix = " << covMatrixY[counter](2, 2);
+        } else {
+          LOG(error) << "Y, counter " << counter << ": Fit failed with result = " << fitres;
+        }
+        htmpY.clear();
+        if (mVerbose) {
+          LOG(info) << "Z, counter " << counter << ": " << meanZ / counts;
+        }
+        ++counter;
+        meanZvect.push_back(meanZ / counts);
+        break;
       }
     }
-    startZ += mMinEntries * counter; 
+    startZ += mMinEntries * counter;
   }
 
   // now we update the error on x
@@ -181,8 +180,8 @@ void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, Mea
     LOG(info) << "sumX = " << sumX;
     LOG(info) << "sumY = " << sumY;
   }
-  float sigmaX = 1./std::sqrt(sumX);
-  float sigmaY = 1./std::sqrt(sumY);
+  float sigmaX = 1. / std::sqrt(sumX);
+  float sigmaY = 1. / std::sqrt(sumY);
   if (mVerbose) {
     LOG(info) << "sigmaX = " << sigmaX;
     LOG(info) << "sigmaY = " << sigmaY;
@@ -193,7 +192,7 @@ void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, Mea
   // now we get the slope for the x-coordinate dependence on z
   TLinearFitter lf(1, "pol1");
   lf.StoreData(kFALSE);
-  for (int i = 0; i < fitResSlicesX.size(); ++i) { 
+  for (int i = 0; i < fitResSlicesX.size(); ++i) {
     if (mVerbose) {
       LOG(info) << "Adding point " << i << ": zvtx = " << meanZvect[i] << " xvtx = " << fitResSlicesX[i][2];
     }

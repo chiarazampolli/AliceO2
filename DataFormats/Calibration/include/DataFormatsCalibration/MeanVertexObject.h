@@ -22,7 +22,7 @@ namespace o2
 {
 namespace dataformats
 {
-  class MeanVertexObject : public VertexBase
+class MeanVertexObject : public VertexBase
 {
 
  public:
@@ -55,30 +55,30 @@ namespace dataformats
   MeanVertexObject& operator=(MeanVertexObject& other) = default;
   MeanVertexObject& operator=(MeanVertexObject&& other) = default;
 
-  void set(int icoord, float val) {
+  void set(int icoord, float val)
+  {
     if (icoord == 0) {
       setX(val);
     } else if (icoord == 1) {
       setY(val);
     } else if (icoord == 2) {
       setZ(val);
-    }
-    else {
+    } else {
       LOG(fatal) << "Coordinate out of bound to set vtx " << icoord << ", should be in [0, 2]";
     }
   }
-   math_utils::Point3D<float>& getPos() { return getXYZ(); }
-   math_utils::Point3D<float> getPos() const { return getXYZ(); }
+  math_utils::Point3D<float>& getPos() { return getXYZ(); }
+  math_utils::Point3D<float> getPos() const { return getXYZ(); }
 
-  void setSigma(int icoord, float val) {
+  void setSigma(int icoord, float val)
+  {
     if (icoord == 0) {
       setSigmaX2(val);
     } else if (icoord == 1) {
       setSigmaY2(val);
     } else if (icoord == 2) {
       setSigmaZ2(val);
-    }
-    else {
+    } else {
       LOG(fatal) << "Coordinate out of bound to set sigma via MeanVtx " << icoord << ", should be in [0, 2]";
     }
   }
@@ -106,9 +106,9 @@ namespace dataformats
   float getXAtZ(float z) { return getX() + mSlopeX * (z - getZ()); }
   float getYAtZ(float z) { return getY() + mSlopeY * (z - getZ()); }
 
-private:
-  float mSlopeX;   // slope of x = f(z)
-  float mSlopeY;   // slope of y = f(z)
+ private:
+  float mSlopeX; // slope of x = f(z)
+  float mSlopeY; // slope of y = f(z)
 
   ClassDefNV(MeanVertexObject, 1);
 };
