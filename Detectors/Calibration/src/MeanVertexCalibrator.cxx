@@ -36,7 +36,7 @@ void MeanVertexCalibrator::initOutput()
 }
 
 //_____________________________________________
-  void MeanVertexCalibrator::printVector(float* vect, int sizeVect, float minRange, float maxRange, float binWidth)
+void MeanVertexCalibrator::printVector(float* vect, int sizeVect, float minRange, float maxRange, float binWidth)
 {
   for (int i = 0; i < sizeVect; ++i) {
     LOG(info) << "i-th bin [" << minRange + i * binWidth << ", " << minRange + (i + 1) * binWidth << "] = " << i << ", content of histogram = " << vect[i];
@@ -60,7 +60,7 @@ void MeanVertexCalibrator::printVector(std::vector<float>& vect, float minRange,
 }
 
 //_____________________________________________
-  void MeanVertexCalibrator::binVector(std::vector<float>& vectOut, const std::vector<float>& vectIn, int nbins, float min, float max, float binWidthInv)
+void MeanVertexCalibrator::binVector(std::vector<float>& vectOut, const std::vector<float>& vectIn, int nbins, float min, float max, float binWidthInv)
 {
   vectOut.clear();
   vectOut.resize(nbins);
@@ -111,21 +111,21 @@ void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, Mea
     int counts = 0;
     for (int ii = startZ; ii <= c->histoVtx.size(); ++ii) {
       if (mVerbose) {
-	//LOG(info) << "htmpX.size() = " << htmpX.size() << " ii = " << ii << " c->histoVtx.size() = " << c->histoVtx.size();
+        //LOG(info) << "htmpX.size() = " << htmpX.size() << " ii = " << ii << " c->histoVtx.size() = " << c->histoVtx.size();
       }
       if (htmpX.size() < minEntriesPerPoint) {
-	if (mVerbose) {
-	  //LOG(info) << "filling X with c->histoVtx[" << ii << "][0] = " << c->histoVtx[ii][0];
-	  //LOG(info) << "filling Y with c->histoVtx[" << ii << "][0] = " << c->histoVtx[ii][1];
-	}
+        if (mVerbose) {
+          //LOG(info) << "filling X with c->histoVtx[" << ii << "][0] = " << c->histoVtx[ii][0];
+          //LOG(info) << "filling Y with c->histoVtx[" << ii << "][0] = " << c->histoVtx[ii][1];
+        }
         htmpX.push_back(c->histoVtx[ii][0]);
         htmpY.push_back(c->histoVtx[ii][1]);
-	meanZ += c->histoVtx[ii][2];
+        meanZ += c->histoVtx[ii][2];
         ++counts;
       } else {
-	if (mVerbose) {
-	  LOG(info) << "fitting ";
-	}
+        if (mVerbose) {
+          LOG(info) << "fitting ";
+        }
         // we can fit and restart filling
         // X:
         fitResSlicesX.push_back({});
@@ -172,7 +172,7 @@ void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, Mea
         }
         htmpY.clear();
 
-	// Z: let's calculate the mean position
+        // Z: let's calculate the mean position
         if (mVerbose) {
           LOG(info) << "Z, counter " << counter << ": " << meanZ / counts;
         }
@@ -203,13 +203,13 @@ void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, Mea
       LOG(info) << "SigmaX = " << fitResSlicesX[iFit][2] << " error = " << covMatrixX[iFit](2, 2);
       LOG(info) << "SigmaY = " << fitResSlicesY[iFit][2] << " error = " << covMatrixY[iFit](2, 2);
     }
-    if (covMatrixX[iFit](2, 2) != 0 ) {
-      double weightSigma = 1. / covMatrixX[iFit](2, 2);  // covMatrix is already an error squared
+    if (covMatrixX[iFit](2, 2) != 0) {
+      double weightSigma = 1. / covMatrixX[iFit](2, 2); // covMatrix is already an error squared
       sumX += (fitResSlicesX[iFit][2] * weightSigma);
       weightSumX += weightSigma;
     }
-    if (covMatrixY[iFit](2, 2) != 0 ) {
-      double weightSigma = 1. / covMatrixY[iFit](2, 2);  // covMatrix is already an error squared
+    if (covMatrixY[iFit](2, 2) != 0) {
+      double weightSigma = 1. / covMatrixY[iFit](2, 2); // covMatrix is already an error squared
       sumY += (fitResSlicesY[iFit][2] * weightSigma);
       weightSumY += weightSigma;
     }
@@ -220,7 +220,7 @@ void MeanVertexCalibrator::fitMeanVertex(o2::calibration::MeanVertexData* c, Mea
     LOG(info) << "sumY = " << sumY;
     LOG(info) << "weightSumY = " << weightSumY;
   }
-    
+
   double sigmaX = 0;
   if (weightSumX != 0) {
     sigmaX = sumX / weightSumX;
@@ -277,11 +277,9 @@ void MeanVertexCalibrator::fitMeanVertexCoord(int icoord, int nbins, float* arra
     LOG(info) << "**** Printing content of MeanVertex object for coordinate " << icoord;
     if (icoord == 0) {
       binWidth = mBinWidthX;
-    }
-    else if (icoord == 1) {
+    } else if (icoord == 1) {
       binWidth = mBinWidthY;
-    }
-    else {
+    } else {
       binWidth = mBinWidthZ;
     }
     printVector(array, nbins, minRange, maxRange, binWidth);

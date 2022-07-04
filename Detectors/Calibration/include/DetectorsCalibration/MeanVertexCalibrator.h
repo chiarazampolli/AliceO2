@@ -38,14 +38,15 @@ class MeanVertexCalibrator final : public o2::calibration::TimeSlotCalibration<o
 
  public:
   MeanVertexCalibrator(int minEnt = 500, int nBinsX = 100, float rangeX = 1.f,
-                       int nBinsY = 100, float rangeY = 1.f, int nBinsZ = 100, float rangeZ = 20.f, uint32_t nPointsForSlope = 10, 
-                       int nSlotsSMA = 5) : mMinEntries(minEnt), mNBinsX(nBinsX), mRangeX(rangeX), mNBinsY(nBinsY), mRangeY(rangeY), mNBinsZ(nBinsZ), mRangeZ(rangeZ), mSMAslots(nSlotsSMA), mNPointsForSlope(nPointsForSlope) {
+                       int nBinsY = 100, float rangeY = 1.f, int nBinsZ = 100, float rangeZ = 20.f, uint32_t nPointsForSlope = 10,
+                       int nSlotsSMA = 5) : mMinEntries(minEnt), mNBinsX(nBinsX), mRangeX(rangeX), mNBinsY(nBinsY), mRangeY(rangeY), mNBinsZ(nBinsZ), mRangeZ(rangeZ), mSMAslots(nSlotsSMA), mNPointsForSlope(nPointsForSlope)
+  {
     mBinWidthX = 2 * rangeX / nBinsX;
     mBinWidthY = 2 * rangeY / nBinsY;
     mBinWidthZ = 2 * rangeZ / nBinsZ;
-    mBinWidthXInv = 1./ mBinWidthX;
-    mBinWidthYInv = 1./ mBinWidthY;
-    mBinWidthZInv = 1./ mBinWidthZ;
+    mBinWidthXInv = 1. / mBinWidthX;
+    mBinWidthYInv = 1. / mBinWidthY;
+    mBinWidthZInv = 1. / mBinWidthZ;
   }
 
   ~MeanVertexCalibrator() final = default;
