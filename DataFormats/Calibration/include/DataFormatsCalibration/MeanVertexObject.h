@@ -115,7 +115,8 @@ class MeanVertexObject : public VertexBase
     v.setXYZ(getXAtZ(z), getYAtZ(z), z);
   }
 
-  const VertexBase& getMeanVertex() const {
+  const VertexBase& getMeanVertex() const
+  {
     return (const VertexBase&)(*this);
   }
 
