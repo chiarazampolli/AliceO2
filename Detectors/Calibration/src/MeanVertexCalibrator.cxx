@@ -291,17 +291,16 @@ void MeanVertexCalibrator::fitMeanVertexCoord(int icoord, int nbins, float* arra
     LOG(error) << "coordinate " << icoord << ": Fit failed with result = " << fitres;
   }
   switch (icoord) {
-  case 0:
-    mvo.setX(fitValues[1]);
-    mvo.setSigmaX(fitValues[2]);
-  case 1:
-    mvo.setY(fitValues[1]);
-    mvo.setSigmaY(fitValues[2]);
-  case 2:
-    mvo.setZ(fitValues[1]);
-    mvo.setSigmaZ(fitValues[2]);
+    case 0:
+      mvo.setX(fitValues[1]);
+      mvo.setSigmaX(fitValues[2]);
+    case 1:
+      mvo.setY(fitValues[1]);
+      mvo.setSigmaY(fitValues[2]);
+    case 2:
+      mvo.setZ(fitValues[1]);
+      mvo.setSigmaZ(fitValues[2]);
   }
-
 }
 
 //_____________________________________________
