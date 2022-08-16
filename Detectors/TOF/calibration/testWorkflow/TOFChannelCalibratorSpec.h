@@ -138,7 +138,7 @@ class TOFChannelCalibDevice : public o2::framework::Task
         LHCphase* lhcPhase = new LHCphase(std::move(*lhcPhaseIn));
         TimeSlewing* channelCalib = new TimeSlewing(std::move(*channelCalibIn));
         mcalibTOFapi = new o2::tof::CalibTOFapi(long(0), lhcPhase, channelCalib);
-	mUpdateCCDB = false;
+        mUpdateCCDB = false;
       } else {
         // if the calib objects were updated, we need to update the mcalibTOFapi
         if (mUpdateCCDB) {
@@ -146,7 +146,7 @@ class TOFChannelCalibDevice : public o2::framework::Task
           LHCphase* lhcPhase = new LHCphase(*lhcPhaseIn);
           TimeSlewing* channelCalib = new TimeSlewing(std::move(*channelCalibIn));
           mcalibTOFapi = new o2::tof::CalibTOFapi(long(0), lhcPhase, channelCalib);
-	  mUpdateCCDB = false;
+          mUpdateCCDB = false;
         }
       }
     } else { // we use "fake" initial calibrations
