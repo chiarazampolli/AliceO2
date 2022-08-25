@@ -113,10 +113,12 @@ class GRPECSObject
   // methods to manipulate the list of FLPs in the run
   std::vector<unsigned short> getListOfFLPs() const { return mFLPs; }
   void addFLP(unsigned short flp) { mFLPs.push_back(flp); }
-  bool getFLPStatus(unsigned short flp) const {
+  bool getFLPStatus(unsigned short flp) const
+  {
     return std::find(mFLPs.begin(), mFLPs.end(), flp) == mFLPs.end() ? false : true;
   }
-  bool listOfFLPsSet() const {
+  bool listOfFLPsSet() const
+  {
     return mFLPs.size() > 0 ? true : false;
   }
 
@@ -139,7 +141,7 @@ class GRPECSObject
   int mRun = 0;                     ///< run identifier
   RunType mRunType = RunType::NONE; ///< run type
   std::string mDataPeriod{};        ///< name of the period
-  std::vector<unsigned short> mFLPs;       ///< to store which FLPs were in the processing
+  std::vector<unsigned short> mFLPs; ///< to store which FLPs were in the processing
 
   // detectors which are always readout in triggered mode. Others are continuous by default but exceptionally can be triggered
   static constexpr DetID::mask_t DefTriggeredDets = DetID::getMask(DetID::TRD) | DetID::getMask(DetID::PHS) | DetID::getMask(DetID::CPV) | DetID::getMask(DetID::EMC) | DetID::getMask(DetID::HMP);

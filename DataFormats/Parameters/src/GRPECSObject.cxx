@@ -54,7 +54,7 @@ void GRPECSObject::print() const
   }
   printf("List of FLPs used\n");
   for (auto flp : mFLPs) {
-      printf("%3hu ", flp);
+    printf("%3hu ", flp);
   }
   printf("\n");
 }
