@@ -35,6 +35,7 @@ void createGRPECSObject(const std::string& dataPeriod,
                         const std::string& detsReadout,
                         const std::string& detsContinuousRO,
                         const std::string& detsTrigger,
+			const std::string& flpList,
                         long tstart,
                         long tend,
                         long marginAtSOR,
@@ -52,6 +53,13 @@ void createGRPECSObject(const std::string& dataPeriod,
   }
   auto detMaskCont = detMask & o2::detectors::DetID::getMask(detsContinuousRO);
   auto detMaskTrig = detMask & o2::detectors::DetID::getMask(detsTrigger);
+  std::stringstream flpListSS(flpList);
+  std::vector<unsigned short> flps;
+  while(flpListSS.good()) {
+    string substr;
+    getline(flpListSS, substr, ',');
+    flps.push_back(atoi(substr.c_str()));
+  }
   LOG(info) << tstart << " " << tend;
   if (tstart == 0) {
     tstart = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
@@ -73,6 +81,7 @@ void createGRPECSObject(const std::string& dataPeriod,
   grpecs.setRun(run);
   grpecs.setRunType((GRPECSObject::RunType)runType);
   grpecs.setDataPeriod(dataPeriod);
+  grpecs.setListOfFLPs(flps);
 
   grpecs.print();
   std::map<std::string, std::string> metadata;
