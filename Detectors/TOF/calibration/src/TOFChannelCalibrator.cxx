@@ -801,7 +801,7 @@ void TOFChannelCalibrator<T>::finalizeSlotWithTracks(Slot& slot)
   }   // end loop over sectors
   auto clName = o2::utils::MemFileHelper::getClassName(ts);
   auto flName = o2::ccdb::CcdbApi::generateFileName(clName);
-  auto startValidity = slot.getStaticStartTimeMS() - o2::ccdb::CcdbObjectInfo::SECOND * 10;  // adding a marging, in case some TFs were not processed
+  auto startValidity = slot.getStaticStartTimeMS() - o2::ccdb::CcdbObjectInfo::SECOND * 10; // adding a marging, in case some TFs were not processed
   auto endValidity = startValidity + o2::ccdb::CcdbObjectInfo::MONTH * 2;
   ts.setStartValidity(startValidity);
   ts.setEndValidity(endValidity);
