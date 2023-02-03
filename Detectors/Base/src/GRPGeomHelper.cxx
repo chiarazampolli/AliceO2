@@ -162,55 +162,48 @@ void GRPGeomHelper::checkUpdates(ProcessingContext& pc) const
   if (mRequest->askGRPMagField) {
     if (pc.inputs().isValid("grpfield")) {
       pc.inputs().get<o2::parameters::GRPMagField*>("grpfield");
-    }
-    else {
+    } else {
       return;
     }
   }
   if (mRequest->askGRPLHCIF && !initOnceDone) {
     if (pc.inputs().isValid("grplhcif")) {
       pc.inputs().get<o2::parameters::GRPLHCIFData*>("grplhcif");
-    }
-    else {
+    } else {
       return;
     }
   }
   if (mRequest->askGRPECS && !initOnceDone) {
     if (pc.inputs().isValid("grpecs")) {
-    pc.inputs().get<o2::parameters::GRPECSObject*>("grpecs");
-    }
-    else {
+      pc.inputs().get<o2::parameters::GRPECSObject*>("grpecs");
+    } else {
       return;
     }
   }
   if (mRequest->askTime && !initOnceDone) {
     if (pc.inputs().isValid("orbitReset")) {
       pc.inputs().get<std::vector<Long64_t>*>("orbitReset");
-    }
-    else {
+    } else {
       return;
     }
   }
   if (mRequest->askMatLUT && !initOnceDone) {
     if (pc.inputs().isValid("matLUT")) {
       pc.inputs().get<o2::base::MatLayerCylSet*>("matLUT");
-    }
-    else {
+    } else {
       return;
     }
   }
   if (mRequest->askGeomAlign && !initOnceDone) {
     if (pc.inputs().isValid("geomAlp")) {
       pc.inputs().get<TGeoManager*>("geomAlp");
-    }
-    else {
+    } else {
       return;
     }
   } else if (mRequest->askGeomIdeal) {
     if (pc.inputs().isValid("geomIdeal")) {
       pc.inputs().get<TGeoManager*>("geomIdeal");
-    }
-    else {
+    } else {
       return;
     }
   }
@@ -218,10 +211,9 @@ void GRPGeomHelper::checkUpdates(ProcessingContext& pc) const
     for (auto id = DetID::First; id <= DetID::Last; id++) {
       std::string binding = fmt::format("align{}", DetID::getName(id));
       if (pc.inputs().isValid(binding.c_str())) {
-	pc.inputs().get<std::vector<o2::detectors::AlignParam>*>(binding);
-      }
-      else {
-	return;
+        pc.inputs().get<std::vector<o2::detectors::AlignParam>*>(binding);
+      } else {
+        return;
       }
     }
   }
