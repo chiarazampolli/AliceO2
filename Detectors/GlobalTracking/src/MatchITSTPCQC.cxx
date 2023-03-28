@@ -189,7 +189,6 @@ void MatchITSTPCQC::initDataRequest()
 
   mDataRequest = std::make_shared<o2::globaltracking::DataRequest>();
   mDataRequest->requestTracks(mSrc, mUseMC);
-
 }
 
 //__________________________________________________________
