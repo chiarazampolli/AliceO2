@@ -12,7 +12,7 @@
 // executable to get the interaction rate and duration of a run from CCDB
 
 #include <fstream>
-#include<stdio.h>
+#include <stdio.h>
 #if !defined(__CLING__) || defined(__ROOTCLING__)
 #include "CCDB/BasicCCDBManager.h"
 #include "CommonDataFormat/InteractionRecord.h"
@@ -28,9 +28,10 @@ namespace bpo = boost::program_options;
 
 const double orbitDuration = 88.924596234; // us
 
-void writeIRtoFile(float ir) {
+void writeIRtoFile(float ir)
+{
 
-  FILE *fptr = fopen("IR.txt", "w");
+  FILE* fptr = fopen("IR.txt", "w");
   if (fptr == NULL) {
     printf("ERROR: Could not open file to write IR!");
     return;
@@ -39,9 +40,10 @@ void writeIRtoFile(float ir) {
   fclose(fptr);
 }
 
-void writeDurationToFile(long duration) {
+void writeDurationToFile(long duration)
+{
 
-  FILE *fptr = fopen("Duration.txt", "w");
+  FILE* fptr = fopen("Duration.txt", "w");
   if (fptr == NULL) {
     printf("ERROR: Could not open file to write IR!");
     return;
@@ -87,7 +89,7 @@ int main(int argc, char* argv[])
 
   auto run = vm["run"].as<int>();
   auto debug = vm["enable-debug"].as<bool>();
-  
+
   float ir = 0.f;
   long duration = 0;
   // duration as O2end - O2start:
@@ -95,7 +97,7 @@ int main(int argc, char* argv[])
   ccdb_inst.setURL("https://alice-ccdb.cern.ch");
   std::pair<uint64_t, uint64_t> run_times = ccdb_inst.getRunDuration(run);
   long run_duration = long(run_times.second - run_times.first);
-  
+
   LOGP(info, "Checking IR anbd duration");
   if (run < 523141) {
     // LHC22c, d, e, f
@@ -106,7 +108,7 @@ int main(int argc, char* argv[])
     writeDurationToFile(duration);
     return 0;
   }
-  
+
   o2::ccdb::CcdbApi ccdb_api;
   ccdb_api.init("https://alice-ccdb.cern.ch");
   // access SOR and EOR timestamps
@@ -118,7 +120,7 @@ int main(int argc, char* argv[])
 
   // Extract CTP info
   std::map<std::string, std::string> metadataCTP;
-  metadataCTP["runNumber"] = Form("%d",run);
+  metadataCTP["runNumber"] = Form("%d", run);
   ccdb_inst.setFatalWhenNull(false);
   o2::ctp::CTPRunScalers* scl = ccdb_inst.getSpecific<o2::ctp::CTPRunScalers>("CTP/Calib/Scalers", tsSOR, metadataCTP);
   if (!scl) {
@@ -143,15 +145,15 @@ int main(int argc, char* argv[])
     std::vector<int64_t> vOrbit;
     std::vector<int64_t> vScaler;
     int i = 0;
-    for (auto& record : mScalerRecordO2){
+    for (auto& record : mScalerRecordO2) {
       if (debug) {
-	record.printStream(std::cout);
+        record.printStream(std::cout);
       }
       std::vector<CTPScalerO2>& scalers = record.scalers;
       o2::InteractionRecord& intRecord = record.intRecord;
       vOrbit.push_back(intRecord.orbit);
       if (debug) {
-	LOGP(info, "{} orbit = {} scalers = {}", i, intRecord.orbit, scalers[0].lmBefore);
+        LOGP(info, "{} orbit = {} scalers = {}", i, intRecord.orbit, scalers[0].lmBefore);
       }
       vScaler.push_back(scalers[0].lmBefore); // use scalers for class 0 (usually TVX). TODO: extract info on class id from trigger config
       totScalers += scalers[0].lmBefore;
@@ -165,12 +167,10 @@ int main(int argc, char* argv[])
 
   if (ir < 100000) {
     LOGP(info, "IR < 100 kHz");
-  }
-  else {
+  } else {
     LOGP(info, "IR > 100 kHz");
   }
   writeIRtoFile(ir);
   writeDurationToFile(duration);
   return 0;
 }
-
