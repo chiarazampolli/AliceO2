@@ -40,3 +40,11 @@ o2_add_executable(retrieve-from-ccdb
 		  PUBLIC_LINK_LIBRARIES ROOT::MathCore
 		  O2::Framework
 		  O2::CCDB)
+
+o2_add_executable(get-IR-and-Duration
+                  COMPONENT_NAME calibration
+                  SOURCES getIRandDuration.cxx
+		  PUBLIC_LINK_LIBRARIES
+		  O2::DataFormatsCTP
+		  O2::CommonDataFormat
+		  O2::CCDB)
