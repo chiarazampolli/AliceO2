@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
   std::pair<uint64_t, uint64_t> run_times = ccdb_inst.getRunDuration(run);
   long run_O2duration = long(run_times.second - run_times.first);
   // access SOR and EOR timestamps
-  int64_t tsSOR = run_times.first; // ms
+  int64_t tsSOR = run_times.first;  // ms
   int64_t tsEOR = run_times.second; // ms
   LOGP(info, "tsSOR = {} ms, tsEOR = {} ms", tsSOR, tsEOR);
 
