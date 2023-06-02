@@ -30,22 +30,22 @@ enum CCDBRefreshMode { NONE,
                        SYNC };
 
 int createGRPECSObject(const std::string& dataPeriod,
-                        int run,
-                        int runTypeI,
-                        int nHBPerTF,
-                        const std::string& _detsReadout,
-                        const std::string& _detsContinuousRO,
-                        const std::string& _detsTrigger,
-                        const std::string& flpList,
-                        long tstart,
-                        long tend,
-                        long tstartCTP,
-                        long tendCTP,
-                        long marginAtSOR,
-                        long marginAtEOR,
-                        const std::string& ccdbServer = "",
-                        const std::string& metaDataStr = "",
-                        CCDBRefreshMode refresh = CCDBRefreshMode::NONE)
+                       int run,
+                       int runTypeI,
+                       int nHBPerTF,
+                       const std::string& _detsReadout,
+                       const std::string& _detsContinuousRO,
+                       const std::string& _detsTrigger,
+                       const std::string& flpList,
+                       long tstart,
+                       long tend,
+                       long tstartCTP,
+                       long tendCTP,
+                       long marginAtSOR,
+                       long marginAtEOR,
+                       const std::string& ccdbServer = "",
+                       const std::string& metaDataStr = "",
+                       CCDBRefreshMode refresh = CCDBRefreshMode::NONE)
 {
   int retValGLO = 0;
   int retValRCT = 0;
@@ -130,8 +130,7 @@ int createGRPECSObject(const std::string& dataPeriod,
     retValGLO = api.storeAsTFileAny(&grpecs, objPath, metadata, tstart, tendVal); // making it 1-year valid to be sure we have something
     if (retValGLO == 0) {
       LOGP(info, "Uploaded to {}/{} with validity {}:{} for SOR:{}/EOR:{}", ccdbServer, objPath, tstart, tendVal, tstart, tend);
-    }
-    else {
+    } else {
       LOGP(alarm, "Upload to {}/{} with validity {}:{} for SOR:{}/EOR:{} FAILED, returned with code {}", ccdbServer, objPath, tstart, tendVal, tstart, tend, retValGLO);
     }
     if (tend > tstart) {
@@ -155,9 +154,8 @@ int createGRPECSObject(const std::string& dataPeriod,
         retValRCT = api.storeAsBinaryFile(&tempChar, sizeof(tempChar), "tmp.dat", "char", "RCT/Info/RunInformation", mdRCT, startValRCT, endValRCT);
         if (retValRCT == 0) {
           LOGP(info, "Uploaded RCT object to {}/{} with validity {}:{}", ccdbServer, "RCT/Info/RunInformation", startValRCT, endValRCT);
-        }
-        else {
-         LOGP(alarm, "Uploaded RCT object to {}/{} with validity {}:{} FAILED, returned with code {}", ccdbServer, "RCT/Info/RunInformation", startValRCT, endValRCT, retValRCT);
+        } else {
+          LOGP(alarm, "Uploaded RCT object to {}/{} with validity {}:{} FAILED, returned with code {}", ccdbServer, "RCT/Info/RunInformation", startValRCT, endValRCT, retValRCT);
         }
       }
     }
@@ -180,7 +178,6 @@ int createGRPECSObject(const std::string& dataPeriod,
     return 4;
   }
   return 0;
-
 }
 
 int main(int argc, char** argv)
