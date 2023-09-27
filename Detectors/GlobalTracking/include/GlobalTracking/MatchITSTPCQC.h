@@ -47,11 +47,10 @@ struct LblInfo {
 class MatchITSTPCQC
 {
  public:
-
   enum matchType : int { TPC = 0,
-                            ITS,
-                            SIZE };
-  
+                         ITS,
+                         SIZE };
+
   MatchITSTPCQC() = default;
   ~MatchITSTPCQC();
 
@@ -150,11 +149,11 @@ class MatchITSTPCQC
   bool mUseMC = false;
   float mBz = 0;                                              ///< nominal Bz
   std::array<std::unordered_map<o2::MCCompLabel, LblInfo>, matchType::SIZE> mMapLabels;    // map with labels that have been found for the matched ITSTPC tracks; key is the label,
-                                                              // value is the LbLinfo with the id of the track with the highest pT found with that label so far,
-                                                              // and the flag to say if it is a physical primary or not
+                                                                                           // value is the LbLinfo with the id of the track with the highest pT found with that label so far,
+                                                                                           // and the flag to say if it is a physical primary or not
   std::array<std::unordered_map<o2::MCCompLabel, LblInfo>, matchType::SIZE> mMapRefLabels; // map with labels that have been found for the unmatched TPC tracks; key is the label,
-                                                              // value is the LblInfo with the id of the track with the highest number of TPC clusters found
-                                                              // with that label so far, and the flag to say if it is a physical primary or not
+                                                                                           // value is the LblInfo with the id of the track with the highest number of TPC clusters found
+                                                                                           // with that label so far, and the flag to say if it is a physical primary or not
   o2::steer::MCKinematicsReader mcReader;                     // reader of MC information
 
   // Pt
@@ -203,7 +202,7 @@ class MatchITSTPCQC
   TH1D* m1OverPtPhysPrimNum[matchType::SIZE] = {};
   TH1D* m1OverPtPhysPrimDen[matchType::SIZE] = {};
   TEfficiency* mFractionITSTPCmatchPhysPrim1OverPt[matchType::SIZE] = {};
- 
+
   void setEfficiency(TEfficiency* eff, TH1* hnum, TH1* hden, bool is2D = false);
 
   int mNTPCSelectedTracks = 0;
