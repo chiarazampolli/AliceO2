@@ -159,7 +159,6 @@ class MatchITSTPCQC
   TEfficiency* getFractionITSTPCmatchEtaPhysPrim() const { return nullptr; } // old
 
  private:
-
   std::shared_ptr<o2::globaltracking::DataRequest> mDataRequest;
   o2::globaltracking::RecoContainer mRecoCont;
   GID::mask_t mSrc = GID::getSourcesMask("ITS,TPC,ITS-TPC");
