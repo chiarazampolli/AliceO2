@@ -145,7 +145,7 @@ class MatchITSTPCQC
   TH2F* getHistoPhiVsPt() const { return nullptr; }                          // old
   TEfficiency* getFractionITSTPCmatchPhiVsPt() const { return nullptr; }     // old
   TH1F* getHistoEta() const { return nullptr; }                              // old
-  TH1F* getHistoEtaTPC() const { return nullptr; }                              // old
+  TH1F* getHistoEtaTPC() const { return nullptr; }                           // old
   TEfficiency* getFractionITSTPCmatchEta() const { return nullptr; }         // old
   TH2F* getHistoEtaVsPt() const { return nullptr; }                          // old
   TH2F* getHistoEtaVsPtTPC() const { return nullptr; }                       // old
@@ -154,7 +154,7 @@ class MatchITSTPCQC
   TH1F* getHistoPtTPCPhysPrim() const { return nullptr; }                    // old
   TEfficiency* getFractionITSTPCmatchPhysPrim() const { return nullptr; }    // old
   TH1F* getHistoPhiPhysPrim() const { return nullptr; }                      // old
-  TH1F* getHistoPhiTPCPhysPrim() const { return nullptr; }                      // old
+  TH1F* getHistoPhiTPCPhysPrim() const { return nullptr; }                   // old
   TEfficiency* getFractionITSTPCmatchPhiPhysPrim() const { return nullptr; } // old
   TH1F* getHistoEtaPhysPrim() const { return nullptr; }                      // old
   TH1F* getHistoEtaTPCPhysPrim() const { return nullptr; }                   // old
