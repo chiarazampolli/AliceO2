@@ -136,8 +136,7 @@ class MatchITSTPCQC
   void setMinDCAtoBeamPipeYCut(float v) { mDCACutY = v; }
 
  private:
-
-// to remove after merging QC PR
+  // to remove after merging QC PR
   TH1D* getHistoPt() const { return nullptr; }                               // old
   TH1D* getHistoPtTPC() const { return nullptr; }                            // old
   TEfficiency* getFractionITSTPCmatch() const { return nullptr; }            // old
