@@ -57,8 +57,8 @@ WorkflowSpec defineDataProcessing(const ConfigContext& cc)
 {
   bool useMC = cc.options().get<bool>("enable-mc");
   auto name = fmt::format("mch-digit-writer-{}-{}",
-                         cc.options().get<std::string>("input-digits-data-description"),
-                         cc.options().get<std::string>("input-digits-data-description"));
+                          cc.options().get<std::string>("input-digits-data-description"),
+                          cc.options().get<std::string>("input-digits-data-description"));
 
   return WorkflowSpec{o2::mch::getDigitWriterSpec(
     useMC,
