@@ -337,9 +337,11 @@ if [[ ! -z ${WORKFLOW_DETECTORS_USE_GLOBAL_READER} ]]; then
   has_detector FV0 && has_detector_from_global_reader FV0 && add_W o2-fv0-digit-reader-workflow "$DISABLE_MC --hbfutils-config o2_tfidinfo.root --fv0-digit-infile o2_fv0digits.root"
   has_detector MID && has_detector_from_global_reader MID && add_W o2-mid-digits-reader-workflow "$DISABLE_MC --hbfutils-config o2_tfidinfo.root --mid-digit-infile mid-digits-decoded.root"
   has_detector MCH && has_detector_from_global_reader MCH && add_W o2-mch-digits-reader-workflow "$DISABLE_MC --hbfutils-config o2_tfidinfo.root --infile mchdigits.root"
+  has_detector MCH && has_detector_from_global_reader MCH && add_W o2-mch-digits-reader-workflow "$DISABLE_MC --hbfutils-config o2_tfidinfo.root --infile mchfdigits.root --mch-output-digits-data-description F-DIGITS --mch-output-digitrofs-data-description TC-F-DIGITROFS"
+  has_detector MCH && has_detector_from_global_reader MCH && add_W o2-mch-errors-reader-workflow "--hbfutils-config o2_tfidinfo.root" "" 0
   has_detector MCH && has_detector_from_global_reader MCH && add_W o2-mch-clusters-reader-workflow "--hbfutils-config o2_tfidinfo.root" "" 0
   has_detector MCH && has_detector_from_global_reader MCH && add_W o2-mch-preclusters-reader-workflow "--hbfutils-config o2_tfidinfo.root" "" 0
-  has_detector TRD && has_detector_from_global_reader TRD && add_W o2-trd-digit-reader-workflow "$DISABLE_MC --digit-subspec 0 --disable-trigrec --hbfutils-config o2_tfidinfo.root"
+  has_detector TRD && has_detector_from_global_reader TRD && add_W o2-trd-digit-reader-workflow "$DISABLE_MC --digit-subspec 0 --disable-trigrec --hbfutils-config o2_tfidinfo.root" && TRD_CONFIG+=" --trd-digits-spec 1 "
   has_detector TOF && has_detector_from_global_reader TOF && add_W o2-tof-reco-workflow "$DISABLE_MC --input-type digits --output-type NONE --hbfutils-config o2_tfidinfo.root"
 fi
 
@@ -467,7 +469,7 @@ has_detector_reco TRD && (has_detector_matching ITSTPCTRD || has_detector_matchi
 has_detectors_reco ITS TPC && has_detector_matching ITSTPC && add_W o2-tpcits-match-workflow "$DISABLE_ROOT_INPUT $DISABLE_ROOT_OUTPUT $DISABLE_MC $SEND_ITSTPC_DTGL  $TPC_CORR_SCALING --nthreads $ITSTPC_THREADS --pipeline $(get_N itstpc-track-matcher MATCH REST $ITSTPC_THREADS TPCITS)" "$ITSTPC_CONFIG_KEY;$INTERACTION_TAG_CONFIG_KEY;$ITSMFT_STROBES;$ITSEXTRAERR"
 has_detector_reco TRD && [[ ! -z "$TRD_SOURCES" ]] && add_W o2-trd-global-tracking "$DISABLE_ROOT_INPUT $DISABLE_ROOT_OUTPUT $DISABLE_MC $TRD_CONFIG $TRD_FILTER_CONFIG $TPC_CORR_SCALING --track-sources $TRD_SOURCES --pipeline $(get_N trd-globaltracking_TPC_ITS-TPC_ TRD REST 1 TRDTRK),$(get_N trd-globaltracking_TPC_FT0_ITS-TPC_ TRD REST 1 TRDTRK),$(get_N trd-globaltracking_TPC_FT0_ITS-TPC_CTP_ TRD REST 1 TRDTRK)" "$TRD_CONFIG_KEY;$INTERACTION_TAG_CONFIG_KEY;$ITSMFT_STROBES;$ITSEXTRAERR"
 has_detector_reco TOF && [[ ! -z "$TOF_SOURCES" ]] && add_W o2-tof-matcher-workflow "$DISABLE_ROOT_INPUT $DISABLE_ROOT_OUTPUT $DISABLE_MC $TPC_CORR_SCALING --track-sources $TOF_SOURCES --pipeline $(get_N tof-matcher TOF REST 1 TOFMATCH)" "$ITSMFT_STROBES;$ITSEXTRAERR"
-has_detectors TPC && [[ -z "$DISABLE_ROOT_OUTPUT" && "${SKIP_TPC_CLUSTERSTRACKS_OUTPUT:-}" != 1 ]] && add_W o2-tpc-reco-workflow "--input-type pass-through --output-type clusters,tpc-triggers,tracks,send-clusters-per-sector $DISABLE_MC"
+has_detectors TPC && [[ -z "$DISABLE_ROOT_OUTPUT" && "${SKIP_TPC_CLUSTERSTRACKS_OUTPUT:-}" != 1 ]] && ! has_detector_from_global_reader TPC && add_W o2-tpc-reco-workflow "--input-type pass-through --output-type clusters,tpc-triggers,tracks,send-clusters-per-sector $DISABLE_MC"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Reconstruction workflows normally active only in async mode in async mode ($LIST_OF_ASYNC_RECO_STEPS), but can be forced via $WORKFLOW_EXTRA_PROCESSING_STEPS
@@ -502,6 +504,7 @@ has_detector_reco PHS && ( [[ -z "$DISABLE_ROOT_OUTPUT" ]] || needs_root_output 
 has_detector_reco FV0 && ( [[ -z "$DISABLE_ROOT_OUTPUT" ]] || needs_root_output o2-fv0-digits-writer-workflow ) && ! has_detector_from_global_reader FV0 && add_W o2-fv0-digits-writer-workflow "$DISABLE_MC"
 has_detector_reco MID && ( [[ -z "$DISABLE_ROOT_OUTPUT" ]] || needs_root_output o2-mid-decoded-digits-writer-workflow ) && ! has_detector_from_global_reader MID && add_W o2-mid-decoded-digits-writer-workflow "--mid-digits-tree-name o2sim" "" 0
 has_detector_reco MCH && ( [[ -z "$DISABLE_ROOT_OUTPUT" ]] || needs_root_output o2-mch-digits-writer-workflow ) && ! has_detector_from_global_reader MCH && add_W o2-mch-digits-writer-workflow "" "" 0
+has_detector_reco MCH && ( [[ -z "$DISABLE_ROOT_OUTPUT" ]] || needs_root_output o2-mch-digits-writer-workflow ) && ! has_detector_from_global_reader MCH && add_W o2-mch-digits-writer-workflow "--input-digits-data-description F-DIGITS --input-digitrofs-data-description TC-F-DIGITROFS --mch-digit-outfile mchfdigits.root" "" 0
 has_detector_reco MCH && ( [[ -z "$DISABLE_ROOT_OUTPUT" ]] || needs_root_output o2-mch-clusters-writer-workflow ) && ! has_detector_from_global_reader MCH && add_W o2-mch-clusters-writer-workflow "" "" 0
 has_detector_reco MCH && ( [[ -z "$DISABLE_ROOT_OUTPUT" ]] || needs_root_output o2-mch-preclusters-writer-workflow ) && ! has_detector_from_global_reader MCH && add_W o2-mch-preclusters-writer-workflow "" "" 0
 
