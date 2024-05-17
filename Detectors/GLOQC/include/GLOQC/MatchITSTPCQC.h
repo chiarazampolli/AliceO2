@@ -131,7 +131,7 @@ class MatchITSTPCQC
   TEfficiency* getFractionITSTPCmatchPhysPrim1OverPt(matchType m) const { return mFractionITSTPCmatchPhysPrim1OverPt[m]; }
 
   TH1F* getHistoK0Mass() const { return mK0Mass; }
-  
+
   void getHistos(TObjArray& objar);
 
   /// \brief Publishes the histograms to the publisher e.g. the one provided by the QC task
@@ -264,9 +264,9 @@ class MatchITSTPCQC
   void setEtaCut(float v) { mEtaCut = v; } // TODO: define 2 different values for min and max (*)
 
   // K0
-  void setMaxK0Eta(float v) { mMaxEtaK0 = v; } 
-  void setRefitK0(bool v) { mRefit = v; } 
-  void setCutK0Mass(bool v) { mCutK0Mass = v; } 
+  void setMaxK0Eta(float v) { mMaxEtaK0 = v; }
+  void setRefitK0(bool v) { mRefit = v; }
+  void setCutK0Mass(bool v) { mCutK0Mass = v; }
 
  private:
   std::shared_ptr<o2::globaltracking::DataRequest> mDataRequest;
@@ -393,7 +393,7 @@ class MatchITSTPCQC
   bool mRefit = false;      // whether to refit or not
   float mMaxEtaK0 = 0.8;    // cut on the K0 eta
   long int mTimestamp = -1; // timestamp used to load the SVertexParam object: if differnt from -1, we don't load (it means we already did it)
-  
+
   ClassDefNV(MatchITSTPCQC, 3);
 };
 } // namespace gloqc

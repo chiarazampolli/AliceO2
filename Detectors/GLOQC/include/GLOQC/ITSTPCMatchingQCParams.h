@@ -32,12 +32,11 @@ struct ITSTPCMatchingQCParams : public o2::conf::ConfigurableParamHelper<ITSTPCM
   float minDCACutY = 10.f;
   float cutK0Mass = 0.05f;
   float maxEtaK0 = 0.8f;
-  
 
   O2ParamDef(ITSTPCMatchingQCParams, "ITSTPCMatchingQC");
 };
 
-} // namespace globaltracking
+} // namespace gloqc
 } // end namespace o2
 
 #endif

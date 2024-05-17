@@ -383,7 +383,7 @@ bool MatchITSTPCQC::init()
     // V0s
     mK0Mass = new TH1F("mK0Mass", "K0 invariant mass", 100, 0.3, 0.7);
   }
-  
+
   return true;
 }
 
@@ -393,7 +393,7 @@ void MatchITSTPCQC::initDataRequest()
 {
 
   // initialize data request, if it was not already done
- 
+
   if (mDoK0QC) {
     mSrc = GID::getSourcesMask("ITS,TPC,ITS-TPC,ITS-TPC-TOF,TPC-TOF,TPC-TRD,ITS-TPC-TRD,TPC-TRD-TOF,ITS-TPC-TOF,ITS-TPC-TRD-TOF");
   }
@@ -907,7 +907,7 @@ void MatchITSTPCQC::run(o2::framework::ProcessingContext& ctx)
     // now doing K0S
     const auto pvertices = ctx.inputs().get<gsl::span<o2::dataformats::PrimaryVertex>>("pvtx");
     LOG(info) << "Found " << pvertices.size() << " primary vertices";
-    
+
     auto v0IDs = mRecoCont.getV0sIdx();
     auto nv0 = v0IDs.size();
     if (nv0 > mRecoCont.getV0s().size()) {
@@ -922,19 +922,19 @@ void MatchITSTPCQC::run(o2::framework::ProcessingContext& ctx)
       const auto v0id = v0IDs[iv];
       pv2sv[v0id.getVertexID()].push_back(iv);
     }
-    int nV0sOk = 0; 
+    int nV0sOk = 0;
     // processing every sec vtx for each prim vtx
     for (auto it : pv2sv) {
       int pvID = it.first;
       auto& vv = it.second;
       if (pvID < 0 || vv.size() == 0) {
-	continue;
+        continue;
       }
       for (int iv0 : vv) {
-	nV0sOk += processV0(iv0, mRecoCont) ? 1 : 0;
+        nV0sOk += processV0(iv0, mRecoCont) ? 1 : 0;
       }
     }
-    
+
     LOG(info) << "Processed " << nV0sOk << " V0s";
   }
   evCount++;
@@ -1007,7 +1007,6 @@ bool MatchITSTPCQC::refitV0(const o2::dataformats::V0Index& id, o2::dataformats:
   v0.setCosPA(cosPA);
   return true;
 }
-
 
 //__________________________________________________________
 void MatchITSTPCQC::finalize()
@@ -1234,5 +1233,4 @@ void MatchITSTPCQC::getHistos(TObjArray& objar)
 
   // V0
   objar.Add(mK0Mass);
-
 }
