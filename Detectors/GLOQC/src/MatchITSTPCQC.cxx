@@ -125,7 +125,6 @@ void MatchITSTPCQC::deleteHistograms()
 
   // K0
   delete mK0MassVsPt;
-
 }
 
 //__________________________________________________________
