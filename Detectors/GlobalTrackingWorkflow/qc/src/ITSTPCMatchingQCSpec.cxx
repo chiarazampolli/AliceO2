@@ -110,7 +110,7 @@ namespace framework
 {
 using GID = o2::dataformats::GlobalTrackID;
 
-  DataProcessorSpec getITSTPCMatchingQCDevice(bool useMC, bool doK0QC, std::string trkSources)
+DataProcessorSpec getITSTPCMatchingQCDevice(bool useMC, bool doK0QC, std::string trkSources)
 {
   std::vector<OutputSpec> outputs;
   outputs.emplace_back("GLO", "ITSTPCMATCHQC", 0, Lifetime::Sporadic);
