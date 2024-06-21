@@ -270,7 +270,8 @@ class MatchITSTPCQC
   void setRefitK0(bool v) { mRefit = v; }
   void setCutK0Mass(float v) { mCutK0Mass = v; }
 
-  void printParams() {
+  void printParams()
+  {
     LOG(info) << "minPtITSCut          = " << mPtITSCut;
     LOG(info) << "etaITSCut            = " << mEtaITSCut;
     LOG(info) << "minNITSClustersCut   = " << mMinNClustersITS;
