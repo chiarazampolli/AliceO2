@@ -30,7 +30,7 @@
 #include "ReconstructionDataFormats/PID.h"
 #include "DCAFitter/DCAFitterN.h"
 #include "GPUO2InterfaceConfiguration.h"
-//#include "GPUSettingsO2.h"
+// #include "GPUSettingsO2.h"
 #include "GPUParam.h"
 #include "GPUParam.inc"
 
@@ -422,14 +422,14 @@ class MatchITSTPCQC
   long int mTimestamp = -1; // timestamp used to load the SVertexParam object: if differnt from -1, we don't load (it means we already did it)
   std::unique_ptr<o2::gpu::GPUO2InterfaceConfiguration> mConfig;
   std::unique_ptr<o2::gpu::GPUSettingsO2> mConfParam;
-  //std::unique_ptr<o2::gpu::GPUParam> mParam;
+  // std::unique_ptr<o2::gpu::GPUParam> mParam;
   std::shared_ptr<o2::gpu::GPUParam> mParam = nullptr;
   int mNHBPerTF = 0;
   int mNTPCOccBinLength = 0; ///< TPC occ. histo bin length in TBs
   float mNTPCOccBinLengthInv;
-  std::vector<float> mTBinClOcc;       ///< TPC occupancy histo: i-th entry is the integrated occupancy for ~1 orbit starting from the TB = i*mNTPCOccBinLength
+  std::vector<float> mTBinClOcc;                    ///< TPC occupancy histo: i-th entry is the integrated occupancy for ~1 orbit starting from the TB = i*mNTPCOccBinLength
   gsl::span<const unsigned int> mTPCRefitterOccMap; ///< externally set TPC clusters occupancy map
-  
+
   ClassDefNV(MatchITSTPCQC, 3);
 };
 } // namespace gloqc
