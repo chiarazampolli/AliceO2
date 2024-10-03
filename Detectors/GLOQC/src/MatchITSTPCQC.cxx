@@ -472,8 +472,7 @@ void MatchITSTPCQC::run(o2::framework::ProcessingContext& ctx)
     if (grplhcif->getBeamZ(0) != 1 || grplhcif->getBeamZ(1) != 1) {
       LOG(info) << "We are in Heavy Ion: Z for beam 0 = " << grplhcif->getBeamZ(0) << " ; Z for beam 1 = " << grplhcif->getBeamZ(1);
       mIsHI = true;
-    }
-    else {
+    } else {
       LOG(info) << "We are not in Heavy Ion: Z for beam 0 = " << grplhcif->getBeamZ(0) << " ; Z for beam 1 = " << grplhcif->getBeamZ(1);
     }
   }
@@ -1064,10 +1063,9 @@ bool MatchITSTPCQC::processV0(int iv, o2::globaltracking::RecoContainer& recoDat
 
   const auto& v0id = v0IDs[iv];
   ++mNK0;
-  if (mNK0 % int(1/mK0Scaling) == 0) {
+  if (mNK0 % int(1 / mK0Scaling) == 0) {
     LOG(debug) << "Checking " << mNK0 << "th V0: refitting it, since we keep " << mK0Scaling * 100 << "% of all V0s";
-  }
-  else {
+  } else {
     LOG(debug) << "Checking " << mNK0 << "th K0: NOT refitting it, but skipping it, since we keep " << mK0Scaling * 100 << "% of all V0s";
     return false;
   }
@@ -1089,8 +1087,7 @@ bool MatchITSTPCQC::processV0(int iv, o2::globaltracking::RecoContainer& recoDat
   LOG(debug) << "Filling K0 histogram with pt = " << v0sel.getPt() << " mass = " << std::sqrt(v0sel.calcMass2AsK0()) << " mult TPC = " << mltTPC;
   if (!mIsHI) {
     mK0MassVsPtVsOccpp->Fill(v0sel.getPt(), std::sqrt(v0sel.calcMass2AsK0()), mltTPC);
-  }
-  else {
+  } else {
     mK0MassVsPtVsOccPbPb->Fill(v0sel.getPt(), std::sqrt(v0sel.calcMass2AsK0()), mltTPC);
   }
   return true;
@@ -1235,7 +1232,7 @@ void MatchITSTPCQC::setEfficiency(TEfficiency* eff, TH1* hnum, TH1* hden, bool i
 
   // we need to force to replace the total histogram, otherwise it will compare it to the previous passed one, and it might get an error of inconsistency in the bin contents
   if constexpr (false) { // checking
-      bool bad{false};
+    bool bad{false};
     LOG(debug) << "Setting efficiency " << eff->GetName() << " from " << hnum->GetName() << " and " << hden->GetName();
     LOG(debug) << "Num " << hnum->GetName() << " " << hnum->GetNbinsX() << " " << hnum->GetNbinsY() << " with " << hnum->GetEntries() << " entries";
     LOG(debug) << "Den " << hden->GetName() << " " << hden->GetNbinsX() << " " << hden->GetNbinsY() << " with " << hden->GetEntries() << " entries";
