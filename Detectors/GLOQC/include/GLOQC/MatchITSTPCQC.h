@@ -447,11 +447,11 @@ class MatchITSTPCQC
   std::vector<float> mTBinClOcc;                    ///< TPC occupancy histo: i-th entry is the integrated occupancy for ~1 orbit starting from the TB = i*mNTPCOccBinLength
   gsl::span<const unsigned int> mTPCRefitterOccMap; ///< externally set TPC clusters occupancy map
   bool mIsHI = false;
-  float mK0Scaling = 1.f;  // permill that we want to keep of K0S
-  uint64_t mNK0 = 0;       // number of found V0s
-  float mMinTPCOccpp = 0.f;  // min TPC occupancy for K0s plot for pp collisions
-  float mMaxTPCOccpp = 1.e6; // max TPC occupancy for K0s plot for pp collisions
-  int mNBinsTPCOccpp = 6;    // number of bins in TPC occupancy for K0s plot for pp collisions
+  float mK0Scaling = 1.f;      // permill that we want to keep of K0S
+  uint64_t mNK0 = 0;           // number of found V0s
+  float mMinTPCOccpp = 0.f;    // min TPC occupancy for K0s plot for pp collisions
+  float mMaxTPCOccpp = 1.e6;   // max TPC occupancy for K0s plot for pp collisions
+  int mNBinsTPCOccpp = 6;      // number of bins in TPC occupancy for K0s plot for pp collisions
   float mMinTPCOccPbPb = 0.f;  // min TPC occupancy for K0s plot for PbPb collisions
   float mMaxTPCOccPbPb = 8.e6; // max TPC occupancy for K0s plot for PbPb collisions
   int mNBinsTPCOccPbPb = 8;    // number of bins in TPC occupancy for K0s plot for PbPb collisions
