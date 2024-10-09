@@ -461,7 +461,7 @@ class MatchITSTPCQC
   int mNBinsTPCOccPbPb = 8;    // number of bins in TPC occupancy for K0s plot for PbPb collisions
   float mK0MaxDCA = 0.01;      // max DCA to select the K0
   float mK0MinCosPA = 0.995;   // min cosPA to select the K0
-  
+
   ClassDefNV(MatchITSTPCQC, 3);
 };
 } // namespace gloqc
