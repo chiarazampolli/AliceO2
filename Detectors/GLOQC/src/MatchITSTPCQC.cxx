@@ -434,11 +434,11 @@ bool MatchITSTPCQC::init()
   LOG(info) << "Printing configuration cuts";
   printParams();
 
-  delete [] xbinsPt;
-  delete [] xbinsPtK0;
-  delete [] ybinsMassK0;
-  delete [] zbinsMultK0pp;
-  delete [] zbinsMultK0PbPb;
+  delete[] xbinsPt;
+  delete[] xbinsPtK0;
+  delete[] ybinsMassK0;
+  delete[] zbinsMultK0pp;
+  delete[] zbinsMultK0PbPb;
 
   return true;
 }
